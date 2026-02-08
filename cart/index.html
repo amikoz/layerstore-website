@@ -962,7 +962,7 @@
             formData.append('order_details', orderDetails);
 
             // Send to PHP script
-            fetch('/order.php', {
+            fetch('https://api.layerstore.eu/order.php', {
                 method: 'POST',
                 body: formData
             })
