@@ -365,6 +365,142 @@
             color: var(--accent);
         }
 
+        /* Checkout Modal */
+        .checkout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkout-modal.active {
+            display: flex;
+        }
+
+        .checkout-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .checkout-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkout-close:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(90deg);
+            border-color: var(--accent);
+        }
+
+        .checkout-modal h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .checkout-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .checkout-submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent);
+            color: white;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-submit-btn:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .checkout-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* Footer */
         footer {
             padding: 4rem 4rem;
@@ -523,6 +659,43 @@
             Mit Präzision gedruckt in Deutschland
         </div>
     </footer>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-modal-content">
+            <button class="checkout-close" id="closeCheckout">×</button>
+            <h2>Bestellung abschließen</h2>
+            <p>Bitte geben Sie Ihre E-Mail-Adresse ein, damit wir Ihre Bestellung bearbeiten können.</p>
+
+            <form id="checkoutForm" onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label for="customerEmail">E-Mail-Adresse *</label>
+                    <input
+                        type="email"
+                        id="customerEmail"
+                        name="email"
+                        placeholder="ihre@email.de"
+                        required
+                    >
+                    <div class="error-message" id="emailError">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="customerName">Name (optional)</label>
+                    <input
+                        type="text"
+                        id="customerName"
+                        name="name"
+                        placeholder="Ihr Name"
+                    >
+                </div>
+
+                <button type="submit" class="checkout-submit-btn" id="submitBtn">
+                    Bestellung absenden
+                </button>
+            </form>
+        </div>
+    </div>
 
     <script>
         // Product data
@@ -696,31 +869,139 @@
                 return;
             }
 
-            // Create order summary
-            let orderSummary = 'Vielen Dank für Ihre Bestellung!\n\n';
-            orderSummary += 'Sie haben folgende Artikel bestellt:\n\n';
+            // Open checkout modal
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
 
+            // Focus on email input
+            setTimeout(() => {
+                document.getElementById('customerEmail').focus();
+            }, 100);
+        }
+
+        // Close checkout modal
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Validate email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Submit order
+        function submitOrder(event) {
+            event.preventDefault();
+
+            const emailInput = document.getElementById('customerEmail');
+            const nameInput = document.getElementById('customerName');
+            const emailError = document.getElementById('emailError');
+            const submitBtn = document.getElementById('submitBtn');
+
+            const email = emailInput.value.trim();
+            const name = nameInput.value.trim();
+
+            // Validate email
+            if (!email || !validateEmail(email)) {
+                emailInput.classList.add('error');
+                emailError.classList.add('visible');
+                return;
+            }
+
+            // Clear error
+            emailInput.classList.remove('error');
+            emailError.classList.remove('visible');
+
+            // Get cart
+            const cart = getCart();
+
+            // Create order summary
+            let orderDetails = '=== NEUE BESTELLUNG von LayerStore ===\n\n';
+            orderDetails += 'Kundeninformationen:\n';
+            orderDetails += `E-Mail: ${email}\n`;
+            if (name) {
+                orderDetails += `Name: ${name}\n`;
+            }
+            orderDetails += '\nBestellte Artikel:\n';
+            orderDetails += '----------------------------\n';
+
+            let totalItems = 0;
             cart.forEach(item => {
                 const colorText = item.color ? ` (${colorNames[item.color] || item.color})` : '';
-                orderSummary += `${item.quantity}x ${item.name}${colorText} - ${item.price}\n`;
+                orderDetails += `${item.quantity}x ${item.name}${colorText} - ${item.price}\n`;
+                totalItems += item.quantity;
             });
 
-            orderSummary += '\nBitte senden Sie uns Ihre Bestellung mit:\n';
-            orderSummary += 'E-Mail: info@layerstore.eu\n';
-            orderSummary += '\nWir melden uns schnellstmöglich bei Ihnen!';
+            orderDetails += '----------------------------\n';
+            orderDetails += `Gesamt: ${totalItems} Artikel\n`;
+            orderDetails += '\nDatum: ' + new Date().toLocaleDateString('de-DE') + '\n';
+            orderDetails += 'Zeit: ' + new Date().toLocaleTimeString('de-DE') + '\n';
 
-            alert(orderSummary);
+            // Create mailto link
+            const subject = encodeURIComponent(`Neue Bestellung von LayerStore - ${email}`);
+            const body = encodeURIComponent(orderDetails);
+            const mailtoLink = `mailto:info@layerstore.eu?subject=${subject}&body=${body}`;
 
-            // Clear cart
-            localStorage.removeItem('layerstore_cart');
-            updateCartCount();
-            renderCart();
+            // Open email client
+            window.location.href = mailtoLink;
+
+            // Show success message and clear cart after a delay
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Wird gesendet...';
+
+            setTimeout(() => {
+                alert('Vielen Dank für Ihre Bestellung! Eine E-Mail mit Ihren Bestelldetails wurde geöffnet. Bitte senden Sie diese ab.\n\nIhr Warenkorb wurde geleert.');
+                closeCheckoutModal();
+
+                // Clear cart
+                localStorage.removeItem('layerstore_cart');
+                updateCartCount();
+                renderCart();
+
+                // Reset form
+                emailInput.value = '';
+                nameInput.value = '';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Bestellung absenden';
+            }, 1500);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
             renderCart();
+
+            // Checkout modal event listeners
+            const modal = document.getElementById('checkoutModal');
+            const closeBtn = document.getElementById('closeCheckout');
+            const emailInput = document.getElementById('customerEmail');
+
+            // Close modal on X button
+            closeBtn.addEventListener('click', closeCheckoutModal);
+
+            // Close modal on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeCheckoutModal();
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeCheckoutModal();
+                }
+            });
+
+            // Clear error on input
+            emailInput.addEventListener('input', () => {
+                emailInput.classList.remove('error');
+                document.getElementById('emailError').classList.remove('visible');
+            });
         });
     </script>
 </body>
