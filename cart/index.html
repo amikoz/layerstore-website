@@ -69,7 +69,7 @@
         }
 
         .logo img {
-            height: 40px;
+            height: 60px;
             width: auto;
             transition: transform 0.2s ease;
         }
@@ -365,6 +365,59 @@
             color: var(--accent);
         }
 
+        /* Footer */
+        footer {
+            padding: 4rem 4rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             header {
@@ -401,6 +454,11 @@
             .cart-summary {
                 max-width: 100%;
             }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
         }
     </style>
 </head>
@@ -408,7 +466,7 @@
     <!-- Header -->
     <header>
         <a href="/main" class="logo">
-            <img src="/logo.jpg" alt="LayerStore Logo">
+            <img src="/logo.png" alt="LayerStore Logo">
         </a>
         <nav>
             <a href="/main">Startseite</a>
@@ -436,6 +494,35 @@
             </a>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="mailto:info@layerstore.eu">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
+    </footer>
 
     <script>
         // Product data

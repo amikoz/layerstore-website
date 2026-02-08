@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LayerStore - 3D-Druck Osterdekorationen</title>
+    <title>LayerStore - Individuelle 3D-Druck-Kreationen</title>
+    <meta name="description" content="LayerStore - Einzigartige 3D-gedruckte Dekorationen, Geschenke und Accessoires. Individuell designed, nachhaltig produziert.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #fafaf9;
             --bg-secondary: #f5f5f4;
             --text-primary: #1c1917;
             --text-secondary: #57534e;
-            --accent: #ea580c;
-            --accent-light: #fb923c;
+            --accent: #1e3a8a;
+            --accent-light: #3b82f6;
             --border: #e7e5e4;
-            --highlight: #78716c;
         }
 
         * {
@@ -39,7 +39,7 @@
             top: 0;
             left: 0;
             right: 0;
-            padding: 2rem 4rem;
+            padding: 1.5rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -47,18 +47,6 @@
             background: rgba(250, 250, 249, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
-            animation: slideDown 0.8s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
         }
 
         .logo {
@@ -68,7 +56,7 @@
         }
 
         .logo img {
-            height: 40px;
+            height: 60px;
             width: auto;
             transition: transform 0.2s ease;
         }
@@ -80,6 +68,7 @@
         nav {
             display: flex;
             gap: 3rem;
+            align-items: center;
         }
 
         nav a {
@@ -89,26 +78,10 @@
             font-weight: 400;
             letter-spacing: 0.02em;
             transition: color 0.3s ease;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent);
-            transition: width 0.3s ease;
         }
 
         nav a:hover {
             color: var(--accent);
-        }
-
-        nav a:hover::after {
-            width: 100%;
         }
 
         /* Cart Icon */
@@ -164,43 +137,59 @@
             align-items: center;
             justify-content: center;
             padding: 8rem 4rem 4rem;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
             position: relative;
-            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fca5a5 100%);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(30, 58, 138, 0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
         }
 
         .hero-content {
             max-width: 900px;
-            text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
             font-family: 'DM Serif Display', serif;
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-size: clamp(3rem, 7vw, 6rem);
             font-weight: 400;
             line-height: 1.1;
             margin-bottom: 1.5rem;
             letter-spacing: -0.03em;
             animation: fadeInUp 1s ease-out 0.2s both;
-            color: var(--text-primary);
-        }
-
-        .logo-text {
-            color: var(--text-primary);
-            font-weight: 400;
-        }
-
-        .logo-text-accent {
-            color: var(--accent);
-            font-weight: 400;
         }
 
         .hero p {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             color: var(--text-secondary);
             margin-bottom: 3rem;
             font-weight: 300;
-            letter-spacing: 0.01em;
+            line-height: 1.8;
             animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s both;
         }
 
         @keyframes fadeInUp {
@@ -214,44 +203,166 @@
             }
         }
 
-        .cta-button {
+        .btn-primary {
             display: inline-block;
             padding: 1rem 2.5rem;
             background: var(--accent);
             color: white;
             text-decoration: none;
             font-size: 0.9rem;
-            font-weight: 400;
+            font-weight: 500;
             letter-spacing: 0.05em;
             text-transform: uppercase;
             transition: all 0.3s ease;
             border: 2px solid var(--accent);
-            animation: fadeInUp 1s ease-out 0.6s both;
+            border-radius: 8px;
         }
 
-        .cta-button:hover {
+        .btn-primary:hover {
             background: transparent;
             color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
         }
 
-        /* Product Section */
-        .product-section {
+        .btn-secondary {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--text-primary);
+            border-radius: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Collections/Products Section */
+        .collections-section {
             padding: 6rem 4rem;
             background: var(--bg-primary);
         }
 
-        .section-title {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 400;
-            margin-bottom: 4rem;
+        .section-header {
             text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
             letter-spacing: -0.02em;
             color: var(--accent);
         }
 
-        .product-showcase {
-            max-width: 1200px;
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-info h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .product-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .product-availability {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .availability-available {
+            background: rgba(30, 58, 138, 0.1);
+            color: var(--accent);
+        }
+
+        .availability-coming {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 6rem 4rem;
+            background: var(--bg-secondary);
+        }
+
+        .about-content {
+            max-width: 1000px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -259,272 +370,144 @@
             align-items: center;
         }
 
-        /* Image Gallery */
-        .gallery-container {
-            position: relative;
-        }
-
-        .image-gallery {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-        }
-
-        .gallery-image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .gallery-image.active {
-            opacity: 1;
-        }
-
-        .gallery-nav {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .gallery-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .gallery-dot.active {
-            background: var(--accent);
-            transform: scale(1.2);
-        }
-
-        /* Product Info */
-        .product-details {
-            padding: 2rem;
-        }
-
-        .product-details h2 {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 400;
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-            color: var(--accent);
-        }
-
-        .product-details .price {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-
-        .product-details p {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            font-weight: 300;
-            line-height: 1.8;
-        }
-
-        .features {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .features li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-            color: var(--text-secondary);
-        }
-
-        .features li::before {
-            content: '🥕';
-            position: absolute;
-            left: 0;
-        }
-
-        /* Color Selector */
-        .color-selector {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .color-selector-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .color-options {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .color-option {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 3px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .color-option:hover {
-            transform: scale(1.15);
-            border-color: var(--accent-light);
-        }
-
-        .color-option.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
-            transform: scale(1.2);
-        }
-
-        .color-option.active::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
-            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-        }
-
-        .order-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: var(--accent);
-            color: white;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--accent);
-            cursor: pointer;
-        }
-
-        .order-button:hover {
-            background: transparent;
-            color: var(--accent);
-        }
-
-        /* About Section */
-        .about {
-            padding: 8rem 4rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6rem;
-            align-items: center;
-        }
-
         .about-text h2 {
             font-family: 'DM Serif Display', serif;
             font-size: clamp(2rem, 4vw, 3rem);
             font-weight: 400;
-            margin-bottom: 2rem;
-            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
             color: var(--accent);
         }
 
         .about-text p {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-weight: 300;
             line-height: 1.8;
+            margin-bottom: 1rem;
+            font-weight: 300;
         }
 
-        .about-visual {
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+        .about-features {
+            margin-top: 2rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .about-feature {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .about-feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 58, 138, 0.1);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 6rem;
-            border-radius: 8px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
         }
 
-        /* Contact Section */
-        .contact {
-            padding: 6rem 4rem;
-            background: var(--accent);
-            color: white;
+        .about-feature-text {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .about-image {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 20px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 4rem;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
             text-align: center;
         }
 
-        .contact h2 {
+        .cta-section h2 {
             font-family: 'DM Serif Display', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 400;
             margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
+            color: var(--text-primary);
         }
 
-        .contact p {
+        .cta-section p {
             font-size: 1.1rem;
-            margin-bottom: 2.5rem;
-            opacity: 0.9;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
             font-weight: 300;
-        }
-
-        .contact-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: white;
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid white;
-        }
-
-        .contact-button:hover {
-            background: transparent;
-            color: white;
         }
 
         /* Footer */
         footer {
-            padding: 3rem 4rem;
-            background: var(--bg-secondary);
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 300;
+            padding: 4rem 4rem;
+            background: var(--bg-primary);
             border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 300;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             header {
-                padding: 1.5rem 2rem;
+                padding: 1rem 2rem;
             }
 
             nav {
@@ -532,19 +515,27 @@
             }
 
             .hero {
-                padding: 6rem 2rem 3rem;
+                padding: 7rem 2rem 3rem;
             }
 
-            .product-section,
-            .about,
-            .contact {
+            .collections-section,
+            .about-section,
+            .cta-section {
                 padding: 4rem 2rem;
             }
 
-            .product-showcase,
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
             .about-content {
                 grid-template-columns: 1fr;
                 gap: 3rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
         }
     </style>
@@ -553,12 +544,12 @@
     <!-- Header -->
     <header>
         <a href="/main" class="logo">
-            <img src="/logo.jpg" alt="LayerStore Logo">
+            <img src="/logo.png" alt="LayerStore Logo">
         </a>
         <nav>
-            <a href="#produkte">Produkte</a>
-            <a href="#ueber-uns">Über uns</a>
-            <a href="#kontakt">Kontakt</a>
+            <a href="#collections">Kollektionen</a>
+            <a href="#about">Über uns</a>
+            <a href="mailto:info@layerstore.eu">Kontakt</a>
             <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
@@ -571,249 +562,194 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Oster-Zauber<br>aus dem <span class="logo-text">Layer</span><span class="logo-text-accent">Store</span> 3D-Drucker</h1>
-            <p>Entdecken Sie einzigartige 3D-gedruckte Osterdekorationen. Jedes Stück ist mit Liebe zum Detail gefertigt und bringt Frühlingsfreude in Ihr Zuhause.</p>
-            <a href="/collections/easter" class="cta-button">Zur Kollektion</a>
+            <h1>Ideen werden zu <br><span style="color: var(--accent);">Wirklichkeit</span></h1>
+            <p>Individuelle 3D-Druck-Kreationen für jeden Anlass. Von der Idee bis zum fertigen Produkt – mit Liebe zum Detail und höchster Präzision gefertigt.</p>
+            <div class="hero-buttons">
+                <a href="#collections" class="btn-primary">Kollektionen ansehen</a>
+                <a href="#about" class="btn-secondary">Mehr erfahren</a>
+            </div>
         </div>
     </section>
 
-    <!-- Product Section -->
-    <section id="produkte" class="product-section">
-        <h2 class="section-title">Unser Oster-Highlight</h2>
-        <div class="product-showcase">
-            <div class="gallery-container">
-                <div class="image-gallery" id="imageGallery">
-                    <!-- Images will be loaded by JavaScript -->
-                </div>
-                <div class="gallery-nav" id="galleryNav">
-                    <!-- Dots will be loaded by JavaScript -->
-                </div>
-            </div>
+    <!-- Collections Section -->
+    <section id="collections" class="collections-section">
+        <div class="section-header">
+            <h2>Unsere Kollektionen</h2>
+            <p>Entdecken Sie unsere einzigartigen 3D-gedruckten Kreationen</p>
+        </div>
 
-            <div class="product-details">
-                <h2 id="productTitle">Hasenkorb</h2>
-                <div class="price" id="productPrice">13,00 €</div>
-                <p id="productDescription">Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.</p>
-
-                <div class="color-selector">
-                    <span class="color-selector-label">Farbe wählen:</span>
-                    <div class="color-options" id="colorOptions">
-                        <!-- Color options will be loaded by JavaScript -->
+        <div class="products-grid">
+            <!-- Product 1: Hasenkorb -->
+            <div class="product-card" onclick="window.location.href='/collections/easter'">
+                <img src="/collections/easter/images/bunnybasketbeige.jpeg" alt="Hasenkorb" class="product-image">
+                <div class="product-info">
+                    <h3>Hasenkorb</h3>
+                    <p>Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern.</p>
+                    <div class="product-price">13,00 €</div>
+                    <div class="product-meta">
+                        <span class="product-availability availability-available">Verfügbar</span>
                     </div>
                 </div>
-
-                <ul class="features">
-                    <li>3D-gedruckt aus hochwertigem PLA</li>
-                    <li>Abnehmbarer Deckel mit Hasenohren</li>
-                    <li>Perfekt für Ostereiersuchen und Geschenke</li>
-                    <li>Wiederverwendbar Jahr für Jahr</li>
-                    <li>In verschiedenen Farben verfügbar</li>
-                </ul>
-
-                <a href="/collections/easter" class="order-button">Zur Kollektion</a>
             </div>
+
+            <!-- Product 2: Osterkarotte -->
+            <div class="product-card" onclick="window.location.href='/collections/easter'">
+                <img src="/collections/easter/images/carrot1.jpeg" alt="Osterkarotte" class="product-image">
+                <div class="product-info">
+                    <h3>Osterkarotte</h3>
+                    <p>Süße Osterkarotte als Container für Süßigkeiten oder kleine Überraschungen.</p>
+                    <div class="product-price">13,00 €</div>
+                    <div class="product-meta">
+                        <span class="product-availability availability-available">Verfügbar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3: Gestricktes Ei -->
+            <div class="product-card" onclick="window.location.href='/collections/easter'">
+                <img src="/collections/easter/images/knittedeggmintgreen.jpeg" alt="Gestricktes Ei" class="product-image">
+                <div class="product-info">
+                    <h3>Gestricktes Ei</h3>
+                    <p>Elegantes Osterei im Strick-Look in zartem Mintgrün. Handgemachter Charme.</p>
+                    <div class="product-price">5,00 €</div>
+                    <div class="product-meta">
+                        <span class="product-availability availability-available">Verfügbar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 4: Osterei mit Beinen -->
+            <div class="product-card" onclick="window.location.href='/collections/easter'">
+                <img src="/collections/easter/images/legseggkinder.jpeg" alt="Osterei mit Beinen" class="product-image">
+                <div class="product-info">
+                    <h3>Osterei mit Beinen</h3>
+                    <p>Verspieltes Ei mit beweglichen Beinen – perfekt für Kinder-Überraschungseier.</p>
+                    <div class="product-price">2,00 €</div>
+                    <div class="product-meta">
+                        <span class="product-availability availability-available">Verfügbar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder: Weihnachten -->
+            <div class="product-card" style="opacity: 0.6; cursor: not-allowed;">
+                <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">🎄</span>
+                </div>
+                <div class="product-info">
+                    <h3>Weihnachten</h3>
+                    <p>Festive Weihnachtsdekorationen und Geschenke. Bald verfügbar.</p>
+                    <div class="product-meta">
+                        <span class="product-availability availability-coming">Bald verfügbar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder: Geburtstag -->
+            <div class="product-card" style="opacity: 0.6; cursor: not-allowed;">
+                <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 4rem;">🎂</span>
+                </div>
+                <div class="product-info">
+                    <h3>Geburtstag</h3>
+                    <p>Personalisierte Geburtstagsgeschenke und Dekorationen. Bald verfügbar.</p>
+                    <div class="product-meta">
+                        <span class="product-availability availability-coming">Bald verfügbar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 4rem;">
+            <a href="/collections" class="btn-primary">Alle Kollektionen ansehen</a>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="ueber-uns" class="about">
+    <section id="about" class="about-section">
         <div class="about-content">
             <div class="about-text">
-                <h2>Mit Präzision gefertigt</h2>
-                <p>Bei LayerStore glauben wir an die Verbindung von Technologie und Handwerkskunst. Jedes Produkt wird sorgfältig entworfen und mit modernster 3D-Drucktechnologie hergestellt.</p>
-                <p>Unsere Osterdekorationen werden aus nachhaltigen Materialien gefertigt und bieten eine umweltfreundliche Alternative zu Einwegartikeln. Qualität und Kreativität stehen im Mittelpunkt unserer Arbeit.</p>
-                <p>Vom Entwurf bis zur Fertigung – jedes Teil wird mit größter Sorgfalt Schicht für Schicht aufgebaut und feiert die Schönheit der additiven Fertigung.</p>
+                <h2>Über LayerStore</h2>
+                <p>
+                    LayerStore ist Ihr Partner für hochwertige 3D-gedruckte Produkte. Wir kombinieren modernste
+                    3D-Drucktechnologie mit durchdachtem Design, um einzigartige Stücke zu schaffen, die
+                    jedes Zuhause bereichern.
+                </p>
+                <p>
+                    Jedes Produkt wird in Deutschland mit viel Liebe zum Detail und größter Sorgfalt gefertigt.
+                    Unsere nachhaltigen PLA-Materialien garantieren nicht nur Langlebigkeit, sondern auch
+                    Umweltfreundlichkeit.
+                </p>
+
+                <div class="about-features">
+                    <div class="about-feature">
+                        <div class="about-feature-icon">🎨</div>
+                        <div class="about-feature-text">Individuelle Designs</div>
+                    </div>
+                    <div class="about-feature">
+                        <div class="about-feature-icon">🌱</div>
+                        <div class="about-feature-text">Nachhaltige Materialien</div>
+                    </div>
+                    <div class="about-feature">
+                        <div class="about-feature-icon">💎</div>
+                        <div class="about-feature-text">Premium Qualität</div>
+                    </div>
+                    <div class="about-feature">
+                        <div class="about-feature-icon">⚡</div>
+                        <div class="about-feature-text">Schnelle Produktion</div>
+                    </div>
+                </div>
             </div>
-            <div class="about-visual">🐰</div>
+
+            <div class="about-image">
+                🖨️
+            </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="kontakt" class="contact">
-        <h2>Bereit für Ostern?</h2>
-        <p>Bestellen Sie jetzt Ihre Osterkarotte und bringen Sie Freude in Ihr Zuhause!</p>
-        <a href="mailto:info@layerstore.eu" class="contact-button">Kontakt aufnehmen</a>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Bereit für Ihr individuelles 3D-Druck-Projekt?</h2>
+        <p>Ob für ein besonderes Geschenk, Ihre Dekoration oder für das Business – wir verwirklichen Ihre Vision.</p>
+        <a href="mailto:info@layerstore.eu" class="btn-primary" style="background: white; color: var(--accent);">Kontaktieren Sie uns</a>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 LayerStore. Alle Rechte vorbehalten. Mit Präzision gedruckt.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="#collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="mailto:info@layerstore.eu">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
     </footer>
 
     <script>
-        // Product data with colors
-        const productData = {
-            title: 'Hasenkorb',
-            price: '13,00 €',
-            description: 'Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.',
-            colors: [
-                {
-                    id: 'beige',
-                    name: 'Beige',
-                    hex: '#E8DCC8',
-                    images: ['/collections/easter/images/bunnybasketbeige.jpeg', '/collections/easter/images/bunnybasketbeige1.jpeg', '/collections/easter/images/bunnybasketbeige2.jpeg', '/collections/easter/images/bunnybasketbeige3.jpeg', '/collections/easter/images/bunnybasketbeige4.jpeg', '/collections/easter/images/bunnybasketbeige5.jpeg']
-                },
-                {
-                    id: 'pink',
-                    name: 'Pink',
-                    hex: '#FFB6C1',
-                    images: ['/collections/easter/images/bunnybasketpink.jpg']
-                },
-                {
-                    id: 'purple',
-                    name: 'Lila',
-                    hex: '#DDA0DD',
-                    images: ['/collections/easter/images/bunnybasketpurple.jpeg', '/collections/easter/images/bunnybasketpurple1.jpeg', '/collections/easter/images/bunnybasketpurple2.jpeg', '/collections/easter/images/bunnybasketpurple3.jpeg']
-                }
-            ],
-            defaultColor: 'beige'
-        };
-
-        // State
-        let currentColor = productData.defaultColor;
-        let currentImages = [];
-        let currentIndex = 0;
-        let autoRotateInterval = null;
-
-        // DOM Elements
-        const imageGallery = document.getElementById('imageGallery');
-        const galleryNav = document.getElementById('galleryNav');
-        const colorOptions = document.getElementById('colorOptions');
-
-        // Initialize
-        function init() {
-            selectColor(currentColor);
-            renderColorOptions();
-            startAutoRotate();
-        }
-
-        // Get current color data
-        function getCurrentColorData() {
-            return productData.colors.find(c => c.id === currentColor);
-        }
-
-        // Select color
-        function selectColor(colorId) {
-            currentColor = colorId;
-            currentIndex = 0;
-            currentImages = getCurrentColorData().images;
-
-            // Update gallery
-            renderGallery();
-            updateColorOptions();
-
-            // Restart auto-rotate
-            stopAutoRotate();
-            startAutoRotate();
-        }
-
-        // Render gallery images
-        function renderGallery() {
-            const colorData = getCurrentColorData();
-
-            // Clear and render images
-            imageGallery.innerHTML = currentImages.map((src, index) => `
-                <img src="${src}" alt="${productData.title} ${colorData.name} Ansicht ${index + 1}" class="gallery-image ${index === currentIndex ? 'active' : ''}">
-            `).join('');
-
-            // Clear and render dots
-            galleryNav.innerHTML = currentImages.map((_, index) => `
-                <button class="gallery-dot ${index === currentIndex ? 'active' : ''}" data-index="${index}"></button>
-            `).join('');
-
-            // Add event listeners to dots
-            galleryNav.querySelectorAll('.gallery-dot').forEach((dot, index) => {
-                dot.addEventListener('click', () => showImage(index));
-            });
-        }
-
-        // Render color options
-        function renderColorOptions() {
-            colorOptions.innerHTML = productData.colors.map(color => `
-                <button
-                    class="color-option ${color.id === currentColor ? 'active' : ''}"
-                    data-color="${color.id}"
-                    style="background-color: ${color.hex};"
-                    title="${color.name}"
-                    aria-label="${color.name}"
-                ></button>
-            `).join('');
-
-            // Add event listeners to color options
-            colorOptions.querySelectorAll('.color-option').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const colorId = e.target.dataset.color;
-                    selectColor(colorId);
-                });
-            });
-        }
-
-        // Update color options active state
-        function updateColorOptions() {
-            colorOptions.querySelectorAll('.color-option').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.color === currentColor);
-            });
-        }
-
-        // Show specific image
-        function showImage(index) {
-            const images = imageGallery.querySelectorAll('.gallery-image');
-            const dots = galleryNav.querySelectorAll('.gallery-dot');
-
-            images.forEach((img, i) => {
-                img.classList.toggle('active', i === index);
-            });
-
-            dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
-
-            currentIndex = index;
-        }
-
-        // Auto-rotate
-        function startAutoRotate() {
-            if (currentImages.length <= 1) return;
-
-            autoRotateInterval = setInterval(() => {
-                const nextIndex = (currentIndex + 1) % currentImages.length;
-                showImage(nextIndex);
-            }, 4000);
-        }
-
-        function stopAutoRotate() {
-            if (autoRotateInterval) {
-                clearInterval(autoRotateInterval);
-                autoRotateInterval = null;
-            }
-        }
-
-        // Start
-        init();
-
-        // ============ CART FUNCTIONALITY ============
-
-        // Product data (simplified for main page)
-        const mainPageProducts = {
-            bunnybasket: {
-                name: 'Hasenkorb',
-                price: '13,00 €'
-            }
-        };
-
-        // Get cart from localStorage
+        // Cart functionality
         function getCart() {
             const cart = localStorage.getItem('layerstore_cart');
             return cart ? JSON.parse(cart) : [];
         }
 
-        // Save cart to localStorage
-        function saveCart(cart) {
-            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
-            updateCartCount();
-        }
-
-        // Update cart count in header
         function updateCartCount() {
             const cart = getCart();
             const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -827,11 +763,9 @@
             }
         }
 
-        // Initialize cart count on page load
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
         });
-
     </script>
 </body>
 </html>

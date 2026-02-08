@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kollektionen | LayerStore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafaf9;
+            --bg-secondary: #f5f5f4;
+            --text-primary: #1c1917;
+            --text-secondary: #57534e;
+            --accent: #1e3a8a;
+            --accent-light: #3b82f6;
+            --border: #e7e5e4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(250, 250, 249, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+            transition: transform 0.2s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        nav {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-secondary);
+            transition: fill 0.3s ease;
+        }
+
+        .cart-icon:hover svg {
+            fill: var(--accent);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-count.visible {
+            opacity: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 4rem 4rem;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Collections Grid */
+        .collections-section {
+            padding: 6rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .collection-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .collection-card.available {
+            cursor: pointer;
+        }
+
+        .collection-card.available:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(30, 58, 138, 0.2);
+            border-color: var(--accent);
+        }
+
+        .collection-card.unavailable {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .collection-card.unavailable:hover {
+            transform: none;
+            border-color: var(--border);
+        }
+
+        .collection-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .collection-info {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .collection-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .collection-info h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .collection-info p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .status-available {
+            background: var(--accent);
+            color: white;
+        }
+
+        .status-unavailable {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .arrow {
+            display: inline-block;
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .collection-card.available:hover .arrow {
+            transform: translateX(5px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 4rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 2rem;
+            }
+
+            nav {
+                gap: 1.5rem;
+            }
+
+            .hero {
+                padding: 4rem 2rem 3rem;
+            }
+
+            .collections-section {
+                padding: 4rem 2rem;
+            }
+
+            .collections-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .collection-image {
+                height: 200px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="/main" class="logo">
+            <img src="/logo.png" alt="LayerStore Logo">
+        </a>
+        <nav>
+            <a href="/collections">Kollektionen</a>
+            <a href="/main#ueber-uns">Über uns</a>
+            <a href="/main#kontakt">Kontakt</a>
+            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Unsere Kollektionen</h1>
+        <p>Entdecken Sie unsere vielfältigen 3D-gedruckten Kreationen für jeden Anlass und jede Jahreszeit</p>
+    </section>
+
+    <!-- Collections Grid -->
+    <section class="collections-section">
+        <div class="collections-grid">
+            <!-- Ostern - Available -->
+            <div class="collection-card available" onclick="window.location.href='/collections/easter'">
+                <img src="/collections/easter/images/bunnybasketbeige.jpeg" alt="Ostern Kollektion" class="collection-image">
+                <div class="collection-info">
+                    <span class="collection-icon">🐰</span>
+                    <h2>Ostern</h2>
+                    <p>Frühlhafte Dekorationen, Osternester und Geschenke für das Osterfest</p>
+                    <span class="status-badge status-available">
+                        Jetzt ansehen <span class="arrow">→</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Weihnachten - Coming Soon -->
+            <div class="collection-card unavailable">
+                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 5rem;">🎄</span>
+                </div>
+                <div class="collection-info">
+                    <span class="collection-icon">🎄</span>
+                    <h2>Weihnachten</h2>
+                    <p>Weiße Weihnachten, Dekorationen und festliche Accessoires</p>
+                    <span class="status-badge status-unavailable">Bald verfügbar</span>
+                </div>
+            </div>
+
+            <!-- Geburtstag - Coming Soon -->
+            <div class="collection-card unavailable">
+                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 5rem;">🎂</span>
+                </div>
+                <div class="collection-info">
+                    <span class="collection-icon">🎂</span>
+                    <h2>Geburtstag</h2>
+                    <p>Personalisierte Geschenke, Dekorationen und Accessoires</p>
+                    <span class="status-badge status-unavailable">Bald verfügbar</span>
+                </div>
+            </div>
+
+            <!-- Wohnaccessoires - Coming Soon -->
+            <div class="collection-card unavailable">
+                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #d9f99d 0%, #a3e635 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 5rem;">🏠</span>
+                </div>
+                <div class="collection-info">
+                    <span class="collection-icon">🏠</span>
+                    <h2>Wohnaccessoires</h2>
+                    <p>Einzigartige Heimdekoration und praktische Accessoires</p>
+                    <span class="status-badge status-unavailable">Bald verfügbar</span>
+                </div>
+            </div>
+
+            <!-- Büro - Coming Soon -->
+            <div class="collection-card unavailable">
+                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 5rem;">💼</span>
+                </div>
+                <div class="collection-info">
+                    <span class="collection-icon">💼</span>
+                    <h2>Büro</h2>
+                    <p>Praktische Schreibtischaccessoires und Organizer</p>
+                    <span class="status-badge status-unavailable">Bald verfügbar</span>
+                </div>
+            </div>
+
+            <!-- Geschenke - Coming Soon -->
+            <div class="collection-card unavailable">
+                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); display: flex; align-items: center; justify-content: center;">
+                    <span style="font-size: 5rem;">🎁</span>
+                </div>
+                <div class="collection-info">
+                    <span class="collection-icon">🎁</span>
+                    <h2>Geschenke</h2>
+                    <p>Für jeden Anlass das passende Geschenk</p>
+                    <span class="status-badge status-unavailable">Bald verfügbar</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="mailto:info@layerstore.eu">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        function getCart() {
+            const cart = localStorage.getItem('layerstore_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = totalCount;
+
+            if (totalCount > 0) {
+                cartCount.classList.add('visible');
+            } else {
+                cartCount.classList.remove('visible');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>

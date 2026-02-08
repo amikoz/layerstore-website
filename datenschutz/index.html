@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutz | LayerStore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafaf9;
+            --bg-secondary: #f5f5f4;
+            --text-primary: #1c1917;
+            --text-secondary: #57534e;
+            --accent: #1e3a8a;
+            --border: #e7e5e4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(250, 250, 249, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+            transition: transform 0.2s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        nav {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-secondary);
+            transition: fill 0.3s ease;
+        }
+
+        .cart-icon:hover svg {
+            fill: var(--accent);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-count.visible {
+            opacity: 1;
+        }
+
+        /* Content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6rem 4rem;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            margin-bottom: 3rem;
+            color: var(--accent);
+        }
+
+        h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            font-weight:  400;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 1rem 0 1.5rem 2rem;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .contact-info {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .update-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 3rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 4rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 2rem;
+            }
+
+            nav {
+                gap: 1.5rem;
+            }
+
+            .content {
+                padding: 4rem 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="/main" class="logo">
+            <img src="/logo.png" alt="LayerStore Logo">
+        </a>
+        <nav>
+            <a href="/collections">Kollektionen</a>
+            <a href="/main#about">Über uns</a>
+            <a href="/datenschutz">Datenschutz</a>
+            <a href="mailto:info@layerstore.eu">Kontakt</a>
+            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+        <h1>Datenschutzerklärung</h1>
+
+        <p><strong>Stand:</strong> 08. Februar 2026</p>
+
+        <h2>1. Datenschutz auf einen Blick</h2>
+        <p>
+            Wir nehmen den Datenschutz sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und
+            entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.
+        </p>
+        <p>
+            Unsere Plattform erhebt und nutzt keine personenbezogenen Daten für automatisierte Entscheidungsfindung
+            oder Profiling. Wir sammeln nur Daten, die Sie uns freiwillig durch Kontakt über unsere Kontaktform
+            zur Verfügung stellen.
+        </p>
+
+        <h2>2. Erhebung und Verarbeitung personenbezogener Daten</h2>
+
+        <h3>2.1 Welche Daten wir erheben</h3>
+        <p>Wir erheben nur Daten, die Sie uns freiwillig durch Kontakt bereitstellen:</p>
+        <ul>
+            <li>Name (bei Angabe im Kontaktformular)</li>
+            <li>E-Mail-Adresse (für Antwort auf Ihre Anfrage)</li>
+            <li>Telefonnummer (bei freiwilliger Angabe)</li>
+            <li>Inhalt der Nachricht</li>
+        </ul>
+
+        <h3>2.2 Wie wir Ihre Daten verwenden</h3>
+        <p>Ihre Daten werden ausschließlich verwendet, um:</p>
+        <ul>
+            <li>Ihre Anfrage zu beantworten</li>
+            <li>Ihnen Informationen über unsere Produkte und Dienstleistungen zu senden</li>
+            <li>Verbesserung unserer-services</li>
+        </ul>
+
+        <h3>2.3 Rechtsgrundlage der Datenverarbeitung</h3>
+        <p>Die Verarbeitung Ihrer Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO (berechtigte Interessen).</p>
+        <p>Wir haben ein berechtigtes Interesse daran, Ihre Anfragen zu beantworten und unsere Dienstleistungen
+        zu erbringen.</p>
+
+        <h2>3. Kontakt und Kommunikation</h2>
+<p>
+    Wenn Sie uns per Kontaktformular oder E-Mail kontaktieren, werden Ihre Angaben gespeichert, um
+    Ihre Anfrage zu bearbeiten und Ihnen antworten zu können. Diese Daten werden gelöscht, sobald
+    Ihre Anfrage bearbeitet wurde und keine weitere Aufbewahrung erforderlich ist.
+</p>
+
+<h3>Kontaktmöglichkeiten:</h3>
+<div class="contact-info">
+    <p><strong>E-Mail:</strong> info@layerstore.eu</p>
+    <p><strong>Website:</strong> https://layerstore.eu</p>
+    <p><strong>Kontaktformular:</strong> Verfügbar auf unserer Website</p>
+</div>
+
+<h2>4. Cookies</h2>
+<p>
+    Wir verwenden auf unserer Website technische Cookies für den Warenkorb (localStorage). Diese sind notwendig für
+    die Funktionalität unseres Online-Shops und werden nicht zu Tracking-Zwecken verwendet.
+</p>
+<p>
+    Sie können Cookies jederzeit durch Löschen des Browser-Caches deaktivieren.
+</p>
+
+<h2>5. Ihre Rechte nach dem DSGVO</h2>
+
+<h3>5.1 Auskunft (Art. 15 DSGVO)</h3>
+<p>Sie haben das Recht, Auskunft über Ihre von uns verarbeiteten Daten zu verlangen.</p>
+
+<h3>5.2 Löschung (Art. 17 DSGVO)</h3>
+<p>Sie haben das Recht, die Löschung Ihrer personenbezogenen Daten zu verlangen.</p>
+
+<h3>5.3 Berichtigung (Art. 16 DSGVO)</h3>
+<p>Sie haben das Recht, die Berichtigung falscher oder unvollständiger Daten zu verlangen.</p>
+
+<h3>5.4 Einschränkung (Art. 18 DSGVO)</h3>
+<p>Sie haben das Recht, die Einschränkung der Verarbeitung Ihrer Daten zu verlangen.</p>
+
+<h3>5.5 Widerspruch (Art. 21 DSGVO)</h3>
+<p>Sie haben das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, der Verarbeitung
+    Ihrer Daten zu widersprechen.</p>
+
+<h2>6. Speicherdauer</h2>
+<p>
+    Wir speichern Ihre Kontaktdaten nur so lange, wie es für die Beantwortung Ihrer Anfrage erforderlich ist.
+    In der Regel werden Daten nach Abschluss der Bearbeitung gelöscht.
+</p>
+
+<h2>7. Weitergabe von Daten an Dritte</h2>
+<p>
+    Eine Weitergabe Ihrer Daten an Dritte erfolgt nicht. Ihre Daten werden vertraulich behandelt und nicht an
+    Dritte verkauft.
+</p>
+
+<h2>8. SSL-Verschlüsselung</h2>
+<p>
+    Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte eine SSL-basierte
+    Verschlüsselung. Sie können die verschlüsselte Verbindung an der https:// Adresse des Browsers erkennen.
+</p>
+
+<h2>9. Kontakt zum Datenschutzbeauftragten</h2>
+<p>
+    Bei Fragen zum Datenschutz können Sie sich jederzeit per E-Mail an uns wenden:
+</p>
+<div class="contact-info">
+    <p><strong>E-Mail:</strong> info@layerstore.eu</p>
+</div>
+
+<h2>10. Beschwerde bei einer Aufsichtsbehörde</h2>
+<p>
+    Sie haben das Recht, sich bei einer Aufsichtsbehörde über unsere Verarbeitung Ihrer personenbezogenen Daten
+    zu beschweren. Zuständig ist:
+</p>
+<div class="contact-info">
+    <p><strong>Behörde:</strong> Der Landesbeauftragte für den Datenschutz</p>
+    <p><strong>Adresse:</strong> In Ihrem Bundesland (entsprechend der Landesdatenschutzgesetzgebung)</p>
+</div>
+
+<div class="update-date">
+    <p>Diese Datenschutzerklärung wurde zuletzt am 08. Februar 2026 aktualisiert.</p>
+</div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="mailto:info@layerstore.eu">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        function getCart() {
+            const cart = localStorage.getItem('layerstore_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = totalCount;
+
+            if (totalCount > 0) {
+                cartCount.classList.add('visible');
+            } else {
+                cartCount.classList.remove('visible');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
