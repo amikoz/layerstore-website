@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oster-Kollektion | LayerStore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafaf9;
+            --bg-secondary: #f5f5f4;
+            --text-primary: #1c1917;
+            --text-secondary: #57534e;
+            --accent: #ea580c;
+            --accent-light: #fb923c;
+            --border: #e7e5e4;
+            --highlight: #78716c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(250, 250, 249, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 3rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-secondary);
+            transition: fill 0.3s ease;
+        }
+
+        .cart-icon:hover svg {
+            fill: var(--accent);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-count.visible {
+            opacity: 1;
+        }
+
+        /* Add to Cart Button */
+        .add-to-cart-btn {
+            background: var(--accent);
+            color: white;
+            border: 2px solid var(--accent);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .add-to-cart-btn:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .add-to-cart-btn.added {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-color: var(--border);
+        }
+
+        /* Hero Section */
+        .collection-hero {
+            padding: 10rem 4rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fca5a5 100%);
+        }
+
+        .collection-hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+
+        .collection-hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* Products Grid */
+        .products-section {
+            padding: 6rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: white;
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Image Gallery in Card */
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            overflow: hidden;
+            background: var(--bg-secondary);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-image.secondary {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .product-card:hover .product-image.primary {
+            opacity: 0;
+        }
+
+        .product-card:hover .product-image.secondary {
+            opacity: 1;
+        }
+
+        /* Product Info */
+        .product-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-info h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+            color: var(--accent);
+        }
+
+        .product-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* Product Card Color Options */
+        .product-colors {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .product-color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            position: relative;
+        }
+
+        .product-color-option:hover {
+            transform: scale(1.15);
+            border-color: var(--accent);
+        }
+
+        .product-color-option.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.3);
+            transform: scale(1.2);
+        }
+
+        .product-color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-button {
+            display: block;
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+        }
+
+        .product-button:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 4rem;
+            background: var(--bg-secondary);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+            border-top: 1px solid var(--border);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem 2rem;
+            }
+
+            nav {
+                gap: 1.5rem;
+            }
+
+            .collection-hero {
+                padding: 8rem 2rem 3rem;
+            }
+
+            .products-section {
+                padding: 4rem 2rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal/Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 500px;
+            max-width: 90vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-image-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .modal-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-arrow:hover {
+            background: var(--accent-light);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .modal-arrow.prev {
+            left: -1rem;
+        }
+
+        .modal-arrow.next {
+            right: -1rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(90deg);
+            border-color: var(--accent);
+        }
+
+        .modal-counter {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .color-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding: 0.75rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .color-selector-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-right: 0.5rem;
+        }
+
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+
+        .color-option.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
+            transform: scale(1.15);
+        }
+
+        .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.9rem;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-info {
+            text-align: center;
+            color: var(--text-primary);
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .modal-info h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .modal-info .price {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 0.5rem 0 1rem;
+            font-weight: 600;
+        }
+
+        .modal-info p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        /* Clickable cursor for product cards */
+        .product-card {
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 1.5rem;
+                width: 95vw;
+            }
+
+            .modal-arrow {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .modal-arrow.prev {
+                left: 0;
+            }
+
+            .modal-arrow.next {
+                right: 0;
+            }
+
+            .modal-close {
+                top: 0.75rem;
+                right: 0.75rem;
+                width: 32px;
+                height: 32px;
+            }
+
+            .modal-info h3 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="../../index.html" class="logo">LayerStore</a>
+        <nav>
+            <a href="../../index.html">Startseite</a>
+            <a href="#produkte">Produkte</a>
+            <a href="../../index.html#kontakt">Kontakt</a>
+            <a href="../../cart.html" class="cart-icon" id="cartIcon" title="Warenkorb">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Collection Hero -->
+    <section class="collection-hero">
+        <h1>Oster-Kollektion 2026</h1>
+        <p>Entdecken Sie unsere handverlesene Auswahl an 3D-gedruckten Osterdekorationen. Jedes Stück bringt Freude und Farbe in Ihr Osterfest.</p>
+    </section>
+
+    <!-- Products Grid -->
+    <section id="produkte" class="products-section">
+        <div class="products-grid">
+            
+            <!-- Product 1: Carrot -->
+            <div class="product-card" data-product="carrot">
+                <div class="product-image-container">
+                    <img src="images/carrot1.jpeg" alt="Osterkarotte" class="product-image primary">
+                    <img src="images/carrot2.jpeg" alt="Osterkarotte Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Osterkarotte</h3>
+                    <p>Süßer Süßigkeitenbehälter in Karottenform. Perfekt zum Verstecken von Schokolade, Bonbons oder kleinen Osterüberraschungen.</p>
+                    <div class="product-price">13,00 €</div>
+                    <button class="add-to-cart-btn" data-product="carrot" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                </div>
+            </div>
+
+            <!-- Product 2: Bunny Basket -->
+            <div class="product-card" data-product="bunnybasket">
+                <div class="product-image-container">
+                    <img src="images/bunnybasketbeige.jpeg" alt="Hasenkorb" class="product-image primary">
+                    <img src="images/bunnybasketbeige1.jpeg" alt="Hasenkorb Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Hasenkorb</h3>
+                    <p>Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.</p>
+                    <div class="product-price">13,00 €</div>
+                    <div class="product-colors" data-product="bunnybasket">
+                        <button class="product-color-option active" style="background-color: #E8DCC8;" data-color="beige" data-images='["bunnybasketbeige.jpeg","bunnybasketbeige1.jpeg"]' title="Beige" onclick="event.stopPropagation();"></button>
+                        <button class="product-color-option" style="background-color: #FFB6C1;" data-color="pink" data-images='["bunnybasketpink.jpg","bunnybasketpink.jpg"]' title="Pink" onclick="event.stopPropagation();"></button>
+                        <button class="product-color-option" style="background-color: #DDA0DD;" data-color="purple" data-images='["bunnybasketpurple.jpeg","bunnybasketpurple1.jpeg"]' title="Lila" onclick="event.stopPropagation();"></button>
+                    </div>
+                    <button class="add-to-cart-btn" data-product="bunnybasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                </div>
+            </div>
+
+            <!-- Product 3: Legs Egg Kinder -->
+            <div class="product-card" data-product="legsegg">
+                <div class="product-image-container">
+                    <img src="images/legseggkinder.jpeg" alt="Ei mit Beinen" class="product-image primary">
+                    <img src="images/legseggkinder1.jpeg" alt="Ei mit Beinen Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Osterei mit Beinen</h3>
+                    <p>Verspieltes Ei mit beweglichen Beinen – perfekt für Kinder-Überraschungseier. Ein lustiger Hingucker, der zum Spielen einlädt!</p>
+                    <div class="product-price">2,00 €</div>
+                    <button class="add-to-cart-btn" data-product="legsegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                </div>
+            </div>
+
+            <!-- Product 4: Knitted Egg -->
+            <div class="product-card" data-product="knittedegg">
+                <div class="product-image-container">
+                    <img src="images/knittedeggmintgreen.jpeg" alt="Gestricktes Ei" class="product-image primary">
+                    <img src="images/knittedeggmintgreen1.jpeg" alt="Gestricktes Ei Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Gestricktes Ei</h3>
+                    <p>Elegantes Osterei im Strick-Look in zartem Mintgrün. Die detaillierte Textur verleiht diesem Ei einen handgemachten, gemütlichen Charme.</p>
+                    <div class="product-price">5,00 €</div>
+                    <button class="add-to-cart-btn" data-product="knittedegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                </div>
+            </div>
+
+            <!-- Product 5: Bunny Kinder Holder -->
+            <div class="product-card" data-product="bunnyholder">
+                <div class="product-image-container">
+                    <img src="images/placeholder.jpg" alt="Hasen-Halter" class="product-image primary">
+                    <img src="images/placeholder.jpg" alt="Hasen-Halter Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Hasen-Halter</h3>
+                    <p>Niedlicher Hase, der ein Kinder-Überraschungsei hält. Perfekte Kombination aus Dekoration und praktischer Aufbewahrung für kleine Geschenke.</p>
+                    <div class="product-price">2,00 €</div>
+                    <button class="add-to-cart-btn" data-product="bunnyholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 LayerStore. Alle Rechte vorbehalten. | <a href="../../index.html">Zurück zur Startseite</a></p>
+    </footer>
+
+    <!-- Modal/Popup -->
+    <div class="modal" id="productModal">
+        <button class="modal-close" id="closeModal">×</button>
+        <div class="modal-content">
+            <div class="modal-image-container">
+                <button class="modal-arrow prev" id="prevImage">‹</button>
+                <img src="" alt="" class="modal-image" id="modalImage">
+                <button class="modal-arrow next" id="nextImage">›</button>
+            </div>
+            <div class="modal-counter" id="imageCounter"></div>
+            <div class="color-selector" id="colorSelector" style="display: none;"></div>
+            <div class="modal-info" id="modalInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        // Product data with all images
+        const products = {
+            carrot: {
+                name: 'Osterkarotte',
+                price: '13,00 €',
+                description: 'Süßer Süßigkeitenbehälter in Karottenform. Perfekt zum Verstecken von Schokolade, Bonbons oder kleinen Osterüberraschungen.',
+                images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
+            },
+            bunnybasket: {
+                name: 'Hasenkorb',
+                price: '13,00 €',
+                description: 'Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.',
+                hasColors: true,
+                colors: [
+                    {
+                        id: 'beige',
+                        name: 'Beige',
+                        hex: '#E8DCC8',
+                        images: ['bunnybasketbeige.jpeg', 'bunnybasketbeige1.jpeg', 'bunnybasketbeige2.jpeg', 'bunnybasketbeige3.jpeg', 'bunnybasketbeige4.jpeg', 'bunnybasketbeige5.jpeg']
+                    },
+                    {
+                        id: 'pink',
+                        name: 'Pink',
+                        hex: '#FFB6C1',
+                        images: ['bunnybasketpink.jpg']
+                    },
+                    {
+                        id: 'purple',
+                        name: 'Lila',
+                        hex: '#DDA0DD',
+                        images: ['bunnybasketpurple.jpeg', 'bunnybasketpurple1.jpeg', 'bunnybasketpurple2.jpeg', 'bunnybasketpurple3.jpeg']
+                    }
+                ],
+                defaultColor: 'beige'
+            },
+            legsegg: {
+                name: 'Osterei mit Beinen',
+                price: '2,00 €',
+                description: 'Verspieltes Ei mit beweglichen Beinen – perfekt für Kinder-Überraschungseier. Ein lustiger Hingucker, der zum Spielen einlädt!',
+                images: ['legseggkinder.jpeg', 'legseggkinder1.jpeg', 'legseggkinder2.jpeg', 'legseggkinder3.jpeg']
+            },
+            knittedegg: {
+                name: 'Gestricktes Ei',
+                price: '5,00 €',
+                description: 'Elegantes Osterei im Strick-Look in zartem Mintgrün. Die detaillierte Textur verleiht diesem Ei einen handgemachten, gemütlichen Charme.',
+                images: ['knittedeggmintgreen.jpeg', 'knittedeggmintgreen1.jpeg', 'knittedeggmintgreen2.jpeg', 'knittedeggmintgreen3.jpeg', 'knittedeggmintgreen4.jpeg', 'knittedeggmintgreen5.jpeg']
+            },
+            bunnyholder: {
+                name: 'Hasen-Halter',
+                price: '2,00 €',
+                description: 'Niedlicher Hase, der ein Kinder-Überraschungsei hält. Perfekte Kombination aus Dekoration und praktischer Aufbewahrung für kleine Geschenke.',
+                images: ['placeholder.jpg']
+            }
+        };
+
+        // Modal elements
+        const modal = document.getElementById('productModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalInfo = document.getElementById('modalInfo');
+        const imageCounter = document.getElementById('imageCounter');
+        const colorSelector = document.getElementById('colorSelector');
+        const closeModal = document.getElementById('closeModal');
+        const prevBtn = document.getElementById('prevImage');
+        const nextBtn = document.getElementById('nextImage');
+
+        let currentProduct = null;
+        let currentProductId = null;
+        let currentImageIndex = 0;
+        let currentColor = null;
+        let currentImages = [];
+
+        // Open modal when clicking on product card
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const productId = card.dataset.product;
+                openModal(productId);
+            });
+        });
+
+        function openModal(productId) {
+            currentProductId = productId;
+            currentProduct = products[productId];
+            currentImageIndex = 0;
+
+            // Initialize color - use previously selected color if available
+            if (currentProduct.hasColors && currentProduct.colors) {
+                // Check if a color was selected on the product card
+                const selectedColorOnCard = currentProduct.currentColor || currentProduct.defaultColor || currentProduct.colors[0].id;
+                currentColor = selectedColorOnCard;
+                currentImages = currentProduct.colors.find(c => c.id === currentColor).images;
+                renderColorSelector();
+                colorSelector.style.display = 'flex';
+            } else {
+                currentColor = null;
+                currentImages = currentProduct.images;
+                colorSelector.style.display = 'none';
+            }
+
+            updateModal();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModalFunc() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function renderColorSelector() {
+            if (!currentProduct.hasColors) return;
+
+            colorSelector.innerHTML = `
+                <span class="color-selector-label">Farbe wählen:</span>
+                ${currentProduct.colors.map(color => `
+                    <button
+                        class="color-option ${color.id === currentColor ? 'active' : ''}"
+                        data-color="${color.id}"
+                        style="background-color: ${color.hex};"
+                        title="${color.name}"
+                        aria-label="${color.name}"
+                    ></button>
+                `).join('')}
+            `;
+
+            // Add event listeners to color options
+            colorSelector.querySelectorAll('.color-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const colorId = e.target.dataset.color;
+                    selectColor(colorId);
+                });
+            });
+        }
+
+        function selectColor(colorId) {
+            currentColor = colorId;
+            currentImageIndex = 0;
+            currentImages = currentProduct.colors.find(c => c.id === colorId).images;
+
+            // Update active state
+            colorSelector.querySelectorAll('.color-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.color === colorId);
+            });
+
+            updateModal();
+        }
+
+        function updateModal() {
+            if (!currentProduct) return;
+
+            // Use current images (from color selection or default)
+            const images = currentImages.length > 0 ? currentImages : currentProduct.images;
+
+            // Update image
+            modalImage.src = `images/${images[currentImageIndex]}`;
+            modalImage.alt = currentProduct.name;
+
+            // Update counter
+            imageCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
+
+            // Update info with color name if applicable
+            let colorInfo = '';
+            if (currentColor && currentProduct.hasColors) {
+                const colorData = currentProduct.colors.find(c => c.id === currentColor);
+                if (colorData) {
+                    colorInfo = `<span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">Farbe: ${colorData.name}</span>`;
+                }
+            }
+
+            modalInfo.innerHTML = `
+                ${colorInfo}
+                <h3>${currentProduct.name}</h3>
+                <div class="price">${currentProduct.price}</div>
+                <p>${currentProduct.description}</p>
+                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCartFromModal()">In den Warenkorb</button>
+            `;
+
+            // Show/hide arrows based on image count
+            if (images.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'flex';
+                nextBtn.style.display = 'flex';
+            }
+        }
+
+        function nextImage() {
+            if (!currentProduct) return;
+            const images = currentImages.length > 0 ? currentImages : currentProduct.images;
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            updateModal();
+        }
+
+        function prevImage() {
+            if (!currentProduct) return;
+            const images = currentImages.length > 0 ? currentImages : currentProduct.images;
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            updateModal();
+        }
+
+        // Event listeners
+        closeModal.addEventListener('click', closeModalFunc);
+        nextBtn.addEventListener('click', nextImage);
+        prevBtn.addEventListener('click', prevImage);
+
+        // Close on background click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModalFunc();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!modal.classList.contains('active')) return;
+
+            if (e.key === 'Escape') {
+                closeModalFunc();
+            } else if (e.key === 'ArrowRight') {
+                nextImage();
+            } else if (e.key === 'ArrowLeft') {
+                prevImage();
+            }
+        });
+
+        // Product card color selection
+        document.querySelectorAll('.product-color-option').forEach(colorBtn => {
+            colorBtn.addEventListener('click', (e) => {
+                const productId = e.target.closest('.product-colors').dataset.product;
+                const colorId = e.target.dataset.color;
+                const images = JSON.parse(e.target.dataset.images);
+
+                // Update active state
+                const colorContainer = e.target.closest('.product-colors');
+                colorContainer.querySelectorAll('.product-color-option').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                e.target.classList.add('active');
+
+                // Update product card images
+                const card = e.target.closest('.product-card');
+                const primaryImage = card.querySelector('.product-image.primary');
+                const secondaryImage = card.querySelector('.product-image.secondary');
+
+                if (primaryImage && images[0]) {
+                    primaryImage.src = `images/${images[0]}`;
+                }
+                if (secondaryImage && images[1]) {
+                    secondaryImage.src = `images/${images[1]}`;
+                } else if (secondaryImage && images[0]) {
+                    secondaryImage.src = `images/${images[0]}`;
+                }
+
+                // Update product data for modal
+                if (products[productId] && products[productId].hasColors) {
+                    products[productId].currentColor = colorId;
+                }
+            });
+        });
+
+        // ============ CART FUNCTIONALITY ============
+
+        // Get cart from localStorage
+        function getCart() {
+            const cart = localStorage.getItem('layerstore_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        // Save cart to localStorage
+        function saveCart(cart) {
+            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        // Update cart count in header
+        function updateCartCount() {
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = totalCount;
+
+            if (totalCount > 0) {
+                cartCount.classList.add('visible');
+            } else {
+                cartCount.classList.remove('visible');
+            }
+        }
+
+        // Get selected color for a product
+        function getSelectedColor(productId) {
+            // Check if product has colors and get selected color from card
+            const colorContainer = document.querySelector(`.product-colors[data-product="${productId}"]`);
+            if (colorContainer) {
+                const activeColor = colorContainer.querySelector('.product-color-option.active');
+                if (activeColor) {
+                    return activeColor.dataset.color;
+                }
+            }
+            // Check if product has default color in data
+            if (products[productId] && products[productId].hasColors) {
+                return products[productId].currentColor || products[productId].defaultColor;
+            }
+            return null;
+        }
+
+        // Add product to cart
+        function addToCart(button) {
+            const productId = button.dataset.product;
+            const product = products[productId];
+            const selectedColor = getSelectedColor(productId);
+
+            // Create cart item
+            const cartItem = {
+                id: productId,
+                name: product.name,
+                price: product.price,
+                color: selectedColor,
+                quantity: 1,
+                image: product.hasColors && selectedColor
+                    ? product.colors.find(c => c.id === selectedColor)?.images[0]
+                    : product.images[0]
+            };
+
+            // Get current cart
+            const cart = getCart();
+
+            // Check if same product with same color already exists
+            const existingIndex = cart.findIndex(item =>
+                item.id === productId && item.color === selectedColor
+            );
+
+            if (existingIndex > -1) {
+                // Update quantity
+                cart[existingIndex].quantity += 1;
+            } else {
+                // Add new item
+                cart.push(cartItem);
+            }
+
+            // Save to localStorage
+            saveCart(cart);
+
+            // Update button text temporarily
+            const originalText = button.textContent;
+            button.textContent = 'Hinzugefügt!';
+            button.classList.add('added');
+
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('added');
+            }, 1500);
+
+            // Show notification
+            showCartNotification();
+        }
+
+        // Add product to cart from modal
+        function addToCartFromModal() {
+            if (!currentProductId || !currentProduct) return;
+
+            const productId = currentProductId;
+            const product = currentProduct;
+            const selectedColor = currentColor;
+
+            // Create cart item
+            const cartItem = {
+                id: productId,
+                name: product.name,
+                price: product.price,
+                color: selectedColor,
+                quantity: 1,
+                image: product.hasColors && selectedColor
+                    ? product.colors.find(c => c.id === selectedColor)?.images[0]
+                    : product.images[0]
+            };
+
+            // Get current cart
+            const cart = getCart();
+
+            // Check if same product with same color already exists
+            const existingIndex = cart.findIndex(item =>
+                item.id === productId && item.color === selectedColor
+            );
+
+            if (existingIndex > -1) {
+                // Update quantity
+                cart[existingIndex].quantity += 1;
+            } else {
+                // Add new item
+                cart.push(cartItem);
+            }
+
+            // Save to localStorage
+            saveCart(cart);
+
+            // Show notification
+            showCartNotification();
+
+            // Close modal
+            setTimeout(() => {
+                closeModalFunc();
+            }, 500);
+        }
+
+        // Show cart notification
+        function showCartNotification() {
+            // Create notification element if it doesn't exist
+            let notification = document.getElementById('cartNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'cartNotification';
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: var(--accent);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 3000;
+                    opacity: 0;
+                    transform: translateY(20px);
+                    transition: all 0.3s ease;
+                `;
+                document.body.appendChild(notification);
+            }
+
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
+
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+            }, 2000);
+        }
+
+        // Initialize cart count on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
