@@ -664,10 +664,17 @@
     <div class="checkout-modal" id="checkoutModal">
         <div class="checkout-modal-content">
             <button class="checkout-close" id="closeCheckout">×</button>
-            <h2>Bestellung abschließen</h2>
-            <p>Bitte geben Sie Ihre E-Mail-Adresse ein, damit wir Ihre Bestellung bearbeiten können.</p>
+            <h2>Anfrage senden</h2>
+            <p>Bitte geben Sie Ihre Kontaktdaten ein. Wir werden uns schnellstmöglich bei Ihnen melden.</p>
 
-            <form id="checkoutForm" onsubmit="submitOrder(event)">
+            <form
+                id="checkoutForm"
+                action="https://formsubmit.co/info@layerstore.eu"
+                method="POST"
+            >
+                <!-- Hidden field for order details -->
+                <input type="hidden" id="orderDetails" name="order_details" value="">
+
                 <div class="form-group">
                     <label for="customerEmail">E-Mail-Adresse *</label>
                     <input
@@ -700,8 +707,14 @@
                     >
                 </div>
 
+                <!-- Formsubmit configuration -->
+                <input type="hidden" name="_subject" value="Neue Bestellung von LayerStore">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_next" value="https://layerstore.eu/cart?success=true">
+
                 <button type="submit" class="checkout-submit-btn" id="submitBtn">
-                    Bestellung absenden
+                    Anfrage senden
                 </button>
             </form>
         </div>
@@ -838,7 +851,7 @@
                         <span>Gesamt:</span>
                         <span>${totalItems} ${totalItems === 1 ? 'Artikel' : 'Artikel'}</span>
                     </div>
-                    <button class="checkout-btn" onclick="checkout()">Zur Kasse</button>
+                    <button class="checkout-btn" onclick="checkout()">Anfrage senden</button>
                 </div>
             `;
 
@@ -897,10 +910,25 @@
             document.body.style.overflow = '';
         }
 
-        // Validate email
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
+        // Prepare order details before form submission
+        function prepareOrderDetails() {
+            const cart = getCart();
+
+            let orderDetails = '=== BESTELLTE ARTIKEL ===\n\n';
+
+            let totalItems = 0;
+            cart.forEach(item => {
+                const colorText = item.color ? ` (${colorNames[item.color] || item.color})` : '';
+                orderDetails += `${item.quantity}x ${item.name}${colorText} - ${item.price}\n`;
+                totalItems += item.quantity;
+            });
+
+            orderDetails += '\n=== ZUSAMMENFASSUNG ===\n';
+            orderDetails += `Gesamt: ${totalItems} Artikel\n`;
+            orderDetails += `Datum: ${new Date().toLocaleDateString('de-DE')}\n`;
+            orderDetails += `Zeit: ${new Date().toLocaleTimeString('de-DE')}\n`;
+
+            return orderDetails;
         }
 
         // Submit order
@@ -912,13 +940,13 @@
             const whatsappInput = document.getElementById('customerWhatsapp');
             const emailError = document.getElementById('emailError');
             const submitBtn = document.getElementById('submitBtn');
+            const orderDetailsInput = document.getElementById('orderDetails');
 
             const email = emailInput.value.trim();
-            const name = nameInput.value.trim();
-            const whatsapp = whatsappInput.value.trim();
 
             // Validate email
-            if (!email || !validateEmail(email)) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !re.test(email)) {
                 emailInput.classList.add('error');
                 emailError.classList.add('visible');
                 return;
@@ -928,68 +956,41 @@
             emailInput.classList.remove('error');
             emailError.classList.remove('visible');
 
-            // Get cart
-            const cart = getCart();
+            // Prepare order details and add to hidden field
+            const orderDetails = prepareOrderDetails();
+            orderDetailsInput.value = orderDetails;
 
-            // Create order summary
-            let orderDetails = '=== NEUE BESTELLUNG von LayerStore ===\n\n';
-            orderDetails += 'Kundeninformationen:\n';
-            orderDetails += `E-Mail: ${email}\n`;
-            if (name) {
-                orderDetails += `Name: ${name}\n`;
-            }
-            if (whatsapp) {
-                orderDetails += `WhatsApp: ${whatsapp}\n`;
-            }
-            orderDetails += '\nBestellte Artikel:\n';
-            orderDetails += '----------------------------\n';
-
-            let totalItems = 0;
-            cart.forEach(item => {
-                const colorText = item.color ? ` (${colorNames[item.color] || item.color})` : '';
-                orderDetails += `${item.quantity}x ${item.name}${colorText} - ${item.price}\n`;
-                totalItems += item.quantity;
-            });
-
-            orderDetails += '----------------------------\n';
-            orderDetails += `Gesamt: ${totalItems} Artikel\n`;
-            orderDetails += '\nDatum: ' + new Date().toLocaleDateString('de-DE') + '\n';
-            orderDetails += 'Zeit: ' + new Date().toLocaleTimeString('de-DE') + '\n';
-
-            // Create mailto link
-            const subject = encodeURIComponent(`Neue Bestellung von LayerStore - ${email}`);
-            const body = encodeURIComponent(orderDetails);
-            const mailtoLink = `mailto:info@layerstore.eu?subject=${subject}&body=${body}`;
-
-            // Open email client
-            window.location.href = mailtoLink;
-
-            // Show success message and clear cart after a delay
+            // Show loading state
             submitBtn.disabled = true;
             submitBtn.textContent = 'Wird gesendet...';
 
+            // Let the form submit naturally to Formsubmit
             setTimeout(() => {
-                alert('Vielen Dank für Ihre Bestellung! Eine E-Mail mit Ihren Bestelldetails wurde geöffnet. Bitte senden Sie diese ab.\n\nIhr Warenkorb wurde geleert.');
-                closeCheckoutModal();
-
-                // Clear cart
+                // Clear cart after successful submission
                 localStorage.removeItem('layerstore_cart');
                 updateCartCount();
-                renderCart();
 
                 // Reset form
                 emailInput.value = '';
                 nameInput.value = '';
                 whatsappInput.value = '';
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Bestellung absenden';
-            }, 1500);
+                submitBtn.textContent = 'Anfrage senden';
+            }, 1000);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
             renderCart();
+
+            // Check if order was successful
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                alert('Vielen Dank für Ihre Bestellung! Wir werden uns schnellstmöglich bei Ihnen melden.');
+                // Clear the success parameter from URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
 
             // Checkout modal event listeners
             const modal = document.getElementById('checkoutModal');
