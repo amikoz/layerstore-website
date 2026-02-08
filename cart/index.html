@@ -133,6 +133,58 @@
             opacity: 1;
         }
 
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 3000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .toast-message {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .toast.success .toast-title {
+            color: #10b981;
+        }
+
+        .toast.error .toast-title {
+            color: #ef4444;
+        }
+
         /* Main Content */
         .container {
             max-width: 1200px;
@@ -710,6 +762,12 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-title" id="toastTitle"></div>
+        <div class="toast-message" id="toastMessage"></div>
+    </div>
+
     <script>
         // Product data
         const products = {
@@ -900,6 +958,30 @@
             document.body.style.overflow = '';
         }
 
+        // Show toast notification
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+
+            // Log for debugging
+            console.log(`[${type.toUpperCase()}] ${title}: ${message}`);
+        }
+
         // Prepare order details before form submission
         function prepareOrderDetails() {
             const cart = getCart();
@@ -962,12 +1044,25 @@
             formData.append('order_details', orderDetails);
 
             // Send to PHP script
+            console.log('Sending order to PHP script...');
+            console.log('Form data:', {
+                email: email,
+                name: nameInput.value.trim(),
+                whatsapp: whatsappInput.value.trim(),
+                order_details: orderDetails
+            });
+
             fetch('https://layerstore.eu/order.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response received:', response);
+                return response.json();
+            })
             .then(data => {
+                console.log('Parsed JSON:', data);
+
                 if (data.success) {
                     // Success! Clear cart and show message
                     localStorage.removeItem('layerstore_cart');
@@ -982,16 +1077,20 @@
                     // Close modal
                     closeCheckoutModal();
 
-                    // Show success message
-                    alert('Vielen Dank für Ihre Anfrage! Wir haben Ihre Bestellung erhalten und werden uns schnellstmöglich bei Ihnen melden.');
+                    // Show success toast
+                    showToast('Vielen Dank! 🎉', 'Wir haben Ihre Anfrage erhalten und werden uns schnellstmöglich bei Ihnen melden.', 'success');
                 } else {
                     // Error from server
-                    alert('Fehler: ' + data.message);
+                    showToast('Fehler', data.message || 'Unbekannter Fehler', 'error');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Es gab einen Fehler beim Senden Ihrer Bestellung. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt per E-Mail: info@layerstore.eu');
+                console.error('Fetch error:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack
+                });
+                showToast('Fehler beim Senden', 'Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt: info@layerstore.eu', 'error');
             })
             .finally(() => {
                 // Re-enable button
