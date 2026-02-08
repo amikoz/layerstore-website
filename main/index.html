@@ -62,11 +62,19 @@
         }
 
         .logo {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.5rem;
-            font-weight: 400;
-            letter-spacing: -0.02em;
-            color: var(--accent);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            transition: transform 0.2s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
         }
 
         nav {
@@ -174,6 +182,16 @@
             letter-spacing: -0.03em;
             animation: fadeInUp 1s ease-out 0.2s both;
             color: var(--text-primary);
+        }
+
+        .logo-text {
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .logo-text-accent {
+            color: var(--accent);
+            font-weight: 400;
         }
 
         .hero p {
@@ -534,7 +552,9 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="logo">LayerStore</div>
+        <a href="/main" class="logo">
+            <img src="/logo.jpg" alt="LayerStore Logo">
+        </a>
         <nav>
             <a href="#produkte">Produkte</a>
             <a href="#ueber-uns">Über uns</a>
@@ -551,9 +571,9 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Oster-Zauber<br>aus dem 3D-Drucker</h1>
+            <h1>Oster-Zauber<br>aus dem <span class="logo-text">Layer</span><span class="logo-text-accent">Store</span> 3D-Drucker</h1>
             <p>Entdecken Sie einzigartige 3D-gedruckte Osterdekorationen. Jedes Stück ist mit Liebe zum Detail gefertigt und bringt Frühlingsfreude in Ihr Zuhause.</p>
-            <a href="#produkte" class="cta-button">Zur Kollektion</a>
+            <a href="/collections/easter" class="cta-button">Zur Kollektion</a>
         </div>
     </section>
 
