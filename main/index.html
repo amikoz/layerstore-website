@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LayerStore - 3D-Druck Osterdekorationen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fafaf9;
+            --bg-secondary: #f5f5f4;
+            --text-primary: #1c1917;
+            --text-secondary: #57534e;
+            --accent: #ea580c;
+            --accent-light: #fb923c;
+            --border: #e7e5e4;
+            --highlight: #78716c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(250, 250, 249, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+
+        nav {
+            display: flex;
+            gap: 3rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-secondary);
+            transition: fill 0.3s ease;
+        }
+
+        .cart-icon:hover svg {
+            fill: var(--accent);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-count.visible {
+            opacity: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 4rem 4rem;
+            position: relative;
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fca5a5 100%);
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        /* Product Section */
+        .product-section {
+            padding: 6rem 4rem;
+            background: var(--bg-primary);
+        }
+
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            margin-bottom: 4rem;
+            text-align: center;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+
+        .product-showcase {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* Image Gallery */
+        .gallery-container {
+            position: relative;
+        }
+
+        .image-gallery {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .gallery-image.active {
+            opacity: 1;
+        }
+
+        .gallery-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .gallery-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .gallery-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* Product Info */
+        .product-details {
+            padding: 2rem;
+        }
+
+        .product-details h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+
+        .product-details .price {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .product-details p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .features li::before {
+            content: '🥕';
+            position: absolute;
+            left: 0;
+        }
+
+        /* Color Selector */
+        .color-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .color-selector-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .color-option {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.15);
+            border-color: var(--accent-light);
+        }
+
+        .color-option.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
+            transform: scale(1.2);
+        }
+
+        .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .order-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+        }
+
+        .order-button:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        /* About Section */
+        .about {
+            padding: 8rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+
+        .about-text p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .about-visual {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            border-radius: 8px;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 6rem 4rem;
+            background: var(--accent);
+            color: white;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .contact p {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .contact-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .contact-button:hover {
+            background: transparent;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 4rem;
+            background: var(--bg-secondary);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem 2rem;
+            }
+
+            nav {
+                gap: 1.5rem;
+            }
+
+            .hero {
+                padding: 6rem 2rem 3rem;
+            }
+
+            .product-section,
+            .about,
+            .contact {
+                padding: 4rem 2rem;
+            }
+
+            .product-showcase,
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">LayerStore</div>
+        <nav>
+            <a href="#produkte">Produkte</a>
+            <a href="#ueber-uns">Über uns</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Oster-Zauber<br>aus dem 3D-Drucker</h1>
+            <p>Entdecken Sie einzigartige 3D-gedruckte Osterdekorationen. Jedes Stück ist mit Liebe zum Detail gefertigt und bringt Frühlingsfreude in Ihr Zuhause.</p>
+            <a href="#produkte" class="cta-button">Zur Kollektion</a>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section id="produkte" class="product-section">
+        <h2 class="section-title">Unser Oster-Highlight</h2>
+        <div class="product-showcase">
+            <div class="gallery-container">
+                <div class="image-gallery" id="imageGallery">
+                    <!-- Images will be loaded by JavaScript -->
+                </div>
+                <div class="gallery-nav" id="galleryNav">
+                    <!-- Dots will be loaded by JavaScript -->
+                </div>
+            </div>
+
+            <div class="product-details">
+                <h2 id="productTitle">Hasenkorb</h2>
+                <div class="price" id="productPrice">13,00 €</div>
+                <p id="productDescription">Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.</p>
+
+                <div class="color-selector">
+                    <span class="color-selector-label">Farbe wählen:</span>
+                    <div class="color-options" id="colorOptions">
+                        <!-- Color options will be loaded by JavaScript -->
+                    </div>
+                </div>
+
+                <ul class="features">
+                    <li>3D-gedruckt aus hochwertigem PLA</li>
+                    <li>Abnehmbarer Deckel mit Hasenohren</li>
+                    <li>Perfekt für Ostereiersuchen und Geschenke</li>
+                    <li>Wiederverwendbar Jahr für Jahr</li>
+                    <li>In verschiedenen Farben verfügbar</li>
+                </ul>
+
+                <a href="/collections/easter" class="order-button">Zur Kollektion</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="ueber-uns" class="about">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Mit Präzision gefertigt</h2>
+                <p>Bei LayerStore glauben wir an die Verbindung von Technologie und Handwerkskunst. Jedes Produkt wird sorgfältig entworfen und mit modernster 3D-Drucktechnologie hergestellt.</p>
+                <p>Unsere Osterdekorationen werden aus nachhaltigen Materialien gefertigt und bieten eine umweltfreundliche Alternative zu Einwegartikeln. Qualität und Kreativität stehen im Mittelpunkt unserer Arbeit.</p>
+                <p>Vom Entwurf bis zur Fertigung – jedes Teil wird mit größter Sorgfalt Schicht für Schicht aufgebaut und feiert die Schönheit der additiven Fertigung.</p>
+            </div>
+            <div class="about-visual">🐰</div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="kontakt" class="contact">
+        <h2>Bereit für Ostern?</h2>
+        <p>Bestellen Sie jetzt Ihre Osterkarotte und bringen Sie Freude in Ihr Zuhause!</p>
+        <a href="mailto:info@layerstore.eu" class="contact-button">Kontakt aufnehmen</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 LayerStore. Alle Rechte vorbehalten. Mit Präzision gedruckt.</p>
+    </footer>
+
+    <script>
+        // Product data with colors
+        const productData = {
+            title: 'Hasenkorb',
+            price: '13,00 €',
+            description: 'Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.',
+            colors: [
+                {
+                    id: 'beige',
+                    name: 'Beige',
+                    hex: '#E8DCC8',
+                    images: ['/collections/easter/images/bunnybasketbeige.jpeg', '/collections/easter/images/bunnybasketbeige1.jpeg', '/collections/easter/images/bunnybasketbeige2.jpeg', '/collections/easter/images/bunnybasketbeige3.jpeg', '/collections/easter/images/bunnybasketbeige4.jpeg', '/collections/easter/images/bunnybasketbeige5.jpeg']
+                },
+                {
+                    id: 'pink',
+                    name: 'Pink',
+                    hex: '#FFB6C1',
+                    images: ['/collections/easter/images/bunnybasketpink.jpg']
+                },
+                {
+                    id: 'purple',
+                    name: 'Lila',
+                    hex: '#DDA0DD',
+                    images: ['/collections/easter/images/bunnybasketpurple.jpeg', '/collections/easter/images/bunnybasketpurple1.jpeg', '/collections/easter/images/bunnybasketpurple2.jpeg', '/collections/easter/images/bunnybasketpurple3.jpeg']
+                }
+            ],
+            defaultColor: 'beige'
+        };
+
+        // State
+        let currentColor = productData.defaultColor;
+        let currentImages = [];
+        let currentIndex = 0;
+        let autoRotateInterval = null;
+
+        // DOM Elements
+        const imageGallery = document.getElementById('imageGallery');
+        const galleryNav = document.getElementById('galleryNav');
+        const colorOptions = document.getElementById('colorOptions');
+
+        // Initialize
+        function init() {
+            selectColor(currentColor);
+            renderColorOptions();
+            startAutoRotate();
+        }
+
+        // Get current color data
+        function getCurrentColorData() {
+            return productData.colors.find(c => c.id === currentColor);
+        }
+
+        // Select color
+        function selectColor(colorId) {
+            currentColor = colorId;
+            currentIndex = 0;
+            currentImages = getCurrentColorData().images;
+
+            // Update gallery
+            renderGallery();
+            updateColorOptions();
+
+            // Restart auto-rotate
+            stopAutoRotate();
+            startAutoRotate();
+        }
+
+        // Render gallery images
+        function renderGallery() {
+            const colorData = getCurrentColorData();
+
+            // Clear and render images
+            imageGallery.innerHTML = currentImages.map((src, index) => `
+                <img src="${src}" alt="${productData.title} ${colorData.name} Ansicht ${index + 1}" class="gallery-image ${index === currentIndex ? 'active' : ''}">
+            `).join('');
+
+            // Clear and render dots
+            galleryNav.innerHTML = currentImages.map((_, index) => `
+                <button class="gallery-dot ${index === currentIndex ? 'active' : ''}" data-index="${index}"></button>
+            `).join('');
+
+            // Add event listeners to dots
+            galleryNav.querySelectorAll('.gallery-dot').forEach((dot, index) => {
+                dot.addEventListener('click', () => showImage(index));
+            });
+        }
+
+        // Render color options
+        function renderColorOptions() {
+            colorOptions.innerHTML = productData.colors.map(color => `
+                <button
+                    class="color-option ${color.id === currentColor ? 'active' : ''}"
+                    data-color="${color.id}"
+                    style="background-color: ${color.hex};"
+                    title="${color.name}"
+                    aria-label="${color.name}"
+                ></button>
+            `).join('');
+
+            // Add event listeners to color options
+            colorOptions.querySelectorAll('.color-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const colorId = e.target.dataset.color;
+                    selectColor(colorId);
+                });
+            });
+        }
+
+        // Update color options active state
+        function updateColorOptions() {
+            colorOptions.querySelectorAll('.color-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.color === currentColor);
+            });
+        }
+
+        // Show specific image
+        function showImage(index) {
+            const images = imageGallery.querySelectorAll('.gallery-image');
+            const dots = galleryNav.querySelectorAll('.gallery-dot');
+
+            images.forEach((img, i) => {
+                img.classList.toggle('active', i === index);
+            });
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+
+            currentIndex = index;
+        }
+
+        // Auto-rotate
+        function startAutoRotate() {
+            if (currentImages.length <= 1) return;
+
+            autoRotateInterval = setInterval(() => {
+                const nextIndex = (currentIndex + 1) % currentImages.length;
+                showImage(nextIndex);
+            }, 4000);
+        }
+
+        function stopAutoRotate() {
+            if (autoRotateInterval) {
+                clearInterval(autoRotateInterval);
+                autoRotateInterval = null;
+            }
+        }
+
+        // Start
+        init();
+
+        // ============ CART FUNCTIONALITY ============
+
+        // Product data (simplified for main page)
+        const mainPageProducts = {
+            bunnybasket: {
+                name: 'Hasenkorb',
+                price: '13,00 €'
+            }
+        };
+
+        // Get cart from localStorage
+        function getCart() {
+            const cart = localStorage.getItem('layerstore_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        // Save cart to localStorage
+        function saveCart(cart) {
+            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        // Update cart count in header
+        function updateCartCount() {
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = totalCount;
+
+            if (totalCount > 0) {
+                cartCount.classList.add('visible');
+            } else {
+                cartCount.classList.remove('visible');
+            }
+        }
+
+        // Initialize cart count on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+        });
+
+    </script>
+</body>
+</html>

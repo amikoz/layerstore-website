@@ -391,10 +391,10 @@
 <body>
     <!-- Header -->
     <header>
-        <a href="index.html" class="logo">LayerStore</a>
+        <a href="/main" class="logo">LayerStore</a>
         <nav>
-            <a href="index.html">Startseite</a>
-            <a href="collections/easter/index.html">Kollektion</a>
+            <a href="/main">Startseite</a>
+            <a href="/collections/easter">Kollektion</a>
             <div class="cart-icon" id="cartIcon" title="Warenkorb">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
@@ -413,7 +413,7 @@
         </div>
 
         <div class="continue-shopping">
-            <a href="collections/easter/index.html">
+            <a href="/collections/easter">
                 ← Weiter einkaufen
             </a>
         </div>
@@ -425,27 +425,27 @@
             carrot: {
                 name: 'Osterkarotte',
                 price: '13,00 €',
-                images: ['collections/easter/images/carrot1.jpeg']
+                images: ['/collections/easter/images/carrot1.jpeg']
             },
             bunnybasket: {
                 name: 'Hasenkorb',
                 price: '13,00 €',
-                images: ['collections/easter/images/bunnybasketbeige.jpeg']
+                images: ['/collections/easter/images/bunnybasketbeige.jpeg']
             },
             legsegg: {
                 name: 'Osterei mit Beinen',
                 price: '2,00 €',
-                images: ['collections/easter/images/legseggkinder.jpeg']
+                images: ['/collections/easter/images/legseggkinder.jpeg']
             },
             knittedegg: {
                 name: 'Gestricktes Ei',
                 price: '5,00 €',
-                images: ['collections/easter/images/knittedeggmintgreen.jpeg']
+                images: ['/collections/easter/images/knittedeggmintgreen.jpeg']
             },
             bunnyholder: {
                 name: 'Hasen-Halter',
                 price: '2,00 €',
-                images: ['collections/easter/images/placeholder.jpg']
+                images: ['/collections/easter/images/placeholder.jpg']
             }
         };
 
@@ -486,13 +486,13 @@
             if (item.image) {
                 return item.image.startsWith('http') || item.image.startsWith('/')
                     ? item.image
-                    : `collections/easter/images/${item.image}`;
+                    : `/collections/easter/images/${item.image}`;
             }
             const product = products[item.id];
             if (product && product.images && product.images[0]) {
-                return `collections/easter/images/${product.images[0]}`;
+                return `/collections/easter/images/${product.images[0]}`;
             }
-            return 'collections/easter/images/placeholder.jpg';
+            return '/collections/easter/images/placeholder.jpg';
         }
 
         // Render cart
@@ -508,7 +508,7 @@
                         </svg>
                         <h2>Ihr Warenkorb ist leer</h2>
                         <p>Haben Sie keine Lust mehr? Schauen Sie sich unsere Oster-Kollektion an!</p>
-                        <a href="collections/easter/index.html" class="btn-primary">Zur Kollektion</a>
+                        <a href="/collections/easter" class="btn-primary">Zur Kollektion</a>
                     </div>
                 `;
                 return;
