@@ -690,6 +690,16 @@
                     >
                 </div>
 
+                <div class="form-group">
+                    <label for="customerWhatsapp">WhatsApp Nummer (optional)</label>
+                    <input
+                        type="tel"
+                        id="customerWhatsapp"
+                        name="whatsapp"
+                        placeholder="+49 123 4567890"
+                    >
+                </div>
+
                 <button type="submit" class="checkout-submit-btn" id="submitBtn">
                     Bestellung absenden
                 </button>
@@ -899,11 +909,13 @@
 
             const emailInput = document.getElementById('customerEmail');
             const nameInput = document.getElementById('customerName');
+            const whatsappInput = document.getElementById('customerWhatsapp');
             const emailError = document.getElementById('emailError');
             const submitBtn = document.getElementById('submitBtn');
 
             const email = emailInput.value.trim();
             const name = nameInput.value.trim();
+            const whatsapp = whatsappInput.value.trim();
 
             // Validate email
             if (!email || !validateEmail(email)) {
@@ -925,6 +937,9 @@
             orderDetails += `E-Mail: ${email}\n`;
             if (name) {
                 orderDetails += `Name: ${name}\n`;
+            }
+            if (whatsapp) {
+                orderDetails += `WhatsApp: ${whatsapp}\n`;
             }
             orderDetails += '\nBestellte Artikel:\n';
             orderDetails += '----------------------------\n';
@@ -965,6 +980,7 @@
                 // Reset form
                 emailInput.value = '';
                 nameInput.value = '';
+                whatsappInput.value = '';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Bestellung absenden';
             }, 1500);
