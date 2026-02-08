@@ -667,11 +667,7 @@
             <h2>Anfrage senden</h2>
             <p>Bitte geben Sie Ihre Kontaktdaten ein. Wir werden uns schnellstmöglich bei Ihnen melden.</p>
 
-            <form
-                id="checkoutForm"
-                action="https://formsubmit.co/info@layerstore.eu"
-                method="POST"
-            >
+            <form id="checkoutForm">
                 <!-- Hidden field for order details -->
                 <input type="hidden" id="orderDetails" name="order_details" value="">
 
@@ -706,12 +702,6 @@
                         placeholder="+49 123 4567890"
                     >
                 </div>
-
-                <!-- Formsubmit configuration -->
-                <input type="hidden" name="_subject" value="Neue Bestellung von LayerStore">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="table">
-                <input type="hidden" name="_next" value="https://layerstore.eu/cart?success=true">
 
                 <button type="submit" class="checkout-submit-btn" id="submitBtn">
                     Anfrage senden
@@ -964,33 +954,56 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Wird gesendet...';
 
-            // Let the form submit naturally to Formsubmit
-            setTimeout(() => {
-                // Clear cart after successful submission
-                localStorage.removeItem('layerstore_cart');
-                updateCartCount();
+            // Collect form data
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('name', nameInput.value.trim());
+            formData.append('whatsapp', whatsappInput.value.trim());
+            formData.append('order_details', orderDetails);
 
-                // Reset form
-                emailInput.value = '';
-                nameInput.value = '';
-                whatsappInput.value = '';
+            // Send to PHP script
+            fetch('/order.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Success! Clear cart and show message
+                    localStorage.removeItem('layerstore_cart');
+                    updateCartCount();
+                    renderCart();
+
+                    // Reset form
+                    emailInput.value = '';
+                    nameInput.value = '';
+                    whatsappInput.value = '';
+
+                    // Close modal
+                    closeCheckoutModal();
+
+                    // Show success message
+                    alert('Vielen Dank für Ihre Anfrage! Wir haben Ihre Bestellung erhalten und werden uns schnellstmöglich bei Ihnen melden.');
+                } else {
+                    // Error from server
+                    alert('Fehler: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Es gab einen Fehler beim Senden Ihrer Bestellung. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt per E-Mail: info@layerstore.eu');
+            })
+            .finally(() => {
+                // Re-enable button
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Anfrage senden';
-            }, 1000);
+            });
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
             renderCart();
-
-            // Check if order was successful
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('success') === 'true') {
-                alert('Vielen Dank für Ihre Bestellung! Wir werden uns schnellstmöglich bei Ihnen melden.');
-                // Clear the success parameter from URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
 
             // Checkout modal event listeners
             const modal = document.getElementById('checkoutModal');
