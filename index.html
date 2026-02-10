@@ -46,27 +46,15 @@
             top: 0;
             left: 0;
             right: 0;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 3px solid var(--accent);
             transition: all 0.3s ease;
-        }
-
-        header.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 100px;
         }
 
         .logo {
@@ -93,6 +81,10 @@
             display: flex;
             gap: 2.5rem;
             align-items: center;
+        }
+
+        nav a.cart-icon {
+            padding: 0;
         }
 
         nav a {
@@ -175,7 +167,7 @@
             background-position: center;
             background-attachment: fixed;
             overflow: hidden;
-            padding-top: 100px;
+            padding-top: 120px;
         }
 
         .hero::before {
@@ -445,8 +437,8 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                padding: 1rem 1.5rem;
+            header {
+                padding: 1.5rem 2rem;
             }
 
             .logo img {
@@ -487,22 +479,20 @@
 <body>
     <!-- Header -->
     <header id="header">
-        <div class="header-content">
-            <a href="/" class="logo">
-                <img src="/logo.png" alt="LayerStore">
+        <a href="/" class="logo">
+            <img src="/logo.png" alt="LayerStore">
+        </a>
+        <nav>
+            <a href="/collections">Kollektionen</a>
+            <a href="#about">Über uns</a>
+            <a href="mailto:info@layerstore.eu">Kontakt</a>
+            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb" aria-label="Warenkorb">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
             </a>
-            <nav>
-                <a href="/collections">Kollektionen</a>
-                <a href="#about">Über uns</a>
-                <a href="mailto:info@layerstore.eu">Kontakt</a>
-                <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb" aria-label="Warenkorb">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                    </svg>
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-            </nav>
-        </div>
+        </nav>
     </header>
 
     <!-- Hero Section -->
