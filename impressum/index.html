@@ -32,13 +32,18 @@
 
         /* Header */
         header {
-            padding: 1.5rem 4rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(250, 250, 249, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 3px solid var(--accent);
+            z-index: 1000;
         }
 
         .logo {
@@ -48,7 +53,7 @@
         }
 
         .logo img {
-            height: 60px;
+            height: 80px;
             width: auto;
             transition: transform 0.2s ease;
         }
@@ -125,7 +130,7 @@
         .content {
             max-width: 900px;
             margin: 0 auto;
-            padding: 6rem 4rem;
+            padding: 8rem 4rem 6rem;
         }
 
         h1 {
@@ -237,7 +242,11 @@
         /* Responsive */
         @media (max-width: 768px) {
             header {
-                padding: 1rem 2rem;
+                padding: 1.5rem 2rem;
+            }
+
+            .logo img {
+                height: 55px;
             }
 
             nav {
