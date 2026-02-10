@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LayerStore - Individuelle 3D-Druck-Kreationen</title>
     <meta name="description" content="LayerStore - Einzigartige 3D-gedruckte Dekorationen, Geschenke und Accessoires. Individuell designed, nachhaltig produziert.">
+
+    <!-- Performance Optimization -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -526,6 +532,34 @@
             }
         }
     </style>
+
+    <!-- Image Optimization Script -->
+    <script>
+        // Optimize image loading automatically
+        (function() {
+            // Add lazy loading to all images
+            document.addEventListener('DOMContentLoaded', function() {
+                const images = document.querySelectorAll('img');
+
+                images.forEach((img, index) => {
+                    // Add lazy loading (except first few images which are above fold)
+                    if (index > 2) {
+                        img.setAttribute('loading', 'lazy');
+                    }
+
+                    // Add async decoding for better performance
+                    img.setAttribute('decoding', 'async');
+
+                    // Set fetch priority for first few images
+                    if (index < 2) {
+                        img.setAttribute('fetchpriority', 'high');
+                    } else if (index > 5) {
+                        img.setAttribute('fetchpriority', 'low');
+                    }
+                });
+            });
+        })();
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -706,5 +740,8 @@
             updateCartCount();
         });
     </script>
+
+    <!-- Performance Optimization -->
+    <script src="/perf-optimization.js" defer></script>
 </body>
 </html>
