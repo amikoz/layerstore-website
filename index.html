@@ -7,16 +7,18 @@
     <meta name="description" content="LayerStore - Einzigartige 3D-gedruckte Dekorationen, Geschenke und Accessoires. Individuell designed, nachhaltig produziert.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #fafaf9;
+            --bg-primary: #fafafa;
             --bg-secondary: #f5f5f4;
-            --text-primary: #1c1917;
-            --text-secondary: #57534e;
+            --text-primary: #0c0a09;
+            --text-secondary: #44403c;
+            --text-muted: #78716c;
             --accent: #1e3a8a;
             --accent-light: #3b82f6;
             --border: #e7e5e4;
+            --white: #ffffff;
         }
 
         * {
@@ -25,63 +27,88 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Work Sans', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* Header */
         header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 1.5rem 4rem;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: rgba(250, 250, 249, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
         }
 
         .logo {
             display: flex;
             align-items: center;
             text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
         }
 
         .logo img {
-            height: 60px;
+            height: 40px;
             width: auto;
-            transition: transform 0.2s ease;
-        }
-
-        .logo:hover img {
-            transform: scale(1.05);
         }
 
         nav {
             display: flex;
-            gap: 3rem;
+            gap: 2rem;
             align-items: center;
         }
 
         nav a {
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            transition: color 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            transition: color 0.2s ease;
+            position: relative;
         }
 
         nav a:hover {
             color: var(--accent);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.2s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
         }
 
         /* Cart Icon */
@@ -90,17 +117,19 @@
             cursor: pointer;
             padding: 0.5rem;
             transition: transform 0.2s ease;
+            border-radius: 8px;
         }
 
         .cart-icon:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
+            background: rgba(0, 0, 0, 0.04);
         }
 
         .cart-icon svg {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             fill: var(--text-secondary);
-            transition: fill 0.3s ease;
+            transition: fill 0.2s ease;
         }
 
         .cart-icon:hover svg {
@@ -109,351 +138,288 @@
 
         .cart-count {
             position: absolute;
-            top: 0;
-            right: 0;
+            top: 4px;
+            right: 4px;
             background: var(--accent);
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 9px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 5px;
+            padding: 0 4px;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: scale(0.8);
+            transition: all 0.2s ease;
         }
 
         .cart-count.visible {
             opacity: 1;
+            transform: scale(1);
         }
 
         /* Hero Section */
         .hero {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8rem 4rem 4rem;
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
-            position: relative;
-            overflow: hidden;
+            padding: 10rem 2rem 4rem;
+            max-width: 900px;
+            margin: 0 auto;
             text-align: center;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 80%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(30, 58, 138, 0.1) 0%, transparent 70%);
-            animation: float 20s ease-in-out infinite;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(30, 58, 138, 0.08);
+            border-radius: 20px;
+            font-size: 0.813rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 2rem;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
+        .hero-badge span {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .hero-content {
-            max-width: 900px;
-            position: relative;
-            z-index: 1;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
         .hero h1 {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(3rem, 7vw, 6rem);
-            font-weight: 400;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            letter-spacing: -0.03em;
-            animation: fadeInUp 1s ease-out 0.2s both;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            font-weight: 300;
-            line-height: 1.8;
-            animation: fadeInUp 1s ease-out 0.4s both;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.6s both;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .btn-primary {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: var(--accent);
-            color: white;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--accent);
-            border-radius: 8px;
-        }
-
-        .btn-primary:hover {
-            background: transparent;
-            color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
-        }
-
-        .btn-secondary {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: transparent;
             color: var(--text-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--text-primary);
-            border-radius: 8px;
         }
 
-        .btn-secondary:hover {
-            background: var(--text-primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Collections/Products Section */
-        .collections-section {
-            padding: 6rem 4rem;
-            background: var(--bg-primary);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-header h2 {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 400;
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
+        .hero h1 span {
             color: var(--accent);
         }
 
-        .section-header p {
-            font-size: 1.1rem;
+        .hero-description {
+            font-size: clamp(1rem, 2vw, 1.25rem);
             color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto;
-            font-weight: 300;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            max-width: 600px;
         }
 
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        .hero-benefits {
+            display: flex;
             gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .product-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border-color: var(--accent);
-        }
-
-        .product-image {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            background: var(--bg-secondary);
-        }
-
-        .product-info {
-            padding: 1.5rem;
-        }
-
-        .product-info h3 {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.3rem;
-            font-weight: 400;
-            margin-bottom: 0.5rem;
-            color: var(--accent);
-        }
-
-        .product-info p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-            margin-bottom: 0.75rem;
-            line-height: 1.5;
-        }
-
-        .product-price {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-
-        .product-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .product-availability {
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-
-        .availability-available {
-            background: rgba(30, 58, 138, 0.1);
-            color: var(--accent);
-        }
-
-        .availability-coming {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-        }
-
-        /* About Section */
-        .about-section {
-            padding: 6rem 4rem;
-            background: var(--bg-secondary);
-        }
-
-        .about-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .about-text h2 {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 400;
-            margin-bottom: 1.5rem;
-            color: var(--accent);
-        }
-
-        .about-text p {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            font-weight: 300;
-        }
-
-        .about-features {
-            margin-top: 2rem;
-            display: grid;
-            gap: 1rem;
-        }
-
-        .about-feature {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .about-feature-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(30, 58, 138, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
-            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .benefit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.938rem;
+            color: var(--text-muted);
+        }
+
+        .benefit svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--accent);
             flex-shrink: 0;
         }
 
-        .about-feature-text {
-            font-size: 0.95rem;
-            color: var(--text-primary);
-            font-weight: 400;
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .about-image {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border-radius: 20px;
-            aspect-ratio: 1;
-            display: flex;
+        .btn-primary {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 8rem;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-size: 0.938rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
         }
 
-        /* CTA Section */
-        .cta-section {
-            padding: 8rem 4rem;
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
-            text-align: center;
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.2);
         }
 
-        .cta-section h2 {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 400;
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: transparent;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.938rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-muted);
+            color: var(--text-primary);
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about-content {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        .about h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
             margin-bottom: 1.5rem;
             color: var(--text-primary);
         }
 
-        .cta-section p {
-            font-size: 1.1rem;
+        .about p {
+            font-size: 1.063rem;
             color: var(--text-secondary);
-            margin-bottom: 3rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(30, 58, 138, 0.08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent);
+        }
+
+        .feature h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .feature p {
+            font-size: 0.938rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .cta-content {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            color: white;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .cta-content p {
+            font-size: 1.063rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .cta-content .btn-primary {
+            background: white;
+            color: var(--accent);
+        }
+
+        .cta-content .btn-primary:hover {
+            background: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         /* Footer */
         footer {
-            padding: 4rem 4rem;
+            padding: 4rem 2rem 2rem;
             background: var(--bg-primary);
             border-top: 1px solid var(--border);
         }
@@ -467,27 +433,26 @@
         }
 
         .footer-section h4 {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.2rem;
-            font-weight: 400;
+            font-size: 0.938rem;
+            font-weight: 600;
             margin-bottom: 1rem;
-            color: var(--accent);
+            color: var(--text-primary);
         }
 
         .footer-section p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            font-size: 0.875rem;
+            color: var(--text-muted);
             margin-bottom: 0.5rem;
-            font-weight: 300;
+            line-height: 1.6;
         }
 
         .footer-section a {
-            color: var(--text-secondary);
+            color: var(--text-muted);
             text-decoration: none;
             display: block;
             margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
         }
 
         .footer-section a:hover {
@@ -499,43 +464,64 @@
             margin-top: 3rem;
             padding-top: 2rem;
             border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 300;
+            font-size: 0.813rem;
+            color: var(--text-muted);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             header {
-                padding: 1rem 2rem;
+                top: 0.5rem;
+                left: 0.5rem;
+                right: 0.5rem;
+                padding: 0.75rem 1rem;
+            }
+
+            .logo img {
+                height: 32px;
             }
 
             nav {
-                gap: 1.5rem;
+                gap: 1rem;
+            }
+
+            nav a:not(.cart-icon) {
+                display: none;
             }
 
             .hero {
-                padding: 7rem 2rem 3rem;
+                padding: 8rem 1.5rem 3rem;
             }
 
-            .collections-section,
-            .about-section,
-            .cta-section {
-                padding: 4rem 2rem;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
+            .hero-benefits {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
             }
 
             .about-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .about-features {
                 grid-template-columns: 1fr;
-                gap: 3rem;
             }
 
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 2rem;
+            }
+
+            .cta-content {
+                padding: 3rem 1.5rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -548,9 +534,8 @@
         </a>
         <nav>
             <a href="/collections">Kollektionen</a>
-            <a href="#about">Über uns</a>
             <a href="mailto:info@layerstore.eu">Kontakt</a>
-            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb">
+            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb" aria-label="Warenkorb">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
                 </svg>
@@ -561,63 +546,111 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-content">
-            <h1>Ideen werden zu <br><span style="color: var(--accent);">Wirklichkeit</span></h1>
-            <p>Individuelle 3D-Druck-Kreationen für jeden Anlass. Von der Idee bis zum fertigen Produkt – mit Liebe zum Detail und höchster Präzision gefertigt.</p>
-            <div class="hero-buttons">
-                <a href="/collections" class="btn-primary">Kollektionen ansehen</a>
-                <a href="#about" class="btn-secondary">Mehr erfahren</a>
+        <div class="hero-badge">
+            <span></span>
+            3D-Druck auf Bestellung
+        </div>
+
+        <h1>Ideen werden zu <br><span>Wirklichkeit</span></h1>
+
+        <p class="hero-description">
+            Individuelle 3D-Druck-Kreationen für jeden Anlass. Von der Idee bis zum fertigen Produkt – mit Liebe zum Detail und höchster Präzision gefertigt.
+        </p>
+
+        <div class="hero-benefits">
+            <div class="benefit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Nachhaltig produziert
             </div>
+            <div class="benefit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Individuelles Design
+            </div>
+            <div class="benefit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Made in Germany
+            </div>
+        </div>
+
+        <div class="hero-cta">
+            <a href="/collections" class="btn-primary">
+                Kollektionen ansehen
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </a>
+            <a href="mailto:info@layerstore.eu" class="btn-secondary">
+                Kontakt aufnehmen
+            </a>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about-section">
+    <section class="about" id="about">
         <div class="about-content">
-            <div class="about-text">
-                <h2>Über LayerStore</h2>
-                <p>
-                    LayerStore ist Ihr Partner für hochwertige 3D-gedruckte Produkte. Wir kombinieren modernste
-                    3D-Drucktechnologie mit durchdachtem Design, um einzigartige Stücke zu schaffen, die
-                    jedes Zuhause bereichern.
-                </p>
-                <p>
-                    Jedes Produkt wird in Deutschland mit viel Liebe zum Detail und größter Sorgfalt gefertigt.
-                    Unsere nachhaltigen PLA-Materialien garantieren nicht nur Langlebigkeit, sondern auch
-                    Umweltfreundlichkeit.
-                </p>
+            <h2>Über LayerStore</h2>
+            <p>
+                Wir bei LayerStore verwandeln Ihre Ideen in einzigartige 3D-gedruckte Realität. Jedes Stück wird mit höchster Präzision und Sorgfalt individuell für Sie gefertigt – von der ersten Skizze bis zum fertigen Produkt.
+            </p>
+            <p>
+                Ob persönliche Geschenke, festliche Dekorationen oder praktische Accessoires – wir machen es möglich. Unser Fokus liegt auf nachhaltiger Produktion, hochwertigen Materialien und Designs, die begeistern.
+            </p>
 
-                <div class="about-features">
-                    <div class="about-feature">
-                        <div class="about-feature-icon">🎨</div>
-                        <div class="about-feature-text">Individuelle Designs</div>
+            <div class="about-features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
                     </div>
-                    <div class="about-feature">
-                        <div class="about-feature-icon">🌱</div>
-                        <div class="about-feature-text">Nachhaltige Materialien</div>
-                    </div>
-                    <div class="about-feature">
-                        <div class="about-feature-icon">💎</div>
-                        <div class="about-feature-text">Premium Qualität</div>
-                    </div>
-                    <div class="about-feature">
-                        <div class="about-feature-icon">⚡</div>
-                        <div class="about-feature-text">Schnelle Produktion</div>
-                    </div>
+                    <h3>Höchste Präzision</h3>
+                    <p>Moderne 3D-Druck Technologie für perfekte Ergebnisse</p>
                 </div>
-            </div>
-
-            <div class="about-image">
-                🖨️
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </div>
+                    <h3>Mit Liebe gestaltet</h3>
+                    <p>Jedes Stück wird mit Liebe zum Detail gefertigt</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h3>Schnelle Lieferung</h3>
+                    <p>Produktion und Versand innerhalb Deutschlands</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section">
-        <h2>Bereit für Ihr individuelles 3D-Druck-Projekt?</h2>
-        <p>Ob für ein besonderes Geschenk, Ihre Dekoration oder für das Business – wir verwirklichen Ihre Vision.</p>
-        <a href="mailto:info@layerstore.eu" class="btn-primary" style="background: white; color: var(--accent);">Kontaktieren Sie uns</a>
+    <section class="cta">
+        <div class="cta-content">
+            <h2>Bereit für Ihr einzigartiges Stück?</h2>
+            <p>Entdecken Sie unsere Kollektionen oder kontaktieren Sie uns für individuelle Anfragen.</p>
+            <a href="/collections" class="btn-primary">
+                Jetzt entdecken
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </a>
+        </div>
     </section>
 
     <!-- Footer -->
