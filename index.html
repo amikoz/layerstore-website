@@ -10,15 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #fafafa;
-            --bg-secondary: #f5f5f4;
-            --text-primary: #0c0a09;
-            --text-secondary: #44403c;
-            --text-muted: #78716c;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f7;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
             --accent: #1e3a8a;
             --accent-light: #3b82f6;
-            --border: #e7e5e4;
-            --white: #ffffff;
+            --border: #d2d2d7;
         }
 
         * {
@@ -32,128 +30,116 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Header */
+        /* Header - Apple-inspired minimal */
         header {
             position: fixed;
-            top: 1rem;
-            left: 1rem;
-            right: 1rem;
-            padding: 1rem 2rem;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-content {
+            max-width: 980px;
+            width: 100%;
+            padding: 0 22px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
         }
 
         .logo {
             display: flex;
             align-items: center;
             text-decoration: none;
-            transition: opacity 0.2s ease;
+            opacity: 0.8;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .logo:hover {
-            opacity: 0.8;
+            opacity: 1;
         }
 
         .logo img {
-            height: 40px;
+            height: 48px;
             width: auto;
         }
 
         nav {
             display: flex;
-            gap: 2rem;
+            gap: 36px;
             align-items: center;
         }
 
         nav a {
             text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 400;
             letter-spacing: -0.01em;
-            transition: color 0.2s ease;
-            position: relative;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.8;
         }
 
         nav a:hover {
-            color: var(--accent);
+            opacity: 1;
         }
 
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.2s ease;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Cart Icon */
         .cart-icon {
             position: relative;
             cursor: pointer;
-            padding: 0.5rem;
-            transition: transform 0.2s ease;
-            border-radius: 8px;
+            padding: 4px;
+            transition: opacity 0.3s ease;
+            opacity: 0.8;
         }
 
         .cart-icon:hover {
-            transform: scale(1.05);
-            background: rgba(0, 0, 0, 0.04);
+            opacity: 1;
         }
 
         .cart-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--text-secondary);
-            transition: fill 0.2s ease;
-        }
-
-        .cart-icon:hover svg {
-            fill: var(--accent);
+            width: 18px;
+            height: 18px;
+            fill: var(--text-primary);
         }
 
         .cart-count {
             position: absolute;
-            top: 4px;
-            right: 4px;
+            top: 0;
+            right: 0;
             background: var(--accent);
             color: white;
-            font-size: 0.65rem;
+            font-size: 10px;
             font-weight: 600;
-            min-width: 16px;
-            height: 16px;
-            border-radius: 8px;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 4px;
+            padding: 0 3px;
             opacity: 0;
             transform: scale(0.8);
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cart-count.visible {
@@ -161,50 +147,24 @@
             transform: scale(1);
         }
 
-        /* Hero Section */
+        /* Hero Section - Apple-style large typography */
         .hero {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10rem 2rem 4rem;
-            max-width: 900px;
-            margin: 0 auto;
+            padding: 120px 22px 60px;
             text-align: center;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(30, 58, 138, 0.08);
-            border-radius: 20px;
-            font-size: 0.813rem;
-            font-weight: 500;
-            color: var(--accent);
-            margin-bottom: 2rem;
-        }
-
-        .hero-badge span {
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
+            max-width: 980px;
+            margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
+            font-size: clamp(40px, 8vw, 72px);
+            font-weight: 600;
+            line-height: 1.08;
+            letter-spacing: -0.015em;
             margin-bottom: 1.5rem;
             color: var(--text-primary);
         }
@@ -214,39 +174,18 @@
         }
 
         .hero-description {
-            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-size: clamp(19px, 3vw, 28px);
+            line-height: 1.4;
+            font-weight: 400;
+            letter-spacing: 0.007em;
             color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 2rem;
-            max-width: 600px;
-        }
-
-        .hero-benefits {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
             margin-bottom: 3rem;
-        }
-
-        .benefit {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.938rem;
-            color: var(--text-muted);
-        }
-
-        .benefit svg {
-            width: 18px;
-            height: 18px;
-            stroke: var(--accent);
-            flex-shrink: 0;
+            max-width: 700px;
         }
 
         .hero-cta {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -256,27 +195,27 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 1rem 2rem;
+            padding: 12px 26px;
             background: var(--accent);
             color: white;
             text-decoration: none;
-            font-size: 0.938rem;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            border-radius: 12px;
-            transition: all 0.2s ease;
+            font-size: 17px;
+            line-height: 1.2;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            border-radius: 980px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             cursor: pointer;
         }
 
         .btn-primary:hover {
             background: var(--accent-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(30, 58, 138, 0.2);
+            transform: scale(1.02);
         }
 
         .btn-primary:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
         .btn-secondary {
@@ -284,236 +223,237 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 1rem 2rem;
+            padding: 12px 26px;
             background: transparent;
-            color: var(--text-secondary);
+            color: var(--accent);
             text-decoration: none;
-            font-size: 0.938rem;
-            font-weight: 500;
-            letter-spacing: -0.01em;
-            border-radius: 12px;
-            border: 1.5px solid var(--border);
-            transition: all 0.2s ease;
+            font-size: 17px;
+            line-height: 1.2;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            border-radius: 980px;
+            border: 1px solid var(--accent);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
         }
 
         .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Features Section - Apple card style */
+        .features {
+            padding: 80px 22px;
             background: var(--bg-secondary);
-            border-color: var(--text-muted);
+        }
+
+        .features-content {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 600;
+            line-height: 1.08;
+            letter-spacing: -0.003em;
+            margin-bottom: 3rem;
             color: var(--text-primary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-primary);
+            border-radius: 18px;
+            padding: 30px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover {
+            transform: scale(1.02);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--accent);
+        }
+
+        .feature-card h3 {
+            font-size: 21px;
+            line-height: 1.2;
+            font-weight: 600;
+            letter-spacing: 0.011em;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            font-size: 17px;
+            line-height: 1.4;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            color: var(--text-secondary);
         }
 
         /* About Section */
         .about {
-            padding: 6rem 2rem;
-            max-width: 1000px;
+            padding: 100px 22px;
+            max-width: 980px;
             margin: 0 auto;
-        }
-
-        .about-content {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            text-align: center;
         }
 
         .about h2 {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 1.5rem;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 600;
+            line-height: 1.08;
+            letter-spacing: -0.003em;
+            margin-bottom: 2rem;
             color: var(--text-primary);
         }
 
         .about p {
-            font-size: 1.063rem;
+            font-size: clamp(17px, 2vw, 21px);
+            line-height: 1.4;
+            font-weight: 400;
+            letter-spacing: -0.022em;
             color: var(--text-secondary);
-            line-height: 1.8;
             margin-bottom: 1.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .about-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature {
-            padding: 1.5rem;
-            background: var(--bg-primary);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(30, 58, 138, 0.08);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-
-        .feature-icon svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--accent);
-        }
-
-        .feature h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .feature p {
-            font-size: 0.938rem;
-            color: var(--text-muted);
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        /* CTA Section */
+        /* CTA Section - Large headline */
         .cta {
-            padding: 6rem 2rem;
+            padding: 100px 22px;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             text-align: center;
         }
 
         .cta-content {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            border-radius: 24px;
-            padding: 4rem 2rem;
-            color: white;
-            max-width: 900px;
+            max-width: 980px;
             margin: 0 auto;
         }
 
-        .cta-content h2 {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 1rem;
+        .cta h2 {
+            font-size: clamp(40px, 6vw, 56px);
+            font-weight: 600;
+            line-height: 1.08;
+            letter-spacing: -0.005em;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
         }
 
-        .cta-content p {
-            font-size: 1.063rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
+        .cta p {
+            font-size: clamp(17px, 2vw, 21px);
+            line-height: 1.4;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
         }
 
-        .cta-content .btn-primary {
-            background: white;
-            color: var(--accent);
-        }
-
-        .cta-content .btn-primary:hover {
-            background: var(--bg-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Footer */
+        /* Footer - Apple style */
         footer {
-            padding: 4rem 2rem 2rem;
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             border-top: 1px solid var(--border);
+            padding: 40px 22px;
         }
 
         .footer-content {
-            max-width: 1200px;
+            max-width: 980px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 3rem;
+            gap: 40px;
         }
 
         .footer-section h4 {
-            font-size: 0.938rem;
+            font-size: 12px;
+            line-height: 1.5;
             font-weight: 600;
-            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+            margin-bottom: 12px;
             color: var(--text-primary);
         }
 
         .footer-section p {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
 
         .footer-section a {
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-decoration: none;
             display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            transition: color 0.2s ease;
+            margin-bottom: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+            transition: opacity 0.3s ease;
         }
 
         .footer-section a:hover {
-            color: var(--accent);
+            opacity: 0.7;
         }
 
         .footer-bottom {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
+            max-width: 980px;
+            margin: 40px auto 0;
+            padding-top: 20px;
             border-top: 1px solid var(--border);
-            font-size: 0.813rem;
-            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-secondary);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            header {
-                top: 0.5rem;
-                left: 0.5rem;
-                right: 0.5rem;
-                padding: 0.75rem 1rem;
-            }
-
-            .logo img {
-                height: 32px;
-            }
-
-            nav {
-                gap: 1rem;
+            .header-content {
+                padding: 0 16px;
             }
 
             nav a:not(.cart-icon) {
                 display: none;
             }
 
+            .logo img {
+                height: 40px;
+            }
+
             .hero {
-                padding: 8rem 1.5rem 3rem;
+                padding: 100px 16px 40px;
             }
 
-            .hero-benefits {
-                flex-direction: column;
-                align-items: center;
-                gap: 0.75rem;
-            }
-
-            .about-content {
-                padding: 2rem 1.5rem;
-            }
-
-            .about-features {
+            .feature-grid {
                 grid-template-columns: 1fr;
             }
 
             .footer-content {
                 grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .cta-content {
-                padding: 3rem 1.5rem;
+                gap: 30px;
             }
         }
 
@@ -529,59 +469,33 @@
 <body>
     <!-- Header -->
     <header>
-        <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore Logo">
-        </a>
-        <nav>
-            <a href="/collections">Kollektionen</a>
-            <a href="mailto:info@layerstore.eu">Kontakt</a>
-            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb" aria-label="Warenkorb">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                </svg>
-                <span class="cart-count" id="cartCount">0</span>
+        <div class="header-content">
+            <a href="/" class="logo">
+                <img src="/logo.png" alt="LayerStore">
             </a>
-        </nav>
+            <nav>
+                <a href="/collections">Kollektionen</a>
+                <a href="mailto:info@layerstore.eu">Kontakt</a>
+                <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb" aria-label="Warenkorb">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+            </nav>
+        </div>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-badge">
-            <span></span>
-            3D-Druck auf Bestellung
-        </div>
-
         <h1>Ideen werden zu <br><span>Wirklichkeit</span></h1>
-
         <p class="hero-description">
-            Individuelle 3D-Druck-Kreationen für jeden Anlass. Von der Idee bis zum fertigen Produkt – mit Liebe zum Detail und höchster Präzision gefertigt.
+            Individuelle 3D-Druck-Kreationen für jeden Anlass. Mit Liebe zum Detail und höchster Präzision gefertigt.
         </p>
-
-        <div class="hero-benefits">
-            <div class="benefit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                Nachhaltig produziert
-            </div>
-            <div class="benefit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                Individuelles Design
-            </div>
-            <div class="benefit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                </svg>
-                Made in Germany
-            </div>
-        </div>
-
         <div class="hero-cta">
             <a href="/collections" class="btn-primary">
                 Kollektionen ansehen
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"/>
                     <polyline points="12 5 19 12 12 19"/>
                 </svg>
@@ -592,50 +506,54 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="about-content">
-            <h2>Über LayerStore</h2>
-            <p>
-                Wir bei LayerStore verwandeln Ihre Ideen in einzigartige 3D-gedruckte Realität. Jedes Stück wird mit höchster Präzision und Sorgfalt individuell für Sie gefertigt – von der ersten Skizze bis zum fertigen Produkt.
-            </p>
-            <p>
-                Ob persönliche Geschenke, festliche Dekorationen oder praktische Accessoires – wir machen es möglich. Unser Fokus liegt auf nachhaltiger Produktion, hochwertigen Materialien und Designs, die begeistern.
-            </p>
-
-            <div class="about-features">
-                <div class="feature">
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-content">
+            <h2>Warum LayerStore?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
                     <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                             <path d="M2 17l10 5 10-5"/>
                             <path d="M2 12l10 5 10-5"/>
                         </svg>
                     </div>
                     <h3>Höchste Präzision</h3>
-                    <p>Moderne 3D-Druck Technologie für perfekte Ergebnisse</p>
+                    <p>Moderne 3D-Druck Technologie für perfekte Ergebnisse jedes Mal.</p>
                 </div>
-                <div class="feature">
+                <div class="feature-card">
                     <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                         </svg>
                     </div>
                     <h3>Mit Liebe gestaltet</h3>
-                    <p>Jedes Stück wird mit Liebe zum Detail gefertigt</p>
+                    <p>Jedes Stück wird mit Sorgfalt und Aufmerksamkeit gefertigt.</p>
                 </div>
-                <div class="feature">
+                <div class="feature-card">
                     <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"/>
                             <path d="M12 6v6l4 2"/>
                         </svg>
                     </div>
                     <h3>Schnelle Lieferung</h3>
-                    <p>Produktion und Versand innerhalb Deutschlands</p>
+                    <p>Produktion und Versand innerhalb Deutschlands.</p>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <h2>Über LayerStore</h2>
+        <p>
+            Wir bei LayerStore verwandeln Ihre Ideen in einzigartige 3D-gedruckte Realität. Jedes Stück wird mit höchster Präzision und Sorgfalt individuell für Sie gefertigt.
+        </p>
+        <p>
+            Ob persönliche Geschenke, festliche Dekorationen oder praktische Accessoires – wir machen es möglich. Unser Fokus liegt auf nachhaltiger Produktion, hochwertigen Materialien und Designs, die begeistern.
+        </p>
     </section>
 
     <!-- CTA Section -->
@@ -645,7 +563,7 @@
             <p>Entdecken Sie unsere Kollektionen oder kontaktieren Sie uns für individuelle Anfragen.</p>
             <a href="/collections" class="btn-primary">
                 Jetzt entdecken
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"/>
                     <polyline points="12 5 19 12 12 19"/>
                 </svg>
