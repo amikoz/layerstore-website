@@ -17,25 +17,42 @@ function logMessage($message) {
     file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND);
 }
 
-logMessage("=== New order request ===");
+logMessage("=== NEW ORDER REQUEST START ===");
+logMessage("Request method: " . $_SERVER['REQUEST_METHOD']);
+logMessage("Request URI: " . $_SERVER['REQUEST_URI']);
+logMessage("HTTP_HOST: " . $_SERVER['HTTP_HOST']);
 
 // Configuration
 $recipientEmail = 'info@layerstore.eu';
 $subject = 'Neue Bestellung von LayerStore';
 
 // Set headers
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    echo json_encode(['success' => true, 'message' => 'OPTIONS OK']);
+    logMessage("OPTIONS request received");
+    exit;
+}
 
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    logMessage("ERROR: Wrong request method: " . $_SERVER['REQUEST_METHOD']);
     http_response_code(405);
+    logMessage("ERROR: Wrong request method");
     echo json_encode(['success' => false, 'message' => 'Method not allowed']);
     exit;
 }
+
+logMessage("POST request received");
+
+// Log raw POST data
+logMessage("RAW POST DATA: " . file_get_contents('php://input'));
+logMessage("POST array: " . print_r($_POST, true));
 
 // Sanitize and validate input data
 function cleanInput($data) {
@@ -50,17 +67,20 @@ $name = cleanInput($_POST['name'] ?? '');
 $whatsapp = cleanInput($_POST['whatsapp'] ?? '');
 $orderDetails = cleanInput($_POST['order_details'] ?? '');
 
-logMessage("Email: $email");
-logMessage("Name: " . ($name ?: 'not provided'));
-logMessage("WhatsApp: " . ($whatsapp ?: 'not provided'));
+logMessage("Email: '$email'");
+logMessage("Name: '$name'");
+logMessage("WhatsApp: '$whatsapp'");
+logMessage("Order details length: " . strlen($orderDetails) . " chars");
 
 // Validate email
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    logMessage("ERROR: Invalid email: $email");
+    logMessage("ERROR: Invalid email address");
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Ungültige E-Mail-Adresse']);
     exit;
 }
+
+logMessage("Email validation passed");
 
 // Build email message
 $message = "
@@ -76,26 +96,30 @@ $orderDetails
 
 Gesendet am: " . date('d.m.Y') . " um " . date('H:i') . "
 IP Adresse: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . "
+User Agent: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'unknown') . "
 ";
 
-logMessage("Message prepared, length: " . strlen($message));
+logMessage("Message prepared, length: " . strlen($message) . " bytes");
 
-// Email headers - Ionos compatible format
+// Email headers
 $headersString = "From: LayerStore <noreply@layerstore.eu>\r\n";
 $headersString .= "Reply-To: $email\r\n";
 $headersString .= "X-Mailer: PHP/" . phpversion() . "\r\n";
 $headersString .= "Content-Type: text/plain; charset=UTF-8\r\n";
 $headersString .= "MIME-Version: 1.0\r\n";
 
-logMessage("Headers: " . $headersString);
+logMessage("Headers prepared");
 
 // Send email
 try {
-    logMessage("Attempting to send email to $recipientEmail");
+    logMessage("Attempting to send email to: $recipientEmail");
 
-    $success = mail($recipientEmail, '=?UTF-8?B?' . base64_encode($subject) . '?=', $message, $headersString);
+    // Additional mail params for some hosting providers
+    $params = '-f ' . $recipientEmail;
 
-    logMessage("Mail function returned: " . ($success ? 'TRUE' : 'FALSE'));
+    $success = mail($recipientEmail, '=?UTF-8?B?' . base64_encode($subject) . '?=', $message, $headersString, $params);
+
+    logMessage("Mail function returned: " . ($success ? 'TRUE (success)' : 'FALSE (failed)'));
 
     if ($success) {
         logMessage("SUCCESS: Email sent successfully");
@@ -114,6 +138,7 @@ try {
     }
 } catch (Exception $e) {
     logMessage("EXCEPTION: " . $e->getMessage());
+    logMessage("Exception trace: " . $e->getTraceAsString());
     http_response_code(500);
     echo json_encode([
         'success' => false,
@@ -121,5 +146,5 @@ try {
     ]);
 }
 
-logMessage("=== End of request ===\n");
+logMessage("=== REQUEST END ===\n");
 ?>
