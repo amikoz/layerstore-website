@@ -291,6 +291,18 @@
             color: var(--text-secondary);
         }
 
+        .cart-item-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-size {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
         .cart-item-price {
             font-size: 1.2rem;
             font-weight: 600;
@@ -871,7 +883,20 @@
         const colorNames = {
             beige: 'Beige',
             pink: 'Pink',
-            purple: 'Lila'
+            purple: 'Lila',
+            red: 'Rot',
+            orange: 'Orange',
+            yellow: 'Gelb',
+            lemonyellow: 'Zitronengelb',
+            lightgreen: 'Hellgrün',
+            mintgreen: 'Minzgrün',
+            olivegreen: 'Olivgrün',
+            skyblue: 'Himmelblau',
+            blue: 'Blau',
+            deeppink: 'Dunkelrosa',
+            newpink: 'Neonrosa',
+            standard: 'Standard',
+            custom: 'Nach Absprache'
         };
 
         // Get cart from localStorage
@@ -935,14 +960,16 @@
 
             let itemsHTML = cart.map((item, index) => {
                 const imagePath = getImagePath(item);
-                const colorText = item.color ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
+                const colorText = item.color && item.color !== 'standard' ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
+                const sizeText = item.size && item.size !== 'standard' ? `<span class="cart-item-size">Größe: ${item.size === 'custom' ? 'Nach Absprache' : 'Standard'}</span>` : '';
+                const optionsText = (colorText || sizeText) ? `<div class="cart-item-options">${colorText}${sizeText}</div>` : '';
 
                 return `
                     <div class="cart-item" data-index="${index}">
                         <img src="${imagePath}" alt="${item.name}" class="cart-item-image">
                         <div class="cart-item-details">
                             <div class="cart-item-name">${item.name}</div>
-                            ${colorText}
+                            ${optionsText}
                             <div class="cart-item-price">${item.price}</div>
                         </div>
                         <div class="cart-item-actions">
@@ -1060,8 +1087,22 @@
 
             let totalItems = 0;
             cart.forEach(item => {
-                const colorText = item.color ? ` (${colorNames[item.color] || item.color})` : '';
-                orderDetails += `${item.quantity}x ${item.name}${colorText} - ${item.price}\n`;
+                let itemDetails = `${item.quantity}x ${item.name}`;
+
+                // Add color if not standard
+                if (item.color && item.color !== 'standard') {
+                    const colorName = colorNames[item.color] || item.color;
+                    itemDetails += `\n   Farbe: ${colorName}`;
+                }
+
+                // Add size if not standard
+                if (item.size && item.size !== 'standard') {
+                    const sizeName = item.size === 'custom' ? 'Nach Absprache' : 'Standard';
+                    itemDetails += `\n   Größe: ${sizeName}`;
+                }
+
+                itemDetails += ` - ${item.price}`;
+                orderDetails += itemDetails + '\n';
                 totalItems += item.quantity;
             });
 

@@ -1200,56 +1200,10 @@
             return null;
         }
 
-        // Add product to cart
-        function addToCart(button) {
-            const productId = button.dataset.product;
-            const product = products[productId];
-            const selectedColor = getSelectedColor(productId);
-
-            // Create cart item
-            const cartItem = {
-                id: productId,
-                name: product.name,
-                price: product.price,
-                color: selectedColor,
-                quantity: 1,
-                image: product.hasColors && selectedColor
-                    ? product.colors.find(c => c.id === selectedColor)?.images[0]
-                    : product.images[0]
-            };
-
-            // Get current cart
-            const cart = getCart();
-
-            // Check if same product with same color already exists
-            const existingIndex = cart.findIndex(item =>
-                item.id === productId && item.color === selectedColor
-            );
-
-            if (existingIndex > -1) {
-                // Update quantity
-                cart[existingIndex].quantity += 1;
-            } else {
-                // Add new item
-                cart.push(cartItem);
-            }
-
-            // Save to localStorage
-            saveCart(cart);
-
-            // Update button text temporarily
-            const originalText = button.textContent;
-            button.textContent = 'Hinzugefügt!';
-            button.classList.add('added');
-
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.classList.remove('added');
-            }, 1500);
-
-            // Show notification
-            showCartNotification();
-        }
+        // OLD FUNCTION - Replaced with modal version
+        // function addToCart(button) {
+        //     This function is now handled by the modal system
+        // }
 
         // Add product to cart from modal
         function addToCartFromModal() {
@@ -1340,6 +1294,289 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
         });
+
+        // Size and Color Selection Modal
+        function openSizeColorModal(productId) {
+            const modal = document.getElementById('sizeColorModal');
+            const product = products[productId];
+
+            // Set product info
+            document.getElementById('modalProductName').textContent = product.name;
+            document.getElementById('modalProductId').value = productId;
+
+            // Show/hide size option
+            const noSizeProducts = ['bunnykinderholder', 'legsegg'];
+            const sizeSection = document.getElementById('sizeSelection');
+            if (noSizeProducts.includes(productId)) {
+                sizeSection.style.display = 'none';
+                document.getElementById('selectedSize').value = 'standard';
+            } else {
+                sizeSection.style.display = 'block';
+                document.getElementById('selectedSize').value = 'standard';
+                // Reset size selection
+                document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.size-option[data-size="standard"]').classList.add('active');
+            }
+
+            // Show/hide color option
+            const noColorProducts = ['carrot'];
+            const colorSection = document.getElementById('colorSelection');
+            if (noColorProducts.includes(productId)) {
+                colorSection.style.display = 'none';
+                document.getElementById('selectedColor').value = 'standard';
+            } else {
+                colorSection.style.display = 'block';
+                document.getElementById('selectedColor').value = 'standard';
+                // Reset color selection
+                document.querySelectorAll('.color-option-modal').forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.color-option-modal[data-color="standard"]').classList.add('active');
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeSizeColorModal() {
+            document.getElementById('sizeColorModal').style.display = 'none';
+        }
+
+        function selectSize(size) {
+            document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.size-option[data-size="${size}"]`).classList.add('active');
+            document.getElementById('selectedSize').value = size;
+
+            // Update button text for custom size
+            const confirmBtn = document.getElementById('confirmAddToCart');
+            if (size === 'custom') {
+                confirmBtn.textContent = 'Anfrage senden (Wir melden uns)';
+            } else {
+                confirmBtn.textContent = 'In den Warenkorb';
+            }
+        }
+
+        function selectColor(color) {
+            document.querySelectorAll('.color-option-modal').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.color-option-modal[data-color="${color}"]`).classList.add('active');
+            document.getElementById('selectedColor').value = color;
+        }
+
+        function confirmAddToCart() {
+            const productId = document.getElementById('modalProductId').value;
+            const size = document.getElementById('selectedSize').value;
+            const color = document.getElementById('selectedColor').value;
+            const btn = document.querySelector(`.add-to-cart-btn[data-product="${productId}"]`);
+
+            // Check if custom size or color
+            if (size === 'custom' || color === 'custom') {
+                // For custom options, redirect to contact
+                closeSizeColorModal();
+                alert('Vielen Dank! Wir werden uns schnellstmöglich mit Ihnen in Verbindung setzen, um die Details zu besprechen.');
+                window.location.href = 'mailto:info@layerstore.eu?subject=Anfrage für benutzerdefinierte Größe/Farbe';
+                return;
+            }
+
+            // Add to cart with size and color info
+            addToCartWithOptions(btn, size, color);
+            closeSizeColorModal();
+        }
+
+        function addToCartWithOptions(btn, size, color) {
+            const productId = btn.dataset.product;
+            const product = products[productId];
+
+            const cartItem = {
+                id: productId,
+                name: product.name,
+                price: product.price,
+                quantity: 1,
+                size: size,
+                color: color,
+                image: product.images ? product.images[0] : null
+            };
+
+            if (product.hasColors && product.colors) {
+                const selectedColorBtn = document.querySelector(`.product-color-option.active[data-product="${productId}"]`);
+                if (selectedColorBtn) {
+                    const selectedColorId = selectedColorBtn.dataset.color;
+                    const selectedColorData = product.colors.find(c => c.id === selectedColorId);
+                    if (selectedColorData) {
+                        cartItem.color = selectedColorId;
+                        cartItem.colorName = selectedColorData.name;
+                        if (selectedColorData.images && selectedColorData.images[0]) {
+                            cartItem.image = `/collections/easter/images/${selectedColorData.images[0]}`;
+                        }
+                    }
+                }
+            }
+
+            const cart = getCart();
+            const existingItem = cart.find(item =>
+                item.id === cartItem.id &&
+                item.size === cartItem.size &&
+                item.color === cartItem.color
+            );
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push(cartItem);
+            }
+
+            saveCart(cart);
+            updateCartCount();
+
+            // Show notification
+            const notification = document.getElementById('cartNotification');
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
+
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+            }, 2000);
+        }
+
+        // Override existing addToCart to open modal
+        function addToCart(btn) {
+            const productId = btn.dataset.product;
+            openSizeColorModal(productId);
+        }
     </script>
+
+    <!-- Size and Color Selection Modal -->
+    <div id="sizeColorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 3000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 2.5rem; max-width: 500px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
+            <button onclick="closeSizeColorModal()" style="position: absolute; top: 1rem; right: 1rem; background: #f5f5f4; border: 1px solid #e7e5e4; color: #57534e; width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;">×</button>
+
+            <h2 id="modalProductName" style="font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 0.5rem; color: #ea580c;"></h2>
+            <p style="color: #57534e; margin-bottom: 2rem; font-size: 0.95rem;">Bitte wählen Sie Ihre Optionen:</p>
+
+            <!-- Size Selection -->
+            <div id="sizeSelection" style="margin-bottom: 2rem;">
+                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: #1c1917;">Größe:</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="size-option active" data-size="standard" onclick="selectSize('standard')" style="flex: 1; min-width: 120px; padding: 1rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-weight: 500;">
+                        <div style="font-size: 1.1rem;">📐</div>
+                        <div style="font-size: 0.9rem; margin-top: 0.5rem;">Wie auf Foto</div>
+                        <div style="font-size: 0.8rem; color: #57534e; margin-top: 0.25rem;">Standardpreis</div>
+                    </button>
+                    <button class="size-option" data-size="custom" onclick="selectSize('custom')" style="flex: 1; min-width: 120px; padding: 1rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-weight: 500;">
+                        <div style="font-size: 1.1rem;">✏️</div>
+                        <div style="font-size: 0.9rem; margin-top: 0.5rem;">Andere Größe</div>
+                        <div style="font-size: 0.8rem; color: #57534e; margin-top: 0.25rem;">Preis nach Absprache</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Color Selection -->
+            <div id="colorSelection" style="margin-bottom: 2rem;">
+                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: #1c1917;">Farbe:</h3>
+
+                <!-- Standard Color -->
+                <button class="color-option-modal active" data-color="standard" onclick="selectColor('standard')" style="width: 100%; margin-bottom: 1rem; padding: 1rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-weight: 500; display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-size: 1.5rem;">📷</div>
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-size: 0.95rem;">Wie auf Foto</div>
+                        <div style="font-size: 0.8rem; color: #57534e;">Standardfarbe</div>
+                    </div>
+                </button>
+
+                <!-- Custom Color -->
+                <button class="color-option-modal" data-color="custom" onclick="selectColor('custom')" style="width: 100%; margin-bottom: 1rem; padding: 1rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-weight: 500; display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-size: 1.5rem;">🌈</div>
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-size: 0.95rem;">Andere Farbe</div>
+                        <div style="font-size: 0.8rem; color: #57534e;">Nach Absprache</div>
+                    </div>
+                </button>
+
+                <!-- Color Palette -->
+                <div style="border-top: 1px solid #e7e5e4; padding-top: 1rem; margin-top: 1rem;">
+                    <div style="font-size: 0.9rem; color: #57534e; margin-bottom: 0.75rem;">Oder wähle eine Farbe:</div>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                        <button class="color-option-modal color-swatch" data-color="red" onclick="selectColor('red')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/red.jpeg" alt="Red" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="orange" onclick="selectColor('orange')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/orange.jpeg" alt="Orange" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="yellow" onclick="selectColor('yellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/yellow.jpeg" alt="Yellow" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="lemonyellow" onclick="selectColor('lemonyellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/lemonyellow.jpeg" alt="Lemon Yellow" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="lightgreen" onclick="selectColor('lightgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/lightgreen.jpeg" alt="Light Green" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="mintgreen" onclick="selectColor('mintgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/mintgreen.jpeg" alt="Mint Green" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="olivegreen" onclick="selectColor('olivegreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/olivegreen.jpeg" alt="Olive Green" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="skyblue" onclick="selectColor('skyblue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/skyblue.jpeg" alt="Sky Blue" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="blue" onclick="selectColor('blue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/blue.jpeg" alt="Blue" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="purple" onclick="selectColor('purple')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/purple.jpeg" alt="Purple" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="deeppink" onclick="selectColor('deeppink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/deeppink.jpeg" alt="Deep Pink" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                        <button class="color-option-modal color-swatch" data-color="newpink" onclick="selectColor('newpink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+                            <img src="/colors/newpink.jpeg" alt="New Pink" style="width: 100%; height: 100%; object-fit: cover;">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="selectedSize" value="standard">
+            <input type="hidden" id="selectedColor" value="standard">
+            <input type="hidden" id="modalProductId" value="">
+
+            <button id="confirmAddToCart" onclick="confirmAddToCart()" style="width: 100%; padding: 1rem; background: #ea580c; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                In den Warenkorb
+            </button>
+        </div>
+    </div>
+
+    <style>
+        .size-option.active, .color-option-modal.active {
+            border-color: #ea580c !important;
+            background: #fff7ed !important;
+        }
+
+        .size-option:hover, .color-option-modal:hover {
+            border-color: #ea580c;
+            transform: translateY(-2px);
+        }
+
+        .color-swatch {
+            position: relative;
+        }
+
+        .color-swatch.active {
+            border: 3px solid #ea580c !important;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #ea580c;
+        }
+
+        .color-swatch:hover {
+            border-color: #ea580c;
+            transform: scale(1.05);
+        }
+
+        .color-swatch img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 </body>
 </html>
