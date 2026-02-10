@@ -1335,10 +1335,30 @@
             } else {
                 colorSection.style.display = 'block';
                 document.getElementById('selectedColor').value = 'standard';
-                // Reset color selection
-                document.querySelectorAll('.color-swatch-option').forEach(btn => btn.classList.remove('active'));
-                document.querySelector('.color-swatch-option[data-color="standard"]').classList.add('active');
-                document.getElementById('selectedColorText').textContent = 'Wie auf Foto';
+
+                // Reset main color buttons (Wie auf dem Foto / Individuell)
+                document.querySelectorAll('#colorSelection > div > .color-option').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.borderColor = '#e7e5e4';
+                    btn.style.background = 'white';
+                });
+                const standardBtn = document.querySelector('#colorSelection > div > .color-option[data-color="standard"]');
+                if (standardBtn) {
+                    standardBtn.classList.add('active');
+                    standardBtn.style.borderColor = '#ea580c';
+                    standardBtn.style.background = '#fff7ed';
+                }
+
+                // Reset palette buttons
+                document.querySelectorAll('.color-swatch-option').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.borderColor = '#e7e5e4';
+                });
+
+                // Hide custom color note and show additional colors
+                document.getElementById('customColorNote').style.display = 'none';
+                document.getElementById('additionalColors').style.display = 'block';
+
                 // Hide color palette
                 document.getElementById('colorPalette').style.display = 'none';
             }
@@ -1380,25 +1400,63 @@
         }
 
         function selectColorFromPalette(color) {
-            selectColor(color);
-            // Update button text
-            const colorText = document.getElementById('selectedColorText');
-            if (color === 'standard') {
-                colorText.textContent = 'Wie auf Foto';
-            } else {
-                colorText.textContent = color.charAt(0).toUpperCase() + color.slice(1);
+            // Update the selected color value
+            document.getElementById('selectedColor').value = color;
+
+            // Update palette button active states
+            document.querySelectorAll('.color-swatch-option').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.borderColor = '#e7e5e4';
+            });
+            const selectedBtn = document.querySelector(`.color-swatch-option[data-color="${color}"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('active');
+                selectedBtn.style.borderColor = '#ea580c';
             }
+
+            // Keep "Wie auf dem Foto" button active (since palette colors are standard colors)
+            document.querySelectorAll('#colorSelection > div > .color-option').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.borderColor = '#e7e5e4';
+                btn.style.background = 'white';
+            });
+            const standardBtn = document.querySelector('#colorSelection > div > .color-option[data-color="standard"]');
+            if (standardBtn) {
+                standardBtn.classList.add('active');
+                standardBtn.style.borderColor = '#ea580c';
+                standardBtn.style.background = '#fff7ed';
+            }
+
             // Hide palette after selection
             document.getElementById('colorPalette').style.display = 'none';
         }
 
         function selectColor(color) {
-            document.querySelectorAll('.color-swatch-option').forEach(btn => btn.classList.remove('active'));
-            const btn = document.querySelector(`.color-swatch-option[data-color="${color}"]`);
-            if (btn) {
-                btn.classList.add('active');
-            }
+            // Update main color buttons (Wie auf dem Foto / Individuell)
+            document.querySelectorAll('#colorSelection > div > .color-option').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.color === color) {
+                    btn.classList.add('active');
+                    btn.style.borderColor = '#ea580c';
+                    btn.style.background = '#fff7ed';
+                } else {
+                    btn.style.borderColor = '#e7e5e4';
+                    btn.style.background = 'white';
+                }
+            });
             document.getElementById('selectedColor').value = color;
+
+            // Show/hide custom color note
+            const customNote = document.getElementById('customColorNote');
+            if (color === 'custom') {
+                customNote.style.display = 'block';
+                // Hide additional colors when custom is selected
+                document.getElementById('additionalColors').style.display = 'none';
+            } else {
+                customNote.style.display = 'none';
+                // Show additional colors when standard is selected
+                document.getElementById('additionalColors').style.display = 'block';
+            }
         }
 
         function confirmAddToCart() {
@@ -1513,59 +1571,70 @@
                 </div>
             </div>
 
-            <!-- Color Selection Button -->
+            <!-- Color Selection -->
             <div id="colorSelection" style="margin-bottom: 1.5rem;">
-                <div style="position: relative; display: inline-block; width: 100%;">
-                    <button id="colorPickerBtn" onclick="toggleColorPalette()" style="width: 100%; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <div style="font-size: 0.85rem; font-weight: 600; color: #1c1917; margin-bottom: 0.5rem;">Farbe</div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="color-option active" data-color="standard" onclick="selectColor('standard')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="color-option" data-color="custom" onclick="selectColor('custom')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
+                        Individuell
+                    </button>
+                </div>
+                <div id="customColorNote" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: #fff7ed; border-radius: 8px; font-size: 0.8rem; color: #ea580c; text-align: center;">
+                    Zur Bestimmung der Farbe melden wir uns bei Ihnen
+                </div>
+
+                <!-- Additional Colors Button (shown when standard is selected) -->
+                <div id="additionalColors" style="margin-top: 1rem;">
+                    <button onclick="toggleColorPalette()" style="width: 100%; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                         <span>🎨</span>
-                        <span id="selectedColorText">Farbe wählen</span>
-                        <span>▼</span>
+                        <span>Mehr Farben auswählen</span>
+                        <span id="colorChevron">▼</span>
                     </button>
 
                     <!-- Color Palette Popup -->
-                    <div id="colorPalette" style="display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: white; border: 2px solid #e7e5e4; border-radius: 12px; padding: 1rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); z-index: 10;">
+                    <div id="colorPalette" style="display: none; margin-top: 0.75rem; background: white; border: 2px solid #e7e5e4; border-radius: 12px; padding: 1rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
                         <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; max-height: 300px; overflow-y: auto;">
-                            <button class="color-swatch-option active" data-color="standard" onclick="selectColorFromPalette('standard')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease; position: relative;" title="Wie auf Foto">
-                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📷</div>
-                            </button>
                             <button class="color-swatch-option" data-color="asphalt" onclick="selectColorFromPalette('asphalt')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Asphalt">
-                                <img src="/colors/asphalt.jpeg" alt="Asphalt" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/asphalt.jpeg" alt="Asphalt" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="blue" onclick="selectColorFromPalette('blue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Blue">
-                                <img src="/colors/blue.jpeg" alt="Blue" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/blue.jpeg" alt="Blue" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="deeppink" onclick="selectColorFromPalette('deeppink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Deep Pink">
-                                <img src="/colors/deeppink.jpeg" alt="Deep Pink" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/deeppink.jpeg" alt="Deep Pink" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="lemonyellow" onclick="selectColorFromPalette('lemonyellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Lemon Yellow">
-                                <img src="/colors/lemonyellow.jpeg" alt="Lemon Yellow" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/lemonyellow.jpeg" alt="Lemon Yellow" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="lightgreen" onclick="selectColorFromPalette('lightgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Light Green">
-                                <img src="/colors/lightgreen.jpeg" alt="Light Green" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/lightgreen.jpeg" alt="Light Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="mintgreen" onclick="selectColorFromPalette('mintgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Mint Green">
-                                <img src="/colors/mintgreen.jpeg" alt="Mint Green" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/mintgreen.jpeg" alt="Mint Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="newpink" onclick="selectColorFromPalette('newpink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="New Pink">
-                                <img src="/colors/newpink.jpeg" alt="New Pink" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/newpink.jpeg" alt="New Pink" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="olivegreen" onclick="selectColorFromPalette('olivegreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Olive Green">
-                                <img src="/colors/olivegreen.jpeg" alt="Olive Green" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/olivegreen.jpeg" alt="Olive Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="orange" onclick="selectColorFromPalette('orange')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Orange">
-                                <img src="/colors/orange.jpeg" alt="Orange" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/orange.jpeg" alt="Orange" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="purple" onclick="selectColorFromPalette('purple')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Purple">
-                                <img src="/colors/purple.jpeg" alt="Purple" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/purple.jpeg" alt="Purple" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="red" onclick="selectColorFromPalette('red')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Red">
-                                <img src="/colors/red.jpeg" alt="Red" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/red.jpeg" alt="Red" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="skyblue" onclick="selectColorFromPalette('skyblue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Sky Blue">
-                                <img src="/colors/skyblue.jpeg" alt="Sky Blue" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/skyblue.jpeg" alt="Sky Blue" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                             <button class="color-swatch-option" data-color="yellow" onclick="selectColorFromPalette('yellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Yellow">
-                                <img src="/colors/yellow.jpeg" alt="Yellow" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/colors/yellow.jpeg" alt="Yellow" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                             </button>
                         </div>
                     </div>
@@ -1583,12 +1652,12 @@
     </div>
 
     <style>
-        .size-option.active, .color-swatch-option.active {
+        .size-option.active, .color-option.active, .color-swatch-option.active {
             border-color: #ea580c !important;
             background: #fff7ed !important;
         }
 
-        .size-option:hover {
+        .size-option:hover, .color-option:hover {
             border-color: #ea580c;
         }
 
