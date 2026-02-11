@@ -319,48 +319,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Product Card Color Options */
-        .product-colors {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .product-color-option {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 0;
-            position: relative;
-        }
-
-        .product-color-option:hover {
-            transform: scale(1.15);
-            border-color: var(--accent);
-        }
-
-        .product-color-option.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.3);
-            transform: scale(1.2);
-        }
-
-        .product-color-option.active::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-        }
-
         .product-button {
             display: block;
             width: 100%;
@@ -756,11 +714,6 @@
                     <h3>Hasenkorb</h3>
                     <p>Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.</p>
                     <div class="product-price">13,00 €</div>
-                    <div class="product-colors" data-product="bunnybasket">
-                        <button class="product-color-option active" style="background-color: #E8DCC8;" data-color="beige" data-images='["bunnybasketbeige.jpeg","bunnybasketbeige1.jpeg"]' title="Beige" onclick="event.stopPropagation();"></button>
-                        <button class="product-color-option" style="background-color: #FFB6C1;" data-color="pink" data-images='["bunnybasketpink.jpg","bunnybasketpink.jpg"]' title="Pink" onclick="event.stopPropagation();"></button>
-                        <button class="product-color-option" style="background-color: #DDA0DD;" data-color="purple" data-images='["bunnybasketpurple.jpeg","bunnybasketpurple1.jpeg"]' title="Lila" onclick="event.stopPropagation();"></button>
-                    </div>
                     <button class="add-to-cart-btn" data-product="bunnybasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                 </div>
             </div>
@@ -1118,41 +1071,6 @@
             } else if (e.key === 'ArrowLeft') {
                 prevImage();
             }
-        });
-
-        // Product card color selection
-        document.querySelectorAll('.product-color-option').forEach(colorBtn => {
-            colorBtn.addEventListener('click', (e) => {
-                const productId = e.target.closest('.product-colors').dataset.product;
-                const colorId = e.target.dataset.color;
-                const images = JSON.parse(e.target.dataset.images);
-
-                // Update active state
-                const colorContainer = e.target.closest('.product-colors');
-                colorContainer.querySelectorAll('.product-color-option').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                e.target.classList.add('active');
-
-                // Update product card images
-                const card = e.target.closest('.product-card');
-                const primaryImage = card.querySelector('.product-image.primary');
-                const secondaryImage = card.querySelector('.product-image.secondary');
-
-                if (primaryImage && images[0]) {
-                    primaryImage.src = `images/${images[0]}`;
-                }
-                if (secondaryImage && images[1]) {
-                    secondaryImage.src = `images/${images[1]}`;
-                } else if (secondaryImage && images[0]) {
-                    secondaryImage.src = `images/${images[0]}`;
-                }
-
-                // Update product data for modal
-                if (products[productId] && products[productId].hasColors) {
-                    products[productId].currentColor = colorId;
-                }
-            });
         });
 
         // ============ CART FUNCTIONALITY ============
@@ -1531,21 +1449,6 @@
                 color: color,
                 image: product.images ? product.images[0] : null
             };
-
-            if (product.hasColors && product.colors) {
-                const selectedColorBtn = document.querySelector(`.product-color-option.active[data-product="${productId}"]`);
-                if (selectedColorBtn) {
-                    const selectedColorId = selectedColorBtn.dataset.color;
-                    const selectedColorData = product.colors.find(c => c.id === selectedColorId);
-                    if (selectedColorData) {
-                        cartItem.color = selectedColorId;
-                        cartItem.colorName = selectedColorData.name;
-                        if (selectedColorData.images && selectedColorData.images[0]) {
-                            cartItem.image = `/collections/easter/images/${selectedColorData.images[0]}`;
-                        }
-                    }
-                }
-            }
 
             const cart = getCart();
             const existingItem = cart.find(item =>
