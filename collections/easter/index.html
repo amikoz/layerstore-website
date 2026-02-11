@@ -340,6 +340,19 @@
             color: var(--accent);
         }
 
+        .product-button.added {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-color: var(--border);
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .product-button.added:hover {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
         /* Image Gallery Modal */
         .image-gallery-modal {
             display: none;
@@ -659,7 +672,7 @@
                     <h3>Osterkarotte</h3>
                     <p>Süßer Süßigkeitenbehälter in Karottenform. Perfekt zum Verstecken von Schokolade, Bonbons oder kleinen Osterüberraschungen.</p>
                     <div class="product-price">13,00 €</div>
-                    <button class="product-button" onclick="event.stopPropagation(); addToCart('osterkarotte', 'Osterkarotte', '13,00 €', 'carrot1.jpeg')">In den Warenkorb</button>
+                    <button class="product-button" onclick="event.stopPropagation(); addToCart('osterkarotte', 'Osterkarotte', '13,00 €', 'carrot1.jpeg', this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -673,7 +686,7 @@
                     <h3>Hasenkorb</h3>
                     <p>Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.</p>
                     <div class="product-price">13,00 €</div>
-                    <button class="product-button" onclick="event.stopPropagation(); addToCart('hasenkorb', 'Hasenkorb', '13,00 €', 'bunnybasketbeige.jpeg')">In den Warenkorb</button>
+                    <button class="product-button" onclick="event.stopPropagation(); addToCart('hasenkorb', 'Hasenkorb', '13,00 €', 'bunnybasketbeige.jpeg', this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -687,7 +700,7 @@
                     <h3>Osterei mit Beinen</h3>
                     <p>Verspieltes Ei mit beweglichen Beinen – perfekt für Kinder-Überraschungseier. Ein lustiger Hingucker, der zum Spielen einlädt!</p>
                     <div class="product-price">2,00 €</div>
-                    <button class="product-button" onclick="event.stopPropagation(); addToCart('osterei', 'Osterei mit Beinen', '2,00 €', 'legseggkinder.jpeg')">In den Warenkorb</button>
+                    <button class="product-button" onclick="event.stopPropagation(); addToCart('osterei', 'Osterei mit Beinen', '2,00 €', 'legseggkinder.jpeg', this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -701,7 +714,7 @@
                     <h3>Gestricktes Ei</h3>
                     <p>Elegantes Osterei im Strick-Look in zartem Mintgrün. Die detaillierte Textur verleiht diesem Ei einen handgemachten, gemütlichen Charme.</p>
                     <div class="product-price">5,00 €</div>
-                    <button class="product-button" onclick="event.stopPropagation(); addToCart('gestricktesei', 'Gestricktes Ei', '5,00 €', 'knittedeggmintgreen.jpeg')">In den Warenkorb</button>
+                    <button class="product-button" onclick="event.stopPropagation(); addToCart('gestricktesei', 'Gestricktes Ei', '5,00 €', 'knittedeggmintgreen.jpeg', this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -714,7 +727,7 @@
                     <h3>Hasen-Kinderhalter</h3>
                     <p>Niedlicher Hase speziell für Kinder-Überraschungseier. Perfekt für kleine Schätze und Oster-Geschenke.</p>
                     <div class="product-price">3,00 €</div>
-                    <button class="product-button" onclick="event.stopPropagation(); addToCart('kinderhalter', 'Hasen-Kinderhalter', '3,00 €', 'bunnykinderholder.jpeg')">In den Warenkorb</button>
+                    <button class="product-button" onclick="event.stopPropagation(); addToCart('kinderhalter', 'Hasen-Kinderhalter', '3,00 €', 'bunnykinderholder.jpeg', this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -728,7 +741,7 @@
                     <h3>Hase mit Korb</h3>
                     <p>Verführerischer Hase mit süßem Korb. Perfekt für Ostern und als dekoratives Element.</p>
                     <div class="product-price">5,00 €</div>
-                    <button class="product-button" onclick="event.stopPropagation(); addToCart('hasemmitkorb', 'Hase mit Korb', '5,00 €', 'bunnywithbasket.jpeg')">In den Warenkorb</button>
+                    <button class="product-button" onclick="event.stopPropagation(); addToCart('hasemmitkorb', 'Hase mit Korb', '5,00 €', 'bunnywithbasket.jpeg', this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -741,7 +754,7 @@
                     <h3>Hasen-Kinderrahmen</h3>
                     <p>Schöner Rahmen für Kinderfotos mit Ostermotiv. Perfekt als Andenken oder zur Dekoration.</p>
                     <div class="product-price">2,00 €</div>
-                    <button class="product-button" onclick="event.stopPropagation(); addToCart('kinderrahmen', 'Hasen-Kinderrahmen', '2,00 €', 'kinderrahmen.jpg')">In den Warenkorb</button>
+                    <button class="product-button" onclick="event.stopPropagation(); addToCart('kinderrahmen', 'Hasen-Kinderrahmen', '2,00 €', 'kinderrahmen.jpg', this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -967,7 +980,7 @@
             updateCartCount();
         }
 
-        function addToCart(id, name, price, image) {
+        function addToCart(id, name, price, image, buttonElement) {
             const cart = getCart();
 
             // Check if product already exists in cart
@@ -987,6 +1000,12 @@
 
             saveCart(cart);
             showCartNotification();
+
+            // Change button to "Hinzugefügt"
+            if (buttonElement) {
+                buttonElement.textContent = 'Hinzugefügt';
+                buttonElement.classList.add('added');
+            }
         }
 
         function updateCartCount() {
