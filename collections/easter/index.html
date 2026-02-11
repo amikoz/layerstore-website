@@ -1355,9 +1355,9 @@
                     btn.style.borderColor = '#e7e5e4';
                 });
 
-                // Hide custom color note and show additional colors
+                // Hide custom color note and color selection button (standard selected by default)
                 document.getElementById('customColorNote').style.display = 'none';
-                document.getElementById('additionalColors').style.display = 'block';
+                document.getElementById('additionalColors').style.display = 'none';
 
                 // Hide color palette
                 document.getElementById('colorPalette').style.display = 'none';
@@ -1446,16 +1446,17 @@
             });
             document.getElementById('selectedColor').value = color;
 
-            // Show/hide custom color note
+            // Show/hide custom color note and color selection button
             const customNote = document.getElementById('customColorNote');
+            const additionalColors = document.getElementById('additionalColors');
             if (color === 'custom') {
                 customNote.style.display = 'block';
-                // Hide additional colors when custom is selected
-                document.getElementById('additionalColors').style.display = 'none';
+                // Show "Farbe wählen" button when custom is selected
+                additionalColors.style.display = 'block';
             } else {
                 customNote.style.display = 'none';
-                // Show additional colors when standard is selected
-                document.getElementById('additionalColors').style.display = 'block';
+                // Hide color selection when standard is selected
+                additionalColors.style.display = 'none';
             }
         }
 
@@ -1463,7 +1464,6 @@
             const productId = document.getElementById('modalProductId').value;
             const size = document.getElementById('selectedSize').value;
             const color = document.getElementById('selectedColor').value;
-            const btn = document.querySelector(`.add-to-cart-btn[data-product="${productId}"]`);
 
             // Check if custom size or color
             if (size === 'custom' || color === 'custom') {
@@ -1475,7 +1475,46 @@
             }
 
             // Add to cart with size and color info
-            addToCartWithOptions(btn, size, color);
+            const product = products[productId];
+            const cartItem = {
+                id: productId,
+                name: product.name,
+                price: product.price,
+                size: size,
+                color: color,
+                quantity: 1,
+                image: product.images ? product.images[0] : null
+            };
+
+            const cart = getCart();
+            const existingItem = cart.find(item =>
+                item.id === cartItem.id &&
+                item.size === cartItem.size &&
+                item.color === cartItem.color
+            );
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push(cartItem);
+            }
+
+            saveCart(cart);
+            updateCartCount();
+
+            // Show notification
+            const notification = document.getElementById('cartNotification');
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
+
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+            }, 2000);
+
             closeSizeColorModal();
         }
 
@@ -1586,11 +1625,11 @@
                     Zur Bestimmung der Farbe melden wir uns bei Ihnen
                 </div>
 
-                <!-- Additional Colors Button (shown when standard is selected) -->
-                <div id="additionalColors" style="margin-top: 1rem;">
+                <!-- Color Selection Button (shown only when custom is selected) -->
+                <div id="additionalColors" style="display: none; margin-top: 1rem;">
                     <button onclick="toggleColorPalette()" style="width: 100%; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                         <span>🎨</span>
-                        <span>Mehr Farben auswählen</span>
+                        <span>Farbe wählen</span>
                         <span id="colorChevron">▼</span>
                     </button>
 
