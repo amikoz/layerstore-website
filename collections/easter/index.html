@@ -353,6 +353,50 @@
             color: var(--text-secondary);
         }
 
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .product-actions-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .product-actions-row .product-button {
+            flex: 1;
+        }
+
+        .product-actions-row .quantity-controls {
+            margin-top: 0;
+        }
+
+        /* Customize Button */
+        .customize-button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .customize-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         /* Quantity Controls */
         .quantity-controls {
             display: none;
@@ -402,17 +446,47 @@
 
         .product-actions {
             display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .product-actions-row {
+            display: flex;
             flex-direction: row;
             align-items: center;
             gap: 0.75rem;
         }
 
-        .product-actions .product-button {
+        .product-actions-row .product-button {
             flex: 1;
         }
 
-        .product-actions .quantity-controls {
+        .product-actions-row .quantity-controls {
             margin-top: 0;
+        }
+
+        /* Customize Button */
+        .customize-button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            color: var(--text-primary);
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .customize-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         /* Image Gallery Modal */
@@ -576,6 +650,103 @@
             font-weight: 400;
         }
 
+        /* Customize Modal */
+        .customize-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .customize-modal.active {
+            display: flex;
+        }
+
+        .customize-modal-content {
+            position: relative;
+            width: 350px;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .customize-close {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .customize-close:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .customize-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .customize-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .customize-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .customize-option-btn {
+            padding: 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .customize-option-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .customize-option-btn.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
         /* Footer */
         footer {
             padding: 4rem 4rem;
@@ -735,12 +906,15 @@
                     <p>Süßer Karotten-Behälter für kleine Osterüberraschungen.</p>
                     <div class="product-price">13,00 €</div>
                     <div class="product-actions">
-                        <button class="product-button" data-product-id="osterkarotte" onclick="event.stopPropagation(); addToCart('osterkarotte', 'Osterkarotte', '13,00 €', 'carrot1.jpeg', this)">In den Warenkorb</button>
-                        <div class="quantity-controls" id="qty-controls-osterkarotte">
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', -1)">−</button>
-                            <span class="quantity-value" id="qty-value-osterkarotte">1</span>
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', 1)">+</button>
+                        <div class="product-actions-row">
+                            <button class="product-button" data-product-id="osterkarotte" onclick="event.stopPropagation(); addToCart('osterkarotte', 'Osterkarotte', '13,00 €', 'carrot1.jpeg', this)">In den Warenkorb</button>
+                            <div class="quantity-controls" id="qty-controls-osterkarotte">
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', -1)">−</button>
+                                <span class="quantity-value" id="qty-value-osterkarotte">1</span>
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', 1)">+</button>
+                            </div>
                         </div>
+                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('osterkarotte', 'Osterkarotte')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -756,12 +930,15 @@
                     <p>Charmanter Korb mit Hasenohren und süßen Pfötchen.</p>
                     <div class="product-price">13,00 €</div>
                     <div class="product-actions">
-                        <button class="product-button" data-product-id="hasenkorb" onclick="event.stopPropagation(); addToCart('hasenkorb', 'Hasenkorb', '13,00 €', 'bunnybasketbeige.jpeg', this)">In den Warenkorb</button>
-                        <div class="quantity-controls" id="qty-controls-hasenkorb">
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', -1)">−</button>
-                            <span class="quantity-value" id="qty-value-hasenkorb">1</span>
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', 1)">+</button>
+                        <div class="product-actions-row">
+                            <button class="product-button" data-product-id="hasenkorb" onclick="event.stopPropagation(); addToCart('hasenkorb', 'Hasenkorb', '13,00 €', 'bunnybasketbeige.jpeg', this)">In den Warenkorb</button>
+                            <div class="quantity-controls" id="qty-controls-hasenkorb">
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', -1)">−</button>
+                                <span class="quantity-value" id="qty-value-hasenkorb">1</span>
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', 1)">+</button>
+                            </div>
                         </div>
+                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('hasenkorb', 'Hasenkorb')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -777,12 +954,15 @@
                     <p>Verspieltes Ei mit beweglichen Beinen für Kinder-Überraschungen.</p>
                     <div class="product-price">2,00 €</div>
                     <div class="product-actions">
-                        <button class="product-button" data-product-id="osterei" onclick="event.stopPropagation(); addToCart('osterei', 'Osterei mit Beinen', '2,00 €', 'legseggkinder.jpeg', this)">In den Warenkorb</button>
-                        <div class="quantity-controls" id="qty-controls-osterei">
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', -1)">−</button>
-                            <span class="quantity-value" id="qty-value-osterei">1</span>
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', 1)">+</button>
+                        <div class="product-actions-row">
+                            <button class="product-button" data-product-id="osterei" onclick="event.stopPropagation(); addToCart('osterei', 'Osterei mit Beinen', '2,00 €', 'legseggkinder.jpeg', this)">In den Warenkorb</button>
+                            <div class="quantity-controls" id="qty-controls-osterei">
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', -1)">−</button>
+                                <span class="quantity-value" id="qty-value-osterei">1</span>
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', 1)">+</button>
+                            </div>
                         </div>
+                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('osterei', 'Osterei mit Beinen')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -798,12 +978,15 @@
                     <p>Elegantes Osterei im Strick-Look.</p>
                     <div class="product-price">5,00 €</div>
                     <div class="product-actions">
-                        <button class="product-button" data-product-id="gestricktesei" onclick="event.stopPropagation(); addToCart('gestricktesei', 'Gestricktes Ei', '5,00 €', 'knittedeggmintgreen.jpeg', this)">In den Warenkorb</button>
-                        <div class="quantity-controls" id="qty-controls-gestricktesei">
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', -1)">−</button>
-                            <span class="quantity-value" id="qty-value-gestricktesei">1</span>
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', 1)">+</button>
+                        <div class="product-actions-row">
+                            <button class="product-button" data-product-id="gestricktesei" onclick="event.stopPropagation(); addToCart('gestricktesei', 'Gestricktes Ei', '5,00 €', 'knittedeggmintgreen.jpeg', this)">In den Warenkorb</button>
+                            <div class="quantity-controls" id="qty-controls-gestricktesei">
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', -1)">−</button>
+                                <span class="quantity-value" id="qty-value-gestricktesei">1</span>
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', 1)">+</button>
+                            </div>
                         </div>
+                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('gestricktesei', 'Gestricktes Ei')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -818,12 +1001,15 @@
                     <p>Niedlicher Hase speziell für Kinder-Überraschungseier.</p>
                     <div class="product-price">3,00 €</div>
                     <div class="product-actions">
-                        <button class="product-button" data-product-id="kinderhalter" onclick="event.stopPropagation(); addToCart('kinderhalter', 'Hasen-Kinderhalter', '3,00 €', 'bunnykinderholder.jpeg', this)">In den Warenkorb</button>
-                        <div class="quantity-controls" id="qty-controls-kinderhalter">
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', -1)">−</button>
-                            <span class="quantity-value" id="qty-value-kinderhalter">1</span>
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', 1)">+</button>
+                        <div class="product-actions-row">
+                            <button class="product-button" data-product-id="kinderhalter" onclick="event.stopPropagation(); addToCart('kinderhalter', 'Hasen-Kinderhalter', '3,00 €', 'bunnykinderholder.jpeg', this)">In den Warenkorb</button>
+                            <div class="quantity-controls" id="qty-controls-kinderhalter">
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', -1)">−</button>
+                                <span class="quantity-value" id="qty-value-kinderhalter">1</span>
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', 1)">+</button>
+                            </div>
                         </div>
+                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('kinderhalter', 'Hasen-Kinderhalter')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -839,12 +1025,15 @@
                     <p>Hase mit Korb für Oster-Deko.</p>
                     <div class="product-price">5,00 €</div>
                     <div class="product-actions">
-                        <button class="product-button" data-product-id="hasemmitkorb" onclick="event.stopPropagation(); addToCart('hasemmitkorb', 'Hase mit Korb', '5,00 €', 'bunnywithbasket.jpeg', this)">In den Warenkorb</button>
-                        <div class="quantity-controls" id="qty-controls-hasemmitkorb">
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', -1)">−</button>
-                            <span class="quantity-value" id="qty-value-hasemmitkorb">1</span>
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', 1)">+</button>
+                        <div class="product-actions-row">
+                            <button class="product-button" data-product-id="hasemmitkorb" onclick="event.stopPropagation(); addToCart('hasemmitkorb', 'Hase mit Korb', '5,00 €', 'bunnywithbasket.jpeg', this)">In den Warenkorb</button>
+                            <div class="quantity-controls" id="qty-controls-hasemmitkorb">
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', -1)">−</button>
+                                <span class="quantity-value" id="qty-value-hasemmitkorb">1</span>
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', 1)">+</button>
+                            </div>
                         </div>
+                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('hasemmitkorb', 'Hase mit Korb')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -859,12 +1048,15 @@
                     <p>Schöner Halter für U-Ei.</p>
                     <div class="product-price">2,00 €</div>
                     <div class="product-actions">
-                        <button class="product-button" data-product-id="kinderrahmen" onclick="event.stopPropagation(); addToCart('kinderrahmen', 'Hasen-Kinderrahmen', '2,00 €', 'kinderrahmen.jpg', this)">In den Warenkorb</button>
-                        <div class="quantity-controls" id="qty-controls-kinderrahmen">
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', -1)">−</button>
-                            <span class="quantity-value" id="qty-value-kinderrahmen">1</span>
-                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', 1)">+</button>
+                        <div class="product-actions-row">
+                            <button class="product-button" data-product-id="kinderrahmen" onclick="event.stopPropagation(); addToCart('kinderrahmen', 'Hasen-Kinderrahmen', '2,00 €', 'kinderrahmen.jpg', this)">In den Warenkorb</button>
+                            <div class="quantity-controls" id="qty-controls-kinderrahmen">
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', -1)">−</button>
+                                <span class="quantity-value" id="qty-value-kinderrahmen">1</span>
+                                <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', 1)">+</button>
+                            </div>
                         </div>
+                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('kinderrahmen', 'Hasen-Kinderrahmen')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -900,6 +1092,23 @@
             Mit Präzision gedruckt in Deutschland
         </div>
     </footer>
+
+    <!-- Customize Modal -->
+    <div class="customize-modal" id="customizeModal">
+        <button class="customize-close" id="closeCustomizeModal">&times;</button>
+        <div class="customize-modal-content">
+            <h2 class="customize-title" id="customizeProductName">Produkt</h2>
+            <p class="customize-subtitle">Größe</p>
+            <div class="customize-options">
+                <button class="customize-option-btn" onclick="selectCustomizeOption('as-photo')">
+                    Wie auf dem Foto
+                </button>
+                <button class="customize-option-btn" onclick="selectCustomizeOption('custom')">
+                    Individuell
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Image Gallery Modal -->
     <div class="image-gallery-modal" id="imageGalleryModal">
@@ -1235,6 +1444,52 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
             updateProductButtons(); // Check cart and update buttons on page load
+        });
+
+        // Customize Modal Functions
+        const customizeModal = document.getElementById('customizeModal');
+        let currentCustomizeProductId = null;
+
+        function openCustomizeModal(productId, productName) {
+            currentCustomizeProductId = productId;
+            document.getElementById('customizeProductName').textContent = productName;
+            customizeModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCustomizeModal() {
+            customizeModal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentCustomizeProductId = null;
+        }
+
+        function selectCustomizeOption(option) {
+            // Remove selected class from all options
+            document.querySelectorAll('.customize-option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            // Add selected class to clicked option
+            event.target.classList.add('selected');
+
+            // Close modal after selection
+            setTimeout(() => {
+                closeCustomizeModal();
+            }, 300);
+        }
+
+        // Event listeners for customize modal
+        document.getElementById('closeCustomizeModal').addEventListener('click', closeCustomizeModal);
+
+        customizeModal.addEventListener('click', (e) => {
+            if (e.target === customizeModal) {
+                closeCustomizeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (customizeModal.classList.contains('active') && e.key === 'Escape') {
+                closeCustomizeModal();
+            }
         });
     </script>
 </body>
