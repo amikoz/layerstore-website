@@ -719,8 +719,12 @@
 
         .customize-options {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 0.75rem;
+        }
+
+        .customize-options .customize-option-btn {
+            flex: 1;
         }
 
         .customize-option-btn {
@@ -1478,6 +1482,11 @@
             });
             // Add selected class to clicked option
             event.target.classList.add('selected');
+
+            if (option === 'custom') {
+                // Show message for "Individuell"
+                alert('Wir besprechen diese Details gerne mit Ihnen per E-Mail.');
+            }
 
             // Close modal after selection
             setTimeout(() => {
