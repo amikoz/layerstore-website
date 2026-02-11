@@ -215,6 +215,75 @@
             color: var(--accent);
         }
 
+        /* Quantity Controls */
+        .quantity-container {
+            display: none;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-container.active {
+            display: flex;
+        }
+
+        .hinzugefuegt-btn {
+            flex: 1;
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            cursor: default;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .quantity-btn:hover {
+            background: var(--accent-light);
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity-value {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 1rem;
+        }
+
 
         /* Hero Section */
         .collection-hero {
@@ -917,6 +986,14 @@
                     <h3>Osterkarotte</h3>
                     <div class="product-price">13,00 €</div>
                     <button class="add-to-cart-btn" data-product="osterkarotte" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
+                    <div class="quantity-container" id="quantity-osterkarotte">
+                        <button class="hinzugefuegt-btn">Hinzugefügt</button>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', -1)">−</button>
+                            <span class="quantity-value" id="qty-osterkarotte">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -933,6 +1010,14 @@
                         <button class="add-to-cart-btn" data-product="hasenkorb" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', 'beige')">In den Warenkorb</button>
                         <button class="customize-btn" data-product="hasenkorb" onclick="event.stopPropagation(); openCustomizeModal('hasenkorb')">Anpassen</button>
                     </div>
+                    <div class="quantity-container" id="quantity-hasenkorb">
+                        <button class="hinzugefuegt-btn">Hinzugefügt</button>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', -1)">−</button>
+                            <span class="quantity-value" id="qty-hasenkorb">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -946,6 +1031,14 @@
                     <h3>Osterei mit Beinen</h3>
                     <div class="product-price">2,00 €</div>
                     <button class="add-to-cart-btn" data-product="osterei" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
+                    <div class="quantity-container" id="quantity-osterei">
+                        <button class="hinzugefuegt-btn">Hinzugefügt</button>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', -1)">−</button>
+                            <span class="quantity-value" id="qty-osterei">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -961,6 +1054,14 @@
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="gestricktesei" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="gestricktesei" onclick="event.stopPropagation(); openCustomizeModal('gestricktesei')">Anpassen</button>
+                    </div>
+                    <div class="quantity-container" id="quantity-gestricktesei">
+                        <button class="hinzugefuegt-btn">Hinzugefügt</button>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', -1)">−</button>
+                            <span class="quantity-value" id="qty-gestricktesei">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', 1)">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -978,6 +1079,14 @@
                         <button class="add-to-cart-btn" data-product="kinderhalter" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="kinderhalter" onclick="event.stopPropagation(); openCustomizeModal('kinderhalter')">Anpassen</button>
                     </div>
+                    <div class="quantity-container" id="quantity-kinderhalter">
+                        <button class="hinzugefuegt-btn">Hinzugefügt</button>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', -1)">−</button>
+                            <span class="quantity-value" id="qty-kinderhalter">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -994,6 +1103,14 @@
                         <button class="add-to-cart-btn" data-product="hasemmitkorb" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="hasemmitkorb" onclick="event.stopPropagation(); openCustomizeModal('hasemmitkorb')">Anpassen</button>
                     </div>
+                    <div class="quantity-container" id="quantity-hasemmitkorb">
+                        <button class="hinzugefuegt-btn">Hinzugefügt</button>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', -1)">−</button>
+                            <span class="quantity-value" id="qty-hasemmitkorb">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1007,6 +1124,14 @@
                     <h3>Hasen-Kinderrahmen</h3>
                     <div class="product-price">2,00 €</div>
                     <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
+                    <div class="quantity-container" id="quantity-kinderrahmen">
+                        <button class="hinzugefuegt-btn">Hinzugefügt</button>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', -1)">−</button>
+                            <span class="quantity-value" id="qty-kinderrahmen">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1414,10 +1539,36 @@
             }, 2000);
         }
 
-        // Initialize cart count on page load
+        // Initialize cart count and quantity states on page load
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
+            initializeQuantityStates();
         });
+
+        // Initialize quantity states based on current cart
+        function initializeQuantityStates() {
+            const cart = getCart();
+            const cartItems = cart.reduce((acc, item) => {
+                const key = item.id;
+                if (!acc[key]) acc[key] = 0;
+                acc[key] += item.quantity;
+                return acc;
+            }, {});
+
+            // Update UI for products already in cart
+            Object.keys(cartItems).forEach(productId => {
+                const btn = document.querySelector(`.add-to-cart-btn[data-product="${productId}"]`);
+                const quantityContainer = document.getElementById(`quantity-${productId}`);
+                const qtySpan = document.getElementById(`qty-${productId}`);
+
+                if (btn && quantityContainer && qtySpan) {
+                    btn.style.display = 'none';
+                    quantityContainer.classList.add('active');
+                    qtySpan.textContent = cartItems[productId];
+                }
+            });
+        }
+
         function addToCartWithOptions(btn, size, color) {
             const productId = btn.dataset.product;
             const product = products[productId];
@@ -1447,6 +1598,73 @@
 
             saveCart(cart);
             updateCartCount();
+
+            // Show quantity controls and hide button
+            btn.style.display = 'none';
+            const quantityContainer = document.getElementById(`quantity-${productId}`);
+            const qtySpan = document.getElementById(`qty-${productId}`);
+
+            // Get current quantity for this product
+            const currentQty = cart
+                .filter(item => item.id === productId && item.size === size && item.color === color)
+                .reduce((sum, item) => sum + item.quantity, 0);
+
+            if (quantityContainer && qtySpan) {
+                quantityContainer.classList.add('active');
+                qtySpan.textContent = currentQty;
+            }
+
+            // Show notification
+            const notification = document.getElementById('cartNotification');
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
+
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+            }, 2000);
+        }
+
+        function updateQuantity(productId, change) {
+            const cart = getCart();
+            const item = cart.find(item => item.id === productId);
+
+            if (!item) return;
+
+            // Update quantity
+            item.quantity += change;
+
+            // Remove item if quantity goes to 0
+            if (item.quantity <= 0) {
+                const index = cart.indexOf(item);
+                cart.splice(index, 1);
+
+                // Hide quantity controls and show add button again
+                const quantityContainer = document.getElementById(`quantity-${productId}`);
+                const btn = document.querySelector(`.add-to-cart-btn[data-product="${productId}"]`);
+
+                if (quantityContainer) quantityContainer.classList.remove('active');
+                if (btn) btn.style.display = 'block';
+            } else {
+                // Ensure minimum quantity is 1
+                if (item.quantity < 1) item.quantity = 1;
+            }
+
+            // Save and update
+            saveCart(cart);
+            updateCartCount();
+
+            // Update quantity display
+            const qtySpan = document.getElementById(`qty-${productId}`);
+            if (qtySpan) {
+                const currentQty = cart
+                    .filter(i => i.id === productId)
+                    .reduce((sum, i) => sum + i.quantity, 0);
+                qtySpan.textContent = currentQty;
+            }
 
             // Show notification
             const notification = document.getElementById('cartNotification');
