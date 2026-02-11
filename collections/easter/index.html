@@ -1333,6 +1333,46 @@
                 productImg.alt = product.name;
             }
 
+            // Load saved preferences
+            const savedPrefs = loadUserPreferences(productId);
+            if (savedPrefs.size !== 'standard' || savedPrefs.color !== 'standard') {
+                document.getElementById('selectedSize').value = savedPrefs.size;
+                document.getElementById('selectedColor').value = savedPrefs.color;
+
+                // Update size button active state
+                const sizeOptions = document.querySelectorAll('.size-option');
+                sizeOptions.forEach(btn => btn.classList.remove('active'));
+                const activeSizeBtn = document.querySelector(`.size-option[data-size="${savedPrefs.size}"]`);
+                if (activeSizeBtn) activeSizeBtn.classList.add('active');
+
+                // Update color button active state
+                const colorOptions = document.querySelectorAll('#colorSelection > div > .color-option');
+                colorOptions.forEach(btn => btn.classList.remove('active'));
+                const activeColorBtn = document.querySelector(`#colorSelection > div > .color-option[data-color="${savedPrefs.color}"]`);
+                if (activeColorBtn && savedPrefs.color !== 'standard') {
+                    activeColorBtn.classList.add('active');
+                    activeColorBtn.style.borderColor = '#ea580c';
+                    activeColorBtn.style.background = '#fff7ed';
+                } else if (savedPrefs.color === 'standard') {
+                    document.querySelector('#colorSelection > div > .color-option[data-color="standard"]').classList.add('active');
+                }
+
+                // If custom color was selected, show color name
+                if (savedPrefs.color !== 'standard') {
+                    const colorNames = {
+                        asphalt: 'Asphalt', blue: 'Blau', deeppink: 'Dunkelpink',
+                        lemonyellow: 'Zitronengelb', lightgreen: 'Hellgrün', mintgreen: 'Minzengrün',
+                        newpink: 'Neonpink', olivegreen: 'Oligrün', orange: 'Orange',
+                        purple: 'Lila', red: 'Rot', skyblue: 'Himmelblau', yellow: 'Gelb'
+                    };
+                    const colorName = colorNames[savedPrefs.color] || savedPrefs.color;
+                    const additionalColors = document.getElementById('additionalColors');
+                    if (additionalColors) {
+                        additionalColors.querySelector('button').textContent = colorName || 'Farbe auswählen';
+                    }
+                }
+            }
+
             // Show/hide size option
             const noSizeProducts = ['bunnykinderholder', 'legsegg'];
             const sizeSection = document.getElementById('sizeSelection');
@@ -1393,6 +1433,94 @@
             document.getElementById('sizeColorModal').style.display = 'none';
             // Hide color palette when closing modal
             document.getElementById('colorPalette').style.display = 'none';
+        }
+
+        // Save user preferences for size and color
+        function saveUserPreferences(productId, size, color) {
+            const preferences = JSON.parse(localStorage.getItem('layerstore_preferences') || '{}');
+            preferences[productId] = { size, color };
+            localStorage.setItem('layerstore_preferences', JSON.stringify(preferences));
+        }
+
+        // Load user preferences for size and color
+        function loadUserPreferences(productId) {
+            const preferences = JSON.parse(localStorage.getItem('layerstore_preferences') || '{}');
+            return preferences[productId] || { size: 'standard', color: 'standard' };
+        }
+
+        // Confirm and add to cart with saved preferences
+        function confirmAddToCart() {
+            const productId = document.getElementById('modalProductId').value;
+            const size = document.getElementById('selectedSize').value;
+            const color = document.getElementById('selectedColor').value;
+
+            // Check if custom size or color
+            if (size === 'custom' || color === 'custom') {
+                // For custom options, redirect to contact
+                closeSizeColorModal();
+                alert('Vielen Dank! Wir werden uns schnellstmöglich mit Ihnen in Verbindung setzen, um die Details zu besprechen.');
+                window.location.href = 'mailto:info@layerstore.eu?subject=Anfrage für benutzerdefinierte Größe/Farbe';
+                return;
+            }
+
+            // Save preferences before adding to cart
+            saveUserPreferences(productId, size, color);
+
+            // Get color name
+            let colorName = 'Standard';
+            if (color !== 'standard') {
+                const colorNames = {
+                    asphalt: 'Asphalt', blue: 'Blau', deeppink: 'Dunkelpink',
+                    lemonyellow: 'Zitronengelb', lightgreen: 'Hellgrün', mintgreen: 'Minzengrün',
+                    newpink: 'Neonpink', olivegreen: 'Oligrün', orange: 'Orange',
+                    purple: 'Lila', red: 'Rot', skyblue: 'Himmelblau', yellow: 'Gelb'
+                };
+                colorName = colorNames[color] || color;
+            }
+
+            // Add to cart
+            const product = products[productId];
+            const cartItem = {
+                id: productId,
+                name: product.name,
+                price: product.price,
+                quantity: 1,
+                size: size,
+                color: color,
+                colorName: colorName,
+                image: product.images ? product.images[0] : null
+            };
+
+            const cart = getCart();
+            const existingItem = cart.find(item =>
+                item.id === cartItem.id &&
+                item.size === cartItem.size &&
+                item.color === cartItem.color
+            );
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push(cartItem);
+            }
+
+            saveCart(cart);
+            updateCartCount();
+
+            // Show notification
+            const notification = document.getElementById('cartNotification');
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
+
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+            }, 2000);
+
+            closeSizeColorModal();
         }
 
         function selectSize(size) {
@@ -1468,6 +1596,11 @@
                 }
             });
             document.getElementById('selectedColor').value = color;
+
+            // Save selection to preferences
+            const productId = document.getElementById('modalProductId').value;
+            const currentSize = document.getElementById('selectedSize').value;
+            saveUserPreferences(productId, currentSize, color);
 
             // Show/hide custom color note and color selection button
             const customNote = document.getElementById('customColorNote');
@@ -1591,68 +1724,11 @@
             openSizeColorModal(productId);
         }
 
-        // Open customization modal from product card
-        function openCustomizeModal(productId) {
-            const modal = document.getElementById('customizeModal');
-            const product = products[productId];
-
-            // Set product image
-            const productImg = document.getElementById('customizeProductImg');
-            if (product.images && product.images[0]) {
-                productImg.src = `images/${product.images[0]}`;
-                productImg.alt = product.name;
-            }
-
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-
-            // Reset size selection
-            document.querySelectorAll('#customizeSizeSelection .customize-size-option').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('#customizeSizeSelection .customize-size-option[data-size="standard"]').classList.add('active');
-            document.getElementById('customizeSizeNote').style.display = 'none';
-
-            // Reset color selection
-            document.querySelectorAll('#customizeColorSelection .customize-color-option').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('#customizeColorSelection .customize-color-option[data-color="standard"]').classList.add('active');
-            document.getElementById('customizeColorPalette').style.display = 'none';
-        }
-
-        function selectCustomizeSize(size) {
-            document.querySelectorAll('#customizeSizeSelection .customize-size-option').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`#customizeSizeSelection .customize-size-option[data-size="${size}"]`).classList.add('active');
-
-            const note = document.getElementById('customizeSizeNote');
-            if (size === 'custom') {
-                note.style.display = 'block';
-            } else {
-                note.style.display = 'none';
-            }
-        }
-
-        function selectCustomizeColor(color) {
-            document.querySelectorAll('#customizeColorSelection .customize-color-option').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`#customizeColorSelection .customize-color-option[data-color="${color}"]`).classList.add('active');
-
-            const palette = document.getElementById('customizeColorPalette');
-            if (color === 'standard') {
-                palette.style.display = 'none';
-            } else {
-                palette.style.display = 'block';
-            }
-        }
-
-        function selectCustomizeColorFromPalette(colorId) {
-            selectCustomizeColor(colorId);
-            document.getElementById('customizeColorPalette').style.display = 'none';
-        }
-
-        function closeCustomizeModal() {
-            document.getElementById('customizeModal').style.display = 'none';
-            document.body.style.overflow = '';
-        }
     </script>
 
-    <!-- Product Customization Modal -->
+    <!-- Compact Size and Color Selection Modal -->
+
+    <!-- Compact Size and Color Selection Modal -->
     <div id="customizeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 3000; align-items: center; justify-content: center; padding: 1rem;">
         <div style="background: white; border-radius: 16px; padding: 1.5rem; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
             <button onclick="closeCustomizeModal()" style="position: absolute; top: 0.75rem; right: 0.75rem; background: #f5f5f4; border: 1px solid #e7e5e4; color: #57534e; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">×</button>
@@ -1832,7 +1908,13 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Add to Cart Button -->
+                <button id="modalConfirmBtn" onclick="confirmAddToCart()" style="width: 100%; padding: 1rem; background: #ea580c; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1.5rem;">
+                    In den Warenkorb
+                </button>
             </div>
+        </div>
 
             <input type="hidden" id="selectedSize" value="standard">
             <input type="hidden" id="selectedColor" value="standard">
