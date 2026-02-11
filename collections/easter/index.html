@@ -1627,6 +1627,7 @@
             const currentQty = cart
                 .filter(item => item.id === productId && item.size === size && item.color === color)
                 .reduce((sum, item) => sum + item.quantity, 0);
+                .reduce((sum, item) => sum + item.quantity, 0);
 
             if (quantityContainer && qtySpan) {
                 quantityContainer.classList.add('active');
