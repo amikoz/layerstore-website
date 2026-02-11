@@ -1168,6 +1168,24 @@
         </div>
     </footer>
 
+    <!-- Image Gallery Modal -->
+    <div class="image-gallery-modal" id="imageGalleryModal">
+        <button class="gallery-close" id="closeImageGallery" onclick="closeImageGallery()">&times;</button>
+        <div class="image-gallery-modal-content">
+            <div class="gallery-image-container">
+                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
+            </div>
+            <div class="gallery-info">
+                <h3 id="galleryProductName">Produktname</h3>
+                <div class="gallery-counter">
+                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">6</span>
+                </div>
+            </div>
+            <button class="gallery-arrow prev" onclick="navigateGallery(-1)">&#10094;</button>
+            <button class="gallery-arrow next" onclick="navigateGallery(1)">&#10095;</button>
+        </div>
+    </div>
+
     <!-- Customize Modal -->
     <div class="customize-modal" id="customizeModal">
         <button class="customize-modal-close" id="closeCustomizeModal">×</button>
