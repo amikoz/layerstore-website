@@ -199,10 +199,10 @@
             background: white;
             color: var(--text-primary);
             border: 2px solid var(--border);
-            padding: 0.75rem 1.5rem;
-            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
             font-weight: 400;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.02em;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -768,7 +768,6 @@
                 </div>
                 <div class="product-info">
                     <h3>Osterkarotte</h3>
-                    <p>Süßer Süßigkeitenbehälter in Karottenform. Perfekt zum Verstecken von Schokolade, Bonbons oder kleinen Osterüberraschungen.</p>
                     <div class="product-price">13,00 €</div>
                     <button class="add-to-cart-btn" data-product="carrot" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                 </div>
@@ -782,11 +781,10 @@
                 </div>
                 <div class="product-info">
                     <h3>Hasenkorb</h3>
-                    <p>Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.</p>
                     <div class="product-price">13,00 €</div>
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="bunnybasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnybasket" onclick="event.stopPropagation(); openCustomizeModal('bunnybasket')">Individualisieren</button>
+                        <button class="customize-btn" data-product="bunnybasket" onclick="event.stopPropagation(); openCustomizeModal('bunnybasket')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -799,7 +797,6 @@
                 </div>
                 <div class="product-info">
                     <h3>Osterei mit Beinen</h3>
-                    <p>Verspieltes Ei mit beweglichen Beinen – perfekt für Kinder-Überraschungseier. Ein lustiger Hingucker, der zum Spielen einlädt!</p>
                     <div class="product-price">2,00 €</div>
                     <button class="add-to-cart-btn" data-product="legsegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                 </div>
@@ -813,45 +810,42 @@
                 </div>
                 <div class="product-info">
                     <h3>Gestricktes Ei</h3>
-                    <p>Elegantes Osterei im Strick-Look in zartem Mintgrün. Die detaillierte Textur verleiht diesem Ei einen handgemachten, gemütlichen Charme.</p>
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="knittedegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="knittedegg" onclick="event.stopPropagation(); openCustomizeModal('knittedegg')">Individualisieren</button>
+                        <button class="customize-btn" data-product="knittedegg" onclick="event.stopPropagation(); openCustomizeModal('knittedegg')">Anpassen</button>
                     </div>
                 </div>
             </div>
 
             <!-- Product 5: Bunny Kinder Holder -->
-            <div class="product-card" data-product="bunnyholder">
+            <div class="product-card" data-product="bunnykinderholder">
                 <div class="product-image-container">
-                    <img src="images/placeholder.jpg" alt="Hasen-Halter" class="product-image primary">
-                    <img src="images/placeholder.jpg" alt="Hasen-Halter Detail" class="product-image secondary">
+                    <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter" class="product-image primary">
+                    <img src="images/bunnykinderholder1.jpeg" alt="Hasen-Kinderhalter Detail" class="product-image secondary">
                 </div>
                 <div class="product-info">
-                    <h3>Hasen-Halter</h3>
-                    <p>Niedlicher Hase, der ein Kinder-Überraschungsei hält. Perfekte Kombination aus Dekoration und praktischer Aufbewahrung für kleine Geschenke.</p>
-                    <div class="product-price">2,00 €</div>
+                    <h3>Hasen-Kinderhalter</h3>
+                    <div class="product-price">3,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnyholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnyholder" onclick="event.stopPropagation(); openCustomizeModal('bunnyholder')">Individualisieren</button>
+                        <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); openCustomizeModal('bunnykinderholder')">Anpassen</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 6: Bunny Kinder Holder -->
-            <div class="product-card" data-product="bunnykinderholder">
+            <!-- Product 6: Bunny with Basket -->
+            <div class="product-card" data-product="bunnywithbasket">
                 <div class="product-image-container">
-                    <img src="images/placeholder.jpg" alt="Hasen-Kinderhalter" class="product-image primary">
-                    <img src="images/placeholder.jpg" alt="Hasen-Kinderhalter Detail" class="product-image secondary">
+                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb" class="product-image primary">
+                    <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
                 </div>
                 <div class="product-info">
-                    <h3>Hasen-Kinderhalter</h3>
-                    <p>Niedlicher Hase speziell für Kinder-Überraschungseier. Perfekt für kleine Schätze und Oster-Geschenke.</p>
-                    <div class="product-price">3,00 €</div>
+                    <h3>Hase mit Korb</h3>
+                    <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); openCustomizeModal('bunnykinderholder')">Individualisieren</button>
+                        <button class="add-to-cart-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -868,7 +862,39 @@
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket')">Individualisieren</button>
+                        <button class="customize-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket')">Anpassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 7: Bunny with Basket 2 -->
+            <div class="product-card" data-product="bunnywithbasket2">
+                <div class="product-image-container">
+                    <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb" class="product-image primary">
+                    <img src="images/bunnywithbasket3.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Hase mit Korb Variante</h3>
+                    <div class="product-price">5,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 8: Bunny with Basket 3 -->
+            <div class="product-card" data-product="bunnywithbasket3">
+                <div class="product-image-container">
+                    <img src="images/bunnywithbasket3.jpeg" alt="Hase mit Korb" class="product-image primary">
+                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Hase mit Korb Variante 2</h3>
+                    <div class="product-price">5,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket3')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -968,17 +994,11 @@
                 description: 'Elegantes Osterei im Strick-Look in zartem Mintgrün. Die detaillierte Textur verleiht diesem Ei einen handgemachten, gemütlichen Charme.',
                 images: ['knittedeggmintgreen.jpeg', 'knittedeggmintgreen1.jpeg', 'knittedeggmintgreen2.jpeg', 'knittedeggmintgreen3.jpeg', 'knittedeggmintgreen4.jpeg', 'knittedeggmintgreen5.jpeg']
             },
-            bunnyholder: {
-                name: 'Hasen-Halter',
-                price: '2,00 €',
-                description: 'Niedlicher Hase, der ein Kinder-Überraschungsei hält. Perfekte Kombination aus Dekoration und praktischer Aufbewahrung für kleine Geschenke.',
-                images: ['placeholder.jpg']
-            },
             bunnykinderholder: {
                 name: 'Hasen-Kinderhalter',
                 price: '3,00 €',
                 description: 'Niedlicher Hase speziell für Kinder-Überraschungseier. Perfekt für kleine Schätze und Oster-Geschenke.',
-                images: ['placeholder.jpg']
+                images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
             },
             bunnywithbasket: {
                 name: 'Hase mit Korb',
