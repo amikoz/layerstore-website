@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oster-Kollektion | LayerStore</title>
     <link rel="preload" href="/logo.png" as="image">
+
+    <!-- Preload all product images for faster popup loading -->
+    <link rel="preload" href="collections/easter/images/carrot1.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/carrot2.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/carrot3.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/bunnybasketbeige.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/bunnybasketbeige1.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/bunnybasketbeige2.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/legseggkinder.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/legseggkinder1.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/knittedeggmintgreen.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/knittedeggmintgreen1.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/bunnykinderholder.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/bunnywithbasket.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/bunnywithbasket2.jpeg" as="image">
+    <link rel="preload" href="collections/easter/images/kinderrahmen.jpg" as="image">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -372,6 +389,37 @@
             height: 100%;
             object-fit: cover;
             border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-image.loaded {
+            opacity: 1;
+        }
+
+        /* Loading spinner */
+        .gallery-image-container::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            z-index: 0;
+        }
+
+        .gallery-image-container.loading .gallery-image {
+            opacity: 0;
+        }
+
+        .gallery-image-container:not(.loading) .gallery-image.loaded {
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .gallery-arrow {
@@ -817,6 +865,7 @@
             currentImageIndex = startIndex;
 
             updateGalleryImage();
+            preloadAdjacentImages();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -831,11 +880,40 @@
         function updateGalleryImage() {
             if (!currentProduct) return;
 
+            // Show loading state
+            document.querySelector('.gallery-image-container').classList.add('loading');
+            galleryImage.classList.remove('loaded');
+
             const imagePath = 'images/' + currentProduct.images[currentImageIndex];
+
+            // Load new image
             galleryImage.src = imagePath;
             galleryProductName.textContent = currentProduct.name;
             galleryCurrentIndex.textContent = currentImageIndex + 1;
             galleryTotalImages.textContent = currentProduct.images.length;
+        }
+
+        // Add image load event listener
+        galleryImage.addEventListener('load', function() {
+            this.classList.add('loaded');
+            document.querySelector('.gallery-image-container').classList.remove('loading');
+        });
+
+        // Preload next and previous images for instant navigation
+        function preloadAdjacentImages() {
+            if (!currentProduct) return;
+
+            const prevIndex = currentImageIndex - 1;
+            const nextIndex = currentImageIndex + 1;
+
+            const indicesToPreload = [];
+            if (prevIndex >= 0) indicesToPreload.push(prevIndex);
+            if (nextIndex < currentProduct.images.length) indicesToPreload.push(nextIndex);
+
+            indicesToPreload.forEach(index => {
+                const img = new Image();
+                img.src = 'images/' + currentProduct.images[index];
+            });
         }
 
         function navigateGallery(direction) {
@@ -850,6 +928,7 @@
             }
 
             updateGalleryImage();
+            preloadAdjacentImages();
         }
 
         // Event listeners
