@@ -827,15 +827,12 @@
                 <div class="product-info">
                     <h3>Hasen-Kinderhalter</h3>
                     <div class="product-price">3,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); openCustomizeModal('bunnykinderholder')">Anpassen</button>
-                    </div>
+                    <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                 </div>
             </div>
 
             <!-- Product 6: Bunny with Basket -->
-            <div class="product-card" data-product="bunnywithbasket">
+            <div class="product-card" data-product="bunnywithbasket2">
                 <div class="product-image-container">
                     <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb" class="product-image primary">
                     <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
@@ -844,25 +841,24 @@
                     <h3>Hase mit Korb</h3>
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 7: Bunny with Basket -->
-            <div class="product-card" data-product="bunnywithbasket">
+            <!-- Product 7: Bunny with Basket 3 -->
+            <div class="product-card" data-product="bunnywithbasket3">
                 <div class="product-image-container">
-                    <img src="images/sakurapink.jpeg" alt="Hase mit Korb" class="product-image primary">
-                    <img src="images/sakurapink2.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
+                    <img src="images/bunnywithbasket3.jpeg" alt="Hase mit Korb" class="product-image primary">
+                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
                 </div>
                 <div class="product-info">
-                    <h3>Hase mit Korb</h3>
-                    <p>Verführerischer Hase mit süßem Korb. Perfekt für Ostern und als dekoratives Element.</p>
+                    <h3>Hase mit Korb Variante 2</h3>
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket3')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -896,6 +892,19 @@
                         <button class="add-to-cart-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket3')">Anpassen</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Product 9: Kinder-Rahmen -->
+            <div class="product-card" data-product="kinderrahmen">
+                <div class="product-image-container">
+                    <img src="images/kinderrahmen.jpg" alt="Kinder-Rahmen" class="product-image primary">
+                    <img src="images/kinderrahmen.jpg" alt="Kinder-Rahmen Detail" class="product-image secondary">
+                </div>
+                <div class="product-info">
+                    <h3>Kinder-Rahmen</h3>
+                    <div class="product-price">7,00 €</div>
+                    <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -998,13 +1007,32 @@
                 name: 'Hasen-Kinderhalter',
                 price: '3,00 €',
                 description: 'Niedlicher Hase speziell für Kinder-Überraschungseier. Perfekt für kleine Schätze und Oster-Geschenke.',
+                hasColors: false,
                 images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
             },
             bunnywithbasket: {
                 name: 'Hase mit Korb',
                 price: '5,00 €',
                 description: 'Verführerischer Hase mit süßem Korb. Perfekt für Ostern und als dekoratives Element.',
-                images: ['sakurapink.jpeg', 'sakurapink2.jpeg']
+                images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg']
+            },
+            bunnywithbasket2: {
+                name: 'Hase mit Korb',
+                price: '5,00 €',
+                description: 'Hase mit Korb - Variante 2',
+                images: ['bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
+            },
+            bunnywithbasket3: {
+                name: 'Hase mit Korb',
+                price: '5,00 €',
+                description: 'Hase mit Korb - Variante 3',
+                images: ['bunnywithbasket3.jpeg', 'bunnywithbasket.jpeg']
+            },
+            kinderrahmen: {
+                name: 'Kinder-Rahmen',
+                price: '7,00 €',
+                description: 'Schöner Rahmen für Kinderfotos mit Ostermotiv. Perfekt als Andenken oder zur Dekoration.',
+                images: ['kinderrahmen.jpg']
             }
         };
 
@@ -1374,7 +1402,7 @@
             }
 
             // Show/hide size option
-            const noSizeProducts = ['bunnykinderholder', 'legsegg'];
+            const noSizeProducts = ['legsegg'];
             const sizeSection = document.getElementById('sizeSelection');
             if (noSizeProducts.includes(productId)) {
                 sizeSection.style.display = 'none';
@@ -1390,7 +1418,7 @@
             }
 
             // Show/hide color option
-            const noColorProducts = ['carrot'];
+            const noColorProducts = ['carrot', 'kinderrahmen'];
             const colorSection = document.getElementById('colorSelection');
             if (noColorProducts.includes(productId)) {
                 colorSection.style.display = 'none';
