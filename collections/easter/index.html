@@ -726,6 +726,46 @@
             flex: 1;
         }
 
+        .color-option-btn {
+            width: 80px;
+            height: 80px;
+            padding: 0;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .color-option-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .color-option-btn:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .color-option-btn.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.3);
+        }
+
+        .color-options-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .color-options-grid.visible {
+            display: grid;
+        }
+
         .customize-option-btn {
             padding: 1rem;
             background: white;
@@ -1102,13 +1142,25 @@
         <div class="customize-modal-content">
             <h2 class="customize-title" id="customizeProductName">Produkt</h2>
             <p class="customize-subtitle">Größe</p>
-            <div class="customize-options">
+            <div class="customize-options" id="sizeOptions">
                 <button class="customize-option-btn" onclick="selectCustomizeOption('as-photo')">
                     Wie auf dem Foto
                 </button>
                 <button class="customize-option-btn" onclick="selectCustomizeOption('custom')">
                     Individuell
                 </button>
+            </div>
+            <p class="customize-subtitle">Farbe</p>
+            <div class="customize-options" id="colorOptions">
+                <button class="customize-option-btn" onclick="selectCustomizeOption('color')">
+                    Wie auf dem Foto
+                </button>
+                <button class="customize-option-btn" onclick="selectCustomizeOption('custom')">
+                    Individuell
+                </button>
+            </div>
+            <div class="color-options-grid" id="colorGrid">
+                <!-- Colors will be loaded here by JavaScript -->
             </div>
         </div>
     </div>
@@ -1459,11 +1511,26 @@
 
         // Customize Modal Functions
         const customizeModal = document.getElementById('customizeModal');
+        const colorGrid = document.getElementById('colorGrid');
         let currentCustomizeProductId = null;
+
+        // Available colors from /colors folder (only files without numbers)
+        const availableColors = [
+            'asphalt', 'blue', 'deeppink', 'lightgreen', 'lemonyellow',
+            'mintgreen', 'newpink', 'olivegreen', 'orange', 'pallette',
+            'purple', 'red', 'sakurapink', 'skyblue', 'yellow'
+        ];
 
         function openCustomizeModal(productId, productName) {
             currentCustomizeProductId = productId;
             document.getElementById('customizeProductName').textContent = productName;
+
+            // Hide color options initially
+            document.getElementById('colorOptions').style.display = 'none';
+            document.getElementById('colorGrid').classList.remove('visible');
+            document.getElementById('sizeOptions').style.display = 'flex';
+            document.getElementById('colorOptions').style.display = 'flex';
+
             customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -1472,25 +1539,64 @@
             customizeModal.classList.remove('active');
             document.body.style.overflow = '';
             currentCustomizeProductId = null;
+
+            // Reset view to size options
+            setTimeout(() => {
+                document.getElementById('colorOptions').style.display = 'flex';
+                document.getElementById('colorGrid').classList.remove('visible');
+            }, 300);
         }
 
-        function selectCustomizeOption(option) {
-            // Remove selected class from all options
-            document.querySelectorAll('.customize-option-btn').forEach(btn => {
+        function loadColorOptions() {
+            colorGrid.innerHTML = '';
+
+            availableColors.forEach(color => {
+                const btn = document.createElement('button');
+                btn.className = 'color-option-btn';
+                btn.onclick = () => selectColor(color, btn);
+                btn.title = color.charAt(0).toUpperCase() + color.slice(1);
+
+                const img = document.createElement('img');
+                img.src = `/colors/${color}.jpeg`;
+                img.alt = color;
+                img.loading = 'lazy';
+
+                btn.appendChild(img);
+                colorGrid.appendChild(btn);
+            });
+        }
+
+        function selectColor(color, btnElement) {
+            // Remove selected from all color buttons
+            document.querySelectorAll('.color-option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
-            // Add selected class to clicked option
-            event.target.classList.add('selected');
-
-            if (option === 'custom') {
-                // Show message for "Individuell"
-                alert('Wir melden uns bei Ihnen um Details zu besprechen.');
-            }
+            btnElement.classList.add('selected');
 
             // Close modal after selection
             setTimeout(() => {
                 closeCustomizeModal();
             }, 300);
+        }
+
+        function selectCustomizeOption(option) {
+            if (option === 'color') {
+                // Hide size options and show color grid
+                document.getElementById('sizeOptions').style.display = 'none';
+                document.getElementById('colorOptions').style.display = 'none';
+                colorGrid.classList.add('visible');
+                loadColorOptions();
+            } else if (option === 'as-photo') {
+                // Reset to show size options
+                document.getElementById('sizeOptions').style.display = 'flex';
+                document.getElementById('colorOptions').style.display = 'flex';
+                colorGrid.classList.remove('visible');
+            } else if (option === 'custom') {
+                alert('Wir melden uns bei Ihnen um Details zu besprechen.');
+                setTimeout(() => {
+                    closeCustomizeModal();
+                }, 300);
+            }
         }
 
         // Event listeners for customize modal
