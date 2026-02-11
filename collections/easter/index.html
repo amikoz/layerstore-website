@@ -331,12 +331,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             z-index: 2000;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
         }
 
         .image-gallery-modal.active {
@@ -345,17 +346,15 @@
 
         .image-gallery-modal-content {
             position: relative;
-            width: 500px;
+            width: 350px;
             max-width: 90vw;
             display: flex;
             flex-direction: column;
             align-items: center;
             background: white;
             border-radius: 16px;
-            padding: 2rem;
+            padding: 1rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .gallery-image-container {
@@ -365,7 +364,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .gallery-image {
@@ -382,10 +381,10 @@
             background: var(--accent);
             border: none;
             color: white;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             z-index: 10;
@@ -400,24 +399,24 @@
         }
 
         .gallery-arrow.prev {
-            left: -1rem;
+            left: -0.5rem;
         }
 
         .gallery-arrow.next {
-            right: -1rem;
+            right: -0.5rem;
         }
 
         .gallery-close {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.5rem;
+            right: 0.5rem;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            width: 36px;
-            height: 36px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             z-index: 20;
@@ -442,15 +441,15 @@
 
         .gallery-info h3 {
             font-family: 'DM Serif Display', serif;
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
             color: var(--accent);
         }
 
         .gallery-counter {
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
             font-weight: 400;
         }
 
