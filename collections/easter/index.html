@@ -353,6 +353,59 @@
             color: var(--text-secondary);
         }
 
+        /* Quantity Controls */
+        .quantity-controls {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-controls.visible {
+            display: flex;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .quantity-btn:hover {
+            background: var(--accent-light);
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity-value {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 1rem;
+        }
+
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
         /* Image Gallery Modal */
         .image-gallery-modal {
             display: none;
@@ -672,7 +725,14 @@
                     <h3>Osterkarotte</h3>
                     <p>Süßer Süßigkeitenbehälter in Karottenform. Perfekt zum Verstecken von Schokolade, Bonbons oder kleinen Osterüberraschungen.</p>
                     <div class="product-price">13,00 €</div>
-                    <button class="product-button" data-product-id="osterkarotte" onclick="event.stopPropagation(); addToCart('osterkarotte', 'Osterkarotte', '13,00 €', 'carrot1.jpeg', this)">In den Warenkorb</button>
+                    <div class="product-actions">
+                        <button class="product-button" data-product-id="osterkarotte" onclick="event.stopPropagation(); addToCart('osterkarotte', 'Osterkarotte', '13,00 €', 'carrot1.jpeg', this)">In den Warenkorb</button>
+                        <div class="quantity-controls" id="qty-controls-osterkarotte">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', -1)">−</button>
+                            <span class="quantity-value" id="qty-value-osterkarotte">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterkarotte', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -686,7 +746,14 @@
                     <h3>Hasenkorb</h3>
                     <p>Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.</p>
                     <div class="product-price">13,00 €</div>
-                    <button class="product-button" data-product-id="hasenkorb" onclick="event.stopPropagation(); addToCart('hasenkorb', 'Hasenkorb', '13,00 €', 'bunnybasketbeige.jpeg', this)">In den Warenkorb</button>
+                    <div class="product-actions">
+                        <button class="product-button" data-product-id="hasenkorb" onclick="event.stopPropagation(); addToCart('hasenkorb', 'Hasenkorb', '13,00 €', 'bunnybasketbeige.jpeg', this)">In den Warenkorb</button>
+                        <div class="quantity-controls" id="qty-controls-hasonkorb">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', -1)">−</button>
+                            <span class="quantity-value" id="qty-value-hasonkorb">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasenkorb', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -714,7 +781,14 @@
                     <h3>Gestricktes Ei</h3>
                     <p>Elegantes Osterei im Strick-Look in zartem Mintgrün. Die detaillierte Textur verleiht diesem Ei einen handgemachten, gemütlichen Charme.</p>
                     <div class="product-price">5,00 €</div>
-                    <button class="product-button" data-product-id="gestricktesei" onclick="event.stopPropagation(); addToCart('gestricktesei', 'Gestricktes Ei', '5,00 €', 'knittedeggmintgreen.jpeg', this)">In den Warenkorb</button>
+                    <div class="product-actions">
+                        <button class="product-button" data-product-id="gestricktesei" onclick="event.stopPropagation(); addToCart('gestricktesei', 'Gestricktes Ei', '5,00 €', 'knittedeggmintgreen.jpeg', this)">In den Warenkorb</button>
+                        <div class="quantity-controls" id="qty-controls-gestricktesei">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', -1)">−</button>
+                            <span class="quantity-value" id="qty-value-gestricktesei">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('gestricktesei', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -727,7 +801,14 @@
                     <h3>Hasen-Kinderhalter</h3>
                     <p>Niedlicher Hase speziell für Kinder-Überraschungseier. Perfekt für kleine Schätze und Oster-Geschenke.</p>
                     <div class="product-price">3,00 €</div>
-                    <button class="product-button" data-product-id="kinderhalter" onclick="event.stopPropagation(); addToCart('kinderhalter', 'Hasen-Kinderhalter', '3,00 €', 'bunnykinderholder.jpeg', this)">In den Warenkorb</button>
+                    <div class="product-actions">
+                        <button class="product-button" data-product-id="kinderhalter" onclick="event.stopPropagation(); addToCart('kinderhalter', 'Hasen-Kinderhalter', '3,00 €', 'bunnykinderholder.jpeg', this)">In den Warenkorb</button>
+                        <div class="quantity-controls" id="qty-controls-kinderhalter">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', -1)">−</button>
+                            <span class="quantity-value" id="qty-value-kinderhalter">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderhalter', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -741,7 +822,14 @@
                     <h3>Hase mit Korb</h3>
                     <p>Verführerischer Hase mit süßem Korb. Perfekt für Ostern und als dekoratives Element.</p>
                     <div class="product-price">5,00 €</div>
-                    <button class="product-button" data-product-id="hasemmitkorb" onclick="event.stopPropagation(); addToCart('hasemmitkorb', 'Hase mit Korb', '5,00 €', 'bunnywithbasket.jpeg', this)">In den Warenkorb</button>
+                    <div class="product-actions">
+                        <button class="product-button" data-product-id="hasemmitkorb" onclick="event.stopPropagation(); addToCart('hasemmitkorb', 'Hase mit Korb', '5,00 €', 'bunnywithbasket.jpeg', this)">In den Warenkorb</button>
+                        <div class="quantity-controls" id="qty-controls-hasemmitkorb">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', -1)">−</button>
+                            <span class="quantity-value" id="qty-value-hasemmitkorb">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('hasemmitkorb', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -754,7 +842,14 @@
                     <h3>Hasen-Kinderrahmen</h3>
                     <p>Schöner Rahmen für Kinderfotos mit Ostermotiv. Perfekt als Andenken oder zur Dekoration.</p>
                     <div class="product-price">2,00 €</div>
-                    <button class="product-button" data-product-id="kinderrahmen" onclick="event.stopPropagation(); addToCart('kinderrahmen', 'Hasen-Kinderrahmen', '2,00 €', 'kinderrahmen.jpg', this)">In den Warenkorb</button>
+                    <div class="product-actions">
+                        <button class="product-button" data-product-id="kinderrahmen" onclick="event.stopPropagation(); addToCart('kinderrahmen', 'Hasen-Kinderrahmen', '2,00 €', 'kinderrahmen.jpg', this)">In den Warenkorb</button>
+                        <div class="quantity-controls" id="qty-controls-kinderrahmen">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', -1)">−</button>
+                            <span class="quantity-value" id="qty-value-kinderrahmen">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('kinderrahmen', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1000,12 +1095,7 @@
 
             saveCart(cart);
             showCartNotification();
-
-            // Change button to "Hinzugefügt"
-            if (buttonElement) {
-                buttonElement.textContent = 'Hinzugefügt';
-                buttonElement.classList.add('added');
-            }
+            updateProductButtons(); // Update all buttons and quantity displays
         }
 
         function removeFromCart(id) {
@@ -1039,11 +1129,55 @@
                 if (cartProductIds.includes(productId)) {
                     button.textContent = 'Hinzugefügt';
                     button.classList.add('added');
+
+                    // Show quantity controls
+                    const qtyControls = document.getElementById(`qty-controls-${productId}`);
+                    if (qtyControls) {
+                        qtyControls.classList.add('visible');
+                    }
+
+                    // Update quantity value
+                    const cartItem = cart.find(item => item.id === productId);
+                    if (cartItem) {
+                        const qtyValue = document.getElementById(`qty-value-${productId}`);
+                        if (qtyValue) {
+                            qtyValue.textContent = cartItem.quantity;
+                        }
+                    }
                 } else {
                     button.textContent = 'In den Warenkorb';
                     button.classList.remove('added');
+
+                    // Hide quantity controls
+                    const qtyControls = document.getElementById(`qty-controls-${productId}`);
+                    if (qtyControls) {
+                        qtyControls.classList.remove('visible');
+                    }
                 }
             });
+        }
+
+        function updateQuantity(id, change) {
+            let cart = getCart();
+            const item = cart.find(item => item.id === id);
+
+            if (!item) return;
+
+            // Update quantity
+            item.quantity += change;
+
+            // Remove item if quantity goes to 0
+            if (item.quantity <= 0) {
+                const index = cart.indexOf(item);
+                cart.splice(index, 1);
+            } else {
+                // Ensure minimum quantity is 1
+                if (item.quantity < 1) item.quantity = 1;
+            }
+
+            // Save and update
+            saveCart(cart);
+            updateProductButtons();
         }
 
         function showCartNotification() {
