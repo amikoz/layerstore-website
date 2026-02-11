@@ -1380,6 +1380,14 @@
                     }
                 }
             });
+
+            // Also hide all quantity controls that don't have a matching cart item
+            document.querySelectorAll('.quantity-controls').forEach(qtyControls => {
+                const productId = qtyControls.id.replace('qty-controls-', '');
+                if (!cartProductIds.includes(productId)) {
+                    qtyControls.classList.remove('visible');
+                }
+            });
         }
 
         function updateQuantity(id, change) {
