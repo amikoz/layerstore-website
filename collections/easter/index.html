@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oster-Kollektion | LayerStore</title>
+    <link rel="preload" href="/logo.png" as="image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -951,7 +952,7 @@
     <!-- Header -->
     <header>
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore Logo">
+            <img src="/logo.png" alt="LayerStore Logo" width="200" height="80" loading="eager" decoding="sync" fetchpriority="high">
         </a>
         <nav>
             <a href="/">Startseite</a>
@@ -979,8 +980,8 @@
             <!-- Product 1: Osterkarotte -->
             <div class="product-card" data-product="osterkarotte">
                 <div class="product-image-container">
-                    <img src="images/carrot1.jpeg" alt="Osterkarotte" class="product-image primary">
-                    <img src="images/carrot2.jpeg" alt="Osterkarotte Detail" class="product-image secondary">
+                    <img src="images/carrot1.jpeg" alt="Osterkarotte" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/carrot2.jpeg" alt="Osterkarotte Detail" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Osterkarotte</h3>
@@ -1000,8 +1001,8 @@
             <!-- Product 2: Hasenkorb -->
             <div class="product-card" data-product="hasenkorb">
                 <div class="product-image-container">
-                    <img src="images/bunnybasketbeige.jpeg" alt="Hasenkorb" class="product-image primary">
-                    <img src="images/bunnybasketbeige1.jpeg" alt="Hasenkorb Detail" class="product-image secondary">
+                    <img src="images/bunnybasketbeige.jpeg" alt="Hasenkorb" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/bunnybasketbeige1.jpeg" alt="Hasenkorb Detail" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Hasenkorb</h3>
@@ -1024,8 +1025,8 @@
             <!-- Product 3: Osterei mit Beinen -->
             <div class="product-card" data-product="osterei">
                 <div class="product-image-container">
-                    <img src="images/legseggkinder.jpeg" alt="Osterei mit Beinen" class="product-image primary">
-                    <img src="images/legseggkinder1.jpeg" alt="Osterei mit Beinen Detail" class="product-image secondary">
+                    <img src="images/legseggkinder.jpeg" alt="Osterei mit Beinen" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/legseggkinder1.jpeg" alt="Osterei mit Beinen Detail" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Osterei mit Beinen</h3>
@@ -1045,8 +1046,8 @@
             <!-- Product 4: Gestricktes Ei -->
             <div class="product-card" data-product="gestricktesei">
                 <div class="product-image-container">
-                    <img src="images/knittedeggmintgreen.jpeg" alt="Gestricktes Ei" class="product-image primary">
-                    <img src="images/knittedeggmintgreen1.jpeg" alt="Gestricktes Ei Detail" class="product-image secondary">
+                    <img src="images/knittedeggmintgreen.jpeg" alt="Gestricktes Ei" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/knittedeggmintgreen1.jpeg" alt="Gestricktes Ei Detail" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Gestricktes Ei</h3>
@@ -1069,8 +1070,8 @@
             <!-- Product 5: Hasen-Kinderhalter -->
             <div class="product-card" data-product="kinderhalter">
                 <div class="product-image-container">
-                    <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter" class="product-image primary">
-                    <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter Detail" class="product-image secondary">
+                    <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter Detail" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Hasen-Kinderhalter</h3>
@@ -1093,8 +1094,8 @@
             <!-- Product 6: Hase mit Korb -->
             <div class="product-card" data-product="hasemmitkorb">
                 <div class="product-image-container">
-                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb" class="product-image primary">
-                    <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
+                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb Detail" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Hase mit Korb</h3>
@@ -1117,8 +1118,8 @@
             <!-- Product 7: Hasen-Kinderrahmen -->
             <div class="product-card" data-product="kinderrahmen">
                 <div class="product-image-container">
-                    <img src="images/kinderrahmen.jpg" alt="Hasen-Kinderrahmen" class="product-image primary">
-                    <img src="images/kinderrahmen.jpg" alt="Hasen-Kinderrahmen Detail" class="product-image secondary">
+                    <img src="images/kinderrahmen.jpg" alt="Hasen-Kinderrahmen" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/kinderrahmen.jpg" alt="Hasen-Kinderrahmen Detail" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Hasen-Kinderrahmen</h3>

@@ -7,6 +7,9 @@
     <meta name="description" content="LayerStore - Einzigartige 3D-gedruckte Dekorationen, Geschenke und Accessoires. Individuell designed, nachhaltig produziert.">
 
     <!-- Performance Optimization -->
+    <link rel="preload" href="/logo.png" as="image">
+    <link rel="preload" href="/background4.jpg" as="image">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -565,7 +568,7 @@
     <!-- Header -->
     <header id="header">
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore">
+            <img src="/logo.png" alt="LayerStore" width="200" height="80" loading="eager" decoding="sync" fetchpriority="high">
         </a>
         <nav>
             <a href="/collections">Kollektionen</a>
@@ -602,7 +605,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="/background4.jpg" alt="3D Druck Kreationen">
+                <img src="/background4.jpg" alt="3D Druck Kreationen" width="800" height="600" loading="eager" decoding="async" fetchpriority="high">
             </div>
         </div>
     </section>
