@@ -1627,10 +1627,11 @@
                 // Do nothing - button stays selected as default
                 return;
             } else if (option === 'custom') {
-                alert('Wir melden uns bei Ihnen um Details zu besprechen.');
-                setTimeout(() => {
-                    closeCustomizeModal();
-                }, 300);
+                // Just show color grid, no alert, don't close modal
+                document.getElementById('sizeOptions').style.display = 'none';
+                document.getElementById('colorOptions').style.display = 'none';
+                colorGrid.classList.add('visible');
+                loadColorOptions();
             }
         }
 
