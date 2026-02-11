@@ -767,7 +767,14 @@
                     <h3>Osterei mit Beinen</h3>
                     <p>Verspieltes Ei mit beweglichen Beinen – perfekt für Kinder-Überraschungseier. Ein lustiger Hingucker, der zum Spielen einlädt!</p>
                     <div class="product-price">2,00 €</div>
-                    <button class="product-button" data-product-id="osterei" onclick="event.stopPropagation(); addToCart('osterei', 'Osterei mit Beinen', '2,00 €', 'legseggkinder.jpeg', this)">In den Warenkorb</button>
+                    <div class="product-actions">
+                        <button class="product-button" data-product-id="osterei" onclick="event.stopPropagation(); addToCart('osterei', 'Osterei mit Beinen', '2,00 €', 'legseggkinder.jpeg', this)">In den Warenkorb</button>
+                        <div class="quantity-controls" id="qty-controls-osterei">
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', -1)">−</button>
+                            <span class="quantity-value" id="qty-value-osterei">1</span>
+                            <button class="quantity-btn" onclick="event.stopPropagation(); updateQuantity('osterei', 1)">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
