@@ -402,8 +402,17 @@
 
         .product-actions {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .product-actions .product-button {
+            flex: 1;
+        }
+
+        .product-actions .quantity-controls {
+            margin-top: 0;
         }
 
         /* Image Gallery Modal */
