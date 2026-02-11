@@ -657,7 +657,7 @@
 
         /* Clickable cursor for product cards */
         .product-card {
-            cursor: pointer;
+            cursor: default;
         }
 
         @media (max-width: 768px) {
@@ -692,42 +692,189 @@
             }
         }
 
-        /* Customize Modal Styles */
-        .customize-size-option.active, .customize-color-option.active {
-            border-color: #ea580c !important;
-            background: #fff7ed !important;
+        /* ============ CUSTOMIZE MODAL STYLES ============ */
+        .customize-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .customize-size-option:hover, .customize-color-option:hover {
-            border-color: #ea580c;
+        .customize-modal.active {
+            display: flex;
         }
 
-        .customize-color-swatch:hover {
-            border-color: #ea580c;
-            transform: scale(1.05);
+        .customize-modal-content {
+            position: relative;
+            width: 400px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        .customize-color-swatch.active {
-            border-color: #ea580c;
-            box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.3);
+        .customize-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        #customizeColorPalette::-webkit-scrollbar {
-            width: 6px;
+        .customize-modal-close:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(90deg);
+            border-color: var(--accent);
         }
 
-        #customizeColorPalette::-webkit-scrollbar-track {
-            background: #f5f5f4;
-            border-radius: 3px;
+        .customize-modal-content h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
         }
 
-        #customizeColorPalette::-webkit-scrollbar-thumb {
-            background: #e7e5e4;
-            border-radius: 3px;
+        .customize-price {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
         }
 
-        #customizeColorPalette::-webkit-scrollbar-thumb:hover {
-            background: #d6d3d1;
+        .customize-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .customize-label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .customize-options {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .customize-option-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .customize-option-btn:hover {
+            border-color: var(--accent-light);
+        }
+
+        .customize-option-btn.active {
+            border-color: var(--accent);
+            background: #fff7ed;
+            color: var(--accent);
+        }
+
+        .custom-size-note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .color-palette-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-palette-option:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-light);
+        }
+
+        .color-palette-option.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.2);
+            transform: scale(1.15);
+        }
+
+        .color-palette-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 0.9rem;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .customize-modal-content .add-to-cart-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .customize-modal-content {
+                padding: 1.5rem;
+                width: 95vw;
+            }
+
+            .customize-modal-content h3 {
+                font-size: 1.4rem;
+            }
+
+            .customize-price {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -759,9 +906,9 @@
     <!-- Products Grid -->
     <section id="produkte" class="products-section">
         <div class="products-grid">
-            
-            <!-- Product 1: Carrot -->
-            <div class="product-card" data-product="carrot">
+
+            <!-- Product 1: Osterkarotte -->
+            <div class="product-card" data-product="osterkarotte">
                 <div class="product-image-container">
                     <img src="images/carrot1.jpeg" alt="Osterkarotte" class="product-image primary">
                     <img src="images/carrot2.jpeg" alt="Osterkarotte Detail" class="product-image secondary">
@@ -769,12 +916,12 @@
                 <div class="product-info">
                     <h3>Osterkarotte</h3>
                     <div class="product-price">13,00 €</div>
-                    <button class="add-to-cart-btn" data-product="carrot" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                    <button class="add-to-cart-btn" data-product="osterkarotte" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
                 </div>
             </div>
 
-            <!-- Product 2: Bunny Basket -->
-            <div class="product-card" data-product="bunnybasket">
+            <!-- Product 2: Hasenkorb -->
+            <div class="product-card" data-product="hasenkorb">
                 <div class="product-image-container">
                     <img src="images/bunnybasketbeige.jpeg" alt="Hasenkorb" class="product-image primary">
                     <img src="images/bunnybasketbeige1.jpeg" alt="Hasenkorb Detail" class="product-image secondary">
@@ -783,27 +930,27 @@
                     <h3>Hasenkorb</h3>
                     <div class="product-price">13,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnybasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnybasket" onclick="event.stopPropagation(); openCustomizeModal('bunnybasket')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="hasenkorb" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', 'beige')">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="hasenkorb" onclick="event.stopPropagation(); openCustomizeModal('hasenkorb')">Anpassen</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 3: Legs Egg Kinder -->
-            <div class="product-card" data-product="legsegg">
+            <!-- Product 3: Osterei mit Beinen -->
+            <div class="product-card" data-product="osterei">
                 <div class="product-image-container">
-                    <img src="images/legseggkinder.jpeg" alt="Ei mit Beinen" class="product-image primary">
-                    <img src="images/legseggkinder1.jpeg" alt="Ei mit Beinen Detail" class="product-image secondary">
+                    <img src="images/legseggkinder.jpeg" alt="Osterei mit Beinen" class="product-image primary">
+                    <img src="images/legseggkinder1.jpeg" alt="Osterei mit Beinen Detail" class="product-image secondary">
                 </div>
                 <div class="product-info">
                     <h3>Osterei mit Beinen</h3>
                     <div class="product-price">2,00 €</div>
-                    <button class="add-to-cart-btn" data-product="legsegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                    <button class="add-to-cart-btn" data-product="osterei" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
                 </div>
             </div>
 
-            <!-- Product 4: Knitted Egg -->
-            <div class="product-card" data-product="knittedegg">
+            <!-- Product 4: Gestricktes Ei -->
+            <div class="product-card" data-product="gestricktesei">
                 <div class="product-image-container">
                     <img src="images/knittedeggmintgreen.jpeg" alt="Gestricktes Ei" class="product-image primary">
                     <img src="images/knittedeggmintgreen1.jpeg" alt="Gestricktes Ei Detail" class="product-image secondary">
@@ -812,27 +959,30 @@
                     <h3>Gestricktes Ei</h3>
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="knittedegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="knittedegg" onclick="event.stopPropagation(); openCustomizeModal('knittedegg')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="gestricktesei" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="gestricktesei" onclick="event.stopPropagation(); openCustomizeModal('gestricktesei')">Anpassen</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 5: Bunny Kinder Holder -->
-            <div class="product-card" data-product="bunnykinderholder">
+            <!-- Product 5: Hasen-Kinderhalter -->
+            <div class="product-card" data-product="kinderhalter">
                 <div class="product-image-container">
                     <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter" class="product-image primary">
-                    <img src="images/bunnykinderholder1.jpeg" alt="Hasen-Kinderhalter Detail" class="product-image secondary">
+                    <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter Detail" class="product-image secondary">
                 </div>
                 <div class="product-info">
                     <h3>Hasen-Kinderhalter</h3>
                     <div class="product-price">3,00 €</div>
-                    <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="kinderhalter" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="kinderhalter" onclick="event.stopPropagation(); openCustomizeModal('kinderhalter')">Anpassen</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Product 6: Bunny with Basket -->
-            <div class="product-card" data-product="bunnywithbasket2">
+            <!-- Product 6: Hase mit Korb -->
+            <div class="product-card" data-product="hasemmitkorb">
                 <div class="product-image-container">
                     <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb" class="product-image primary">
                     <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
@@ -841,70 +991,22 @@
                     <h3>Hase mit Korb</h3>
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="hasemmitkorb" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="hasemmitkorb" onclick="event.stopPropagation(); openCustomizeModal('hasemmitkorb')">Anpassen</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 7: Bunny with Basket 3 -->
-            <div class="product-card" data-product="bunnywithbasket3">
-                <div class="product-image-container">
-                    <img src="images/bunnywithbasket3.jpeg" alt="Hase mit Korb" class="product-image primary">
-                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
-                </div>
-                <div class="product-info">
-                    <h3>Hase mit Korb Variante 2</h3>
-                    <div class="product-price">5,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket3')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 7: Bunny with Basket 2 -->
-            <div class="product-card" data-product="bunnywithbasket2">
-                <div class="product-image-container">
-                    <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb" class="product-image primary">
-                    <img src="images/bunnywithbasket3.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
-                </div>
-                <div class="product-info">
-                    <h3>Hase mit Korb Variante</h3>
-                    <div class="product-price">5,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 8: Bunny with Basket 3 -->
-            <div class="product-card" data-product="bunnywithbasket3">
-                <div class="product-image-container">
-                    <img src="images/bunnywithbasket3.jpeg" alt="Hase mit Korb" class="product-image primary">
-                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb Detail" class="product-image secondary">
-                </div>
-                <div class="product-info">
-                    <h3>Hase mit Korb Variante 2</h3>
-                    <div class="product-price">5,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket3')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 9: Kinder-Rahmen -->
+            <!-- Product 7: Hasen-Kinderrahmen -->
             <div class="product-card" data-product="kinderrahmen">
                 <div class="product-image-container">
-                    <img src="images/kinderrahmen.jpg" alt="Kinder-Rahmen" class="product-image primary">
-                    <img src="images/kinderrahmen.jpg" alt="Kinder-Rahmen Detail" class="product-image secondary">
+                    <img src="images/kinderrahmen.jpg" alt="Hasen-Kinderrahmen" class="product-image primary">
+                    <img src="images/kinderrahmen.jpg" alt="Hasen-Kinderrahmen Detail" class="product-image secondary">
                 </div>
                 <div class="product-info">
-                    <h3>Kinder-Rahmen</h3>
-                    <div class="product-price">7,00 €</div>
-                    <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                    <h3>Hasen-Kinderrahmen</h3>
+                    <div class="product-price">2,00 €</div>
+                    <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCartWithOptions(this, 'as-photo', null)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -940,31 +1042,57 @@
         </div>
     </footer>
 
-    <!-- Modal/Popup -->
-    <div class="modal" id="productModal">
-        <button class="modal-close" id="closeModal">×</button>
-        <div class="modal-content">
-            <div class="modal-image-container">
-                <button class="modal-arrow prev" id="prevImage">‹</button>
-                <img src="" alt="" class="modal-image" id="modalImage">
-                <button class="modal-arrow next" id="nextImage">›</button>
+    <!-- Customize Modal -->
+    <div class="customize-modal" id="customizeModal">
+        <button class="customize-modal-close" id="closeCustomizeModal">×</button>
+        <div class="customize-modal-content">
+            <h3 id="customizeProductName"></h3>
+            <div class="customize-price" id="customizeProductPrice"></div>
+
+            <!-- Size Selection -->
+            <div class="customize-section">
+                <label class="customize-label">Größe</label>
+                <div class="customize-options">
+                    <button class="customize-option-btn size-btn" data-size="as-photo" onclick="selectCustomizeSize('as-photo')">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn size-btn" data-size="custom" onclick="selectCustomizeSize('custom')">
+                        Individuell
+                    </button>
+                </div>
+                <div class="custom-size-note" id="customSizeNote" style="display: none;">
+                    Bitte deine Wunschgröße im Kommentar beim Checkout angeben.
+                </div>
             </div>
-            <div class="modal-counter" id="imageCounter"></div>
-            <div class="color-selector" id="colorSelector" style="display: none;"></div>
-            <div class="modal-info" id="modalInfo"></div>
+
+            <!-- Color Selection -->
+            <div class="customize-section">
+                <label class="customize-label">Farbe</label>
+                <div class="customize-options">
+                    <button class="customize-option-btn color-btn" data-color="as-photo" onclick="selectCustomizeColor('as-photo')">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn color-btn" data-color="custom" onclick="selectCustomizeColor('custom')">
+                        Individuell
+                    </button>
+                </div>
+                <div class="color-palette" id="colorPalette" style="display: none;"></div>
+            </div>
+
+            <button class="add-to-cart-btn" id="customizeAddToCart" onclick="addToCartFromCustomize()">In den Warenkorb</button>
         </div>
     </div>
 
     <script>
         // Product data with all images
         const products = {
-            carrot: {
+            osterkarotte: {
                 name: 'Osterkarotte',
                 price: '13,00 €',
                 description: 'Süßer Süßigkeitenbehälter in Karottenform. Perfekt zum Verstecken von Schokolade, Bonbons oder kleinen Osterüberraschungen.',
                 images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
             },
-            bunnybasket: {
+            hasenkorb: {
                 name: 'Hasenkorb',
                 price: '13,00 €',
                 description: 'Charmanter Korb mit Hasenohren und niedlichen Pfötchen. Ideal zum Sammeln von Ostereiern oder als dekorative Aufbewahrung für Leckereien.',
@@ -986,223 +1114,238 @@
                         id: 'purple',
                         name: 'Lila',
                         hex: '#DDA0DD',
-                        images: ['bunnybasketpurple.jpeg', 'bunnybasketpurple1.jpeg', 'bunnybasketpurple2.jpeg', 'bunnybasketpurple3.jpeg']
+                        images: ['bunnybasketpurple.jpeg']
                     }
                 ],
                 defaultColor: 'beige'
             },
-            legsegg: {
+            osterei: {
                 name: 'Osterei mit Beinen',
                 price: '2,00 €',
                 description: 'Verspieltes Ei mit beweglichen Beinen – perfekt für Kinder-Überraschungseier. Ein lustiger Hingucker, der zum Spielen einlädt!',
                 images: ['legseggkinder.jpeg', 'legseggkinder1.jpeg', 'legseggkinder2.jpeg', 'legseggkinder3.jpeg']
             },
-            knittedegg: {
+            gestricktesei: {
                 name: 'Gestricktes Ei',
                 price: '5,00 €',
                 description: 'Elegantes Osterei im Strick-Look in zartem Mintgrün. Die detaillierte Textur verleiht diesem Ei einen handgemachten, gemütlichen Charme.',
                 images: ['knittedeggmintgreen.jpeg', 'knittedeggmintgreen1.jpeg', 'knittedeggmintgreen2.jpeg', 'knittedeggmintgreen3.jpeg', 'knittedeggmintgreen4.jpeg', 'knittedeggmintgreen5.jpeg']
             },
-            bunnykinderholder: {
+            kinderhalter: {
                 name: 'Hasen-Kinderhalter',
                 price: '3,00 €',
                 description: 'Niedlicher Hase speziell für Kinder-Überraschungseier. Perfekt für kleine Schätze und Oster-Geschenke.',
                 hasColors: false,
-                images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
+                images: ['bunnykinderholder.jpeg']
             },
-            bunnywithbasket: {
+            hasemmitkorb: {
                 name: 'Hase mit Korb',
                 price: '5,00 €',
                 description: 'Verführerischer Hase mit süßem Korb. Perfekt für Ostern und als dekoratives Element.',
-                images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg']
-            },
-            bunnywithbasket2: {
-                name: 'Hase mit Korb',
-                price: '5,00 €',
-                description: 'Hase mit Korb - Variante 2',
-                images: ['bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
-            },
-            bunnywithbasket3: {
-                name: 'Hase mit Korb',
-                price: '5,00 €',
-                description: 'Hase mit Korb - Variante 3',
-                images: ['bunnywithbasket3.jpeg', 'bunnywithbasket.jpeg']
+                images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
             },
             kinderrahmen: {
-                name: 'Kinder-Rahmen',
-                price: '7,00 €',
+                name: 'Hasen-Kinderrahmen',
+                price: '2,00 €',
                 description: 'Schöner Rahmen für Kinderfotos mit Ostermotiv. Perfekt als Andenken oder zur Dekoration.',
                 images: ['kinderrahmen.jpg']
             }
         };
 
-        // Modal elements
-        const modal = document.getElementById('productModal');
-        const modalImage = document.getElementById('modalImage');
-        const modalInfo = document.getElementById('modalInfo');
-        const imageCounter = document.getElementById('imageCounter');
-        const colorSelector = document.getElementById('colorSelector');
-        const closeModal = document.getElementById('closeModal');
-        const prevBtn = document.getElementById('prevImage');
-        const nextBtn = document.getElementById('nextImage');
+        // ============ CUSTOMIZE MODAL ============
 
-        let currentProduct = null;
-        let currentProductId = null;
-        let currentImageIndex = 0;
-        let currentColor = null;
-        let currentImages = [];
+        const customizeModal = document.getElementById('customizeModal');
+        let currentCustomizeProductId = null;
+        let currentCustomizeSize = 'as-photo';
+        let currentCustomizeColor = 'as-photo';
 
-        // Open modal when clicking on product card
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                const productId = card.dataset.product;
-                openModal(productId);
+        function openCustomizeModal(productId) {
+            currentCustomizeProductId = productId;
+            const product = products[productId];
+
+            // Reset selections
+            currentCustomizeSize = 'as-photo';
+            currentCustomizeColor = 'as-photo';
+
+            // Update modal content
+            document.getElementById('customizeProductName').textContent = product.name;
+            document.getElementById('customizeProductPrice').textContent = product.price;
+
+            // Reset size buttons
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.size === 'as-photo') {
+                    btn.classList.add('active');
+                }
             });
-        });
 
-        function openModal(productId) {
-            currentProductId = productId;
-            currentProduct = products[productId];
-            currentImageIndex = 0;
+            // Reset color buttons
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.color === 'as-photo') {
+                    btn.classList.add('active');
+                }
+            });
 
-            // Initialize color - use previously selected color if available
-            if (currentProduct.hasColors && currentProduct.colors) {
-                // Check if a color was selected on the product card
-                const selectedColorOnCard = currentProduct.currentColor || currentProduct.defaultColor || currentProduct.colors[0].id;
-                currentColor = selectedColorOnCard;
-                currentImages = currentProduct.colors.find(c => c.id === currentColor).images;
-                renderColorSelector();
-                colorSelector.style.display = 'flex';
-            } else {
-                currentColor = null;
-                currentImages = currentProduct.images;
-                colorSelector.style.display = 'none';
+            // Hide color palette and size note
+            document.getElementById('colorPalette').style.display = 'none';
+            document.getElementById('customSizeNote').style.display = 'none';
+
+            // Show color palette only if product has colors
+            if (product.hasColors && product.colors) {
+                renderColorPalette(product);
             }
 
-            updateModal();
-            modal.classList.add('active');
+            customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
-        function closeModalFunc() {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
+        function renderColorPalette(product) {
+            const palette = document.getElementById('colorPalette');
+            palette.innerHTML = product.colors.map(color => `
+                <button
+                    class="color-palette-option"
+                    data-color="${color.id}"
+                    style="background-color: ${color.hex};"
+                    title="${color.name}"
+                    aria-label="${color.name}"
+                    onclick="selectCustomizeColorFromPalette('${color.id}')"
+                ></button>
+            `).join('');
         }
 
-        function renderColorSelector() {
-            if (!currentProduct.hasColors) return;
-
-            colorSelector.innerHTML = `
-                <span class="color-selector-label">Farbe wählen:</span>
-                ${currentProduct.colors.map(color => `
-                    <button
-                        class="color-option ${color.id === currentColor ? 'active' : ''}"
-                        data-color="${color.id}"
-                        style="background-color: ${color.hex};"
-                        title="${color.name}"
-                        aria-label="${color.name}"
-                    ></button>
-                `).join('')}
-            `;
-
-            // Add event listeners to color options
-            colorSelector.querySelectorAll('.color-option').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const colorId = e.target.dataset.color;
-                    selectColor(colorId);
-                });
-            });
-        }
-
-        function selectColor(colorId) {
-            currentColor = colorId;
-            currentImageIndex = 0;
-            currentImages = currentProduct.colors.find(c => c.id === colorId).images;
+        function selectCustomizeSize(size) {
+            currentCustomizeSize = size;
 
             // Update active state
-            colorSelector.querySelectorAll('.color-option').forEach(btn => {
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.size === size);
+            });
+
+            // Show/hide size note
+            const sizeNote = document.getElementById('customSizeNote');
+            sizeNote.style.display = size === 'custom' ? 'block' : 'none';
+        }
+
+        function selectCustomizeColor(color) {
+            currentCustomizeColor = color;
+
+            // Update active state
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.color === color);
+            });
+
+            // Show/hide color palette
+            const palette = document.getElementById('colorPalette');
+            const product = products[currentCustomizeProductId];
+
+            if (color === 'custom' && product.hasColors && product.colors) {
+                palette.style.display = 'flex';
+            } else {
+                palette.style.display = 'none';
+            }
+        }
+
+        function selectCustomizeColorFromPalette(colorId) {
+            currentCustomizeColor = colorId;
+
+            // Update active state in palette
+            document.querySelectorAll('.color-palette-option').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.color === colorId);
             });
 
-            updateModal();
-        }
-
-        function updateModal() {
-            if (!currentProduct) return;
-
-            // Use current images (from color selection or default)
-            const images = currentImages.length > 0 ? currentImages : currentProduct.images;
-
-            // Update image
-            modalImage.src = `images/${images[currentImageIndex]}`;
-            modalImage.alt = currentProduct.name;
-
-            // Update counter
-            imageCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
-
-            // Update info with color name if applicable
-            let colorInfo = '';
-            if (currentColor && currentProduct.hasColors) {
-                const colorData = currentProduct.colors.find(c => c.id === currentColor);
-                if (colorData) {
-                    colorInfo = `<span style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">Farbe: ${colorData.name}</span>`;
+            // Keep "Individuell" button active
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                if (btn.dataset.color === 'custom') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
                 }
-            }
+            });
+        }
 
-            modalInfo.innerHTML = `
-                ${colorInfo}
-                <h3>${currentProduct.name}</h3>
-                <div class="price">${currentProduct.price}</div>
-                <p>${currentProduct.description}</p>
-                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCartFromModal()">In den Warenkorb</button>
-            `;
+        function closeCustomizeModal() {
+            customizeModal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentCustomizeProductId = null;
+        }
 
-            // Show/hide arrows based on image count
-            if (images.length <= 1) {
-                prevBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
+        function addToCartFromCustomize() {
+            if (!currentCustomizeProductId) return;
+
+            const product = products[currentCustomizeProductId];
+            let selectedColor = null;
+
+            // Determine color selection
+            if (currentCustomizeColor === 'as-photo') {
+                selectedColor = product.defaultColor || null;
+            } else if (currentCustomizeColor === 'custom' && product.hasColors && product.colors) {
+                // Check if a palette color was selected
+                const activePaletteColor = document.querySelector('.color-palette-option.active');
+                if (activePaletteColor) {
+                    selectedColor = activePaletteColor.dataset.color;
+                } else {
+                    selectedColor = product.defaultColor || null;
+                }
             } else {
-                prevBtn.style.display = 'flex';
-                nextBtn.style.display = 'flex';
+                selectedColor = currentCustomizeColor;
             }
+
+            // Create cart item
+            const cartItem = {
+                id: currentCustomizeProductId,
+                name: product.name,
+                price: product.price,
+                color: selectedColor,
+                size: currentCustomizeSize,
+                quantity: 1,
+                image: product.hasColors && selectedColor
+                    ? product.colors.find(c => c.id === selectedColor)?.images[0]
+                    : product.images[0]
+            };
+
+            // Get current cart
+            const cart = getCart();
+
+            // Check if same product with same color and size already exists
+            const existingIndex = cart.findIndex(item =>
+                item.id === currentCustomizeProductId &&
+                item.color === selectedColor &&
+                item.size === currentCustomizeSize
+            );
+
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += 1;
+            } else {
+                cart.push(cartItem);
+            }
+
+            // Save to localStorage
+            saveCart(cart);
+
+            // Show notification
+            showCartNotification();
+
+            // Close modal
+            setTimeout(() => {
+                closeCustomizeModal();
+            }, 500);
         }
 
-        function nextImage() {
-            if (!currentProduct) return;
-            const images = currentImages.length > 0 ? currentImages : currentProduct.images;
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            updateModal();
-        }
-
-        function prevImage() {
-            if (!currentProduct) return;
-            const images = currentImages.length > 0 ? currentImages : currentProduct.images;
-            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            updateModal();
-        }
-
-        // Event listeners
-        closeModal.addEventListener('click', closeModalFunc);
-        nextBtn.addEventListener('click', nextImage);
-        prevBtn.addEventListener('click', prevImage);
+        // Event listener for closing customize modal
+        document.getElementById('closeCustomizeModal').addEventListener('click', closeCustomizeModal);
 
         // Close on background click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModalFunc();
+        customizeModal.addEventListener('click', (e) => {
+            if (e.target === customizeModal) {
+                closeCustomizeModal();
             }
         });
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (!modal.classList.contains('active')) return;
-
-            if (e.key === 'Escape') {
-                closeModalFunc();
-            } else if (e.key === 'ArrowRight') {
-                nextImage();
-            } else if (e.key === 'ArrowLeft') {
-                prevImage();
+            if (customizeModal.classList.contains('active') && e.key === 'Escape') {
+                closeCustomizeModal();
             }
         });
 
@@ -1232,76 +1375,6 @@
             } else {
                 cartCount.classList.remove('visible');
             }
-        }
-
-        // Get selected color for a product
-        function getSelectedColor(productId) {
-            // Check if product has colors and get selected color from card
-            const colorContainer = document.querySelector(`.product-colors[data-product="${productId}"]`);
-            if (colorContainer) {
-                const activeColor = colorContainer.querySelector('.product-color-option.active');
-                if (activeColor) {
-                    return activeColor.dataset.color;
-                }
-            }
-            // Check if product has default color in data
-            if (products[productId] && products[productId].hasColors) {
-                return products[productId].currentColor || products[productId].defaultColor;
-            }
-            return null;
-        }
-
-        // OLD FUNCTION - Replaced with modal version
-        // function addToCart(button) {
-        //     This function is now handled by the modal system
-        // }
-
-        // Add product to cart from modal
-        function addToCartFromModal() {
-            if (!currentProductId || !currentProduct) return;
-
-            const productId = currentProductId;
-            const product = currentProduct;
-            const selectedColor = currentColor;
-
-            // Create cart item
-            const cartItem = {
-                id: productId,
-                name: product.name,
-                price: product.price,
-                color: selectedColor,
-                quantity: 1,
-                image: product.hasColors && selectedColor
-                    ? product.colors.find(c => c.id === selectedColor)?.images[0]
-                    : product.images[0]
-            };
-
-            // Get current cart
-            const cart = getCart();
-
-            // Check if same product with same color already exists
-            const existingIndex = cart.findIndex(item =>
-                item.id === productId && item.color === selectedColor
-            );
-
-            if (existingIndex > -1) {
-                // Update quantity
-                cart[existingIndex].quantity += 1;
-            } else {
-                // Add new item
-                cart.push(cartItem);
-            }
-
-            // Save to localStorage
-            saveCart(cart);
-
-            // Show notification
-            showCartNotification();
-
-            // Close modal
-            setTimeout(() => {
-                closeModalFunc();
-            }, 500);
         }
 
         // Show cart notification
@@ -1345,363 +1418,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
         });
-
-        // Size and Color Selection Modal
-        function openSizeColorModal(productId) {
-            const modal = document.getElementById('sizeColorModal');
-            const product = products[productId];
-
-            // Set product info
-            document.getElementById('modalProductId').value = productId;
-
-            // Set product image
-            const productImg = document.getElementById('modalProductImg');
-            if (product.images && product.images[0]) {
-                productImg.src = `/collections/easter/images/${product.images[0]}`;
-                productImg.alt = product.name;
-            }
-
-            // Load saved preferences
-            const savedPrefs = loadUserPreferences(productId);
-            if (savedPrefs.size !== 'standard' || savedPrefs.color !== 'standard') {
-                document.getElementById('selectedSize').value = savedPrefs.size;
-                document.getElementById('selectedColor').value = savedPrefs.color;
-
-                // Update size button active state
-                const sizeOptions = document.querySelectorAll('.size-option');
-                sizeOptions.forEach(btn => btn.classList.remove('active'));
-                const activeSizeBtn = document.querySelector(`.size-option[data-size="${savedPrefs.size}"]`);
-                if (activeSizeBtn) activeSizeBtn.classList.add('active');
-
-                // Update color button active state
-                const colorOptions = document.querySelectorAll('#colorSelection > div > .color-option');
-                colorOptions.forEach(btn => btn.classList.remove('active'));
-                const activeColorBtn = document.querySelector(`#colorSelection > div > .color-option[data-color="${savedPrefs.color}"]`);
-                if (activeColorBtn && savedPrefs.color !== 'standard') {
-                    activeColorBtn.classList.add('active');
-                    activeColorBtn.style.borderColor = '#ea580c';
-                    activeColorBtn.style.background = '#fff7ed';
-                } else if (savedPrefs.color === 'standard') {
-                    document.querySelector('#colorSelection > div > .color-option[data-color="standard"]').classList.add('active');
-                }
-
-                // If custom color was selected, show color name
-                if (savedPrefs.color !== 'standard') {
-                    const colorNames = {
-                        asphalt: 'Asphalt', blue: 'Blau', deeppink: 'Dunkelpink',
-                        lemonyellow: 'Zitronengelb', lightgreen: 'Hellgrün', mintgreen: 'Minzengrün',
-                        newpink: 'Neonpink', olivegreen: 'Oligrün', orange: 'Orange',
-                        purple: 'Lila', red: 'Rot', skyblue: 'Himmelblau', yellow: 'Gelb'
-                    };
-                    const colorName = colorNames[savedPrefs.color] || savedPrefs.color;
-                    const additionalColors = document.getElementById('additionalColors');
-                    if (additionalColors) {
-                        additionalColors.querySelector('button').textContent = colorName || 'Farbe auswählen';
-                    }
-                }
-            }
-
-            // Show/hide size option
-            const noSizeProducts = ['legsegg'];
-            const sizeSection = document.getElementById('sizeSelection');
-            if (noSizeProducts.includes(productId)) {
-                sizeSection.style.display = 'none';
-                document.getElementById('selectedSize').value = 'standard';
-            } else {
-                sizeSection.style.display = 'block';
-                document.getElementById('selectedSize').value = 'standard';
-                // Reset size selection
-                document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('active'));
-                document.querySelector('.size-option[data-size="standard"]').classList.add('active');
-                // Hide custom size note
-                document.getElementById('customSizeNote').style.display = 'none';
-            }
-
-            // Show/hide color option
-            const noColorProducts = ['carrot', 'kinderrahmen'];
-            const colorSection = document.getElementById('colorSelection');
-            if (noColorProducts.includes(productId)) {
-                colorSection.style.display = 'none';
-                document.getElementById('selectedColor').value = 'standard';
-            } else {
-                colorSection.style.display = 'block';
-                document.getElementById('selectedColor').value = 'standard';
-
-                // Reset main color buttons (Wie auf dem Foto / Individuell)
-                document.querySelectorAll('#colorSelection > div > .color-option').forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.style.borderColor = '#e7e5e4';
-                    btn.style.background = 'white';
-                });
-                const standardBtn = document.querySelector('#colorSelection > div > .color-option[data-color="standard"]');
-                if (standardBtn) {
-                    standardBtn.classList.add('active');
-                    standardBtn.style.borderColor = '#ea580c';
-                    standardBtn.style.background = '#fff7ed';
-                }
-
-                // Reset palette buttons
-                document.querySelectorAll('.color-swatch-option').forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.style.borderColor = '#e7e5e4';
-                });
-
-                // Hide custom color note and color selection button (standard selected by default)
-                document.getElementById('customColorNote').style.display = 'none';
-                document.getElementById('additionalColors').style.display = 'none';
-
-                // Hide color palette
-                document.getElementById('colorPalette').style.display = 'none';
-            }
-
-            modal.style.display = 'flex';
-        }
-
-        function closeSizeColorModal() {
-            document.getElementById('sizeColorModal').style.display = 'none';
-            // Hide color palette when closing modal
-            document.getElementById('colorPalette').style.display = 'none';
-        }
-
-        // Save user preferences for size and color
-        function saveUserPreferences(productId, size, color) {
-            const preferences = JSON.parse(localStorage.getItem('layerstore_preferences') || '{}');
-            preferences[productId] = { size, color };
-            localStorage.setItem('layerstore_preferences', JSON.stringify(preferences));
-        }
-
-        // Load user preferences for size and color
-        function loadUserPreferences(productId) {
-            const preferences = JSON.parse(localStorage.getItem('layerstore_preferences') || '{}');
-            return preferences[productId] || { size: 'standard', color: 'standard' };
-        }
-
-        // Confirm and add to cart with saved preferences
-        function confirmAddToCart() {
-            const productId = document.getElementById('modalProductId').value;
-            const size = document.getElementById('selectedSize').value;
-            const color = document.getElementById('selectedColor').value;
-
-            // Check if custom size or color
-            if (size === 'custom' || color === 'custom') {
-                // For custom options, redirect to contact
-                closeSizeColorModal();
-                alert('Vielen Dank! Wir werden uns schnellstmöglich mit Ihnen in Verbindung setzen, um die Details zu besprechen.');
-                window.location.href = 'mailto:info@layerstore.eu?subject=Anfrage für benutzerdefinierte Größe/Farbe';
-                return;
-            }
-
-            // Save preferences before adding to cart
-            saveUserPreferences(productId, size, color);
-
-            // Get color name
-            let colorName = 'Standard';
-            if (color !== 'standard') {
-                const colorNames = {
-                    asphalt: 'Asphalt', blue: 'Blau', deeppink: 'Dunkelpink',
-                    lemonyellow: 'Zitronengelb', lightgreen: 'Hellgrün', mintgreen: 'Minzengrün',
-                    newpink: 'Neonpink', olivegreen: 'Oligrün', orange: 'Orange',
-                    purple: 'Lila', red: 'Rot', skyblue: 'Himmelblau', yellow: 'Gelb'
-                };
-                colorName = colorNames[color] || color;
-            }
-
-            // Add to cart
-            const product = products[productId];
-            const cartItem = {
-                id: productId,
-                name: product.name,
-                price: product.price,
-                quantity: 1,
-                size: size,
-                color: color,
-                colorName: colorName,
-                image: product.images ? product.images[0] : null
-            };
-
-            const cart = getCart();
-            const existingItem = cart.find(item =>
-                item.id === cartItem.id &&
-                item.size === cartItem.size &&
-                item.color === cartItem.color
-            );
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push(cartItem);
-            }
-
-            saveCart(cart);
-            updateCartCount();
-
-            // Show notification
-            const notification = document.getElementById('cartNotification');
-            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
-
-            notification.style.opacity = '1';
-            notification.style.transform = 'translateY(0)';
-
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateY(20px)';
-            }, 2000);
-
-            closeSizeColorModal();
-        }
-
-        function selectSize(size) {
-            document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.size-option[data-size="${size}"]`).classList.add('active');
-            document.getElementById('selectedSize').value = size;
-
-            // Show/hide custom size note
-            const customNote = document.getElementById('customSizeNote');
-            if (size === 'custom') {
-                customNote.style.display = 'block';
-            } else {
-                customNote.style.display = 'none';
-            }
-
-            // Update button text for custom size
-            const confirmBtn = document.getElementById('confirmAddToCart');
-            if (size === 'custom') {
-                confirmBtn.textContent = 'Anfrage senden (Wir melden uns)';
-            } else {
-                confirmBtn.textContent = 'In den Warenkorb';
-            }
-        }
-
-        function toggleColorPalette() {
-            const palette = document.getElementById('colorPalette');
-            palette.style.display = palette.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function selectColorFromPalette(color) {
-            // Update the selected color value
-            document.getElementById('selectedColor').value = color;
-
-            // Update palette button active states
-            document.querySelectorAll('.color-swatch-option').forEach(btn => {
-                btn.classList.remove('active');
-                btn.style.borderColor = '#e7e5e4';
-            });
-            const selectedBtn = document.querySelector(`.color-swatch-option[data-color="${color}"]`);
-            if (selectedBtn) {
-                selectedBtn.classList.add('active');
-                selectedBtn.style.borderColor = '#ea580c';
-            }
-
-            // Keep "Wie auf dem Foto" button active (since palette colors are standard colors)
-            document.querySelectorAll('#colorSelection > div > .color-option').forEach(btn => {
-                btn.classList.remove('active');
-                btn.style.borderColor = '#e7e5e4';
-                btn.style.background = 'white';
-            });
-            const standardBtn = document.querySelector('#colorSelection > div > .color-option[data-color="standard"]');
-            if (standardBtn) {
-                standardBtn.classList.add('active');
-                standardBtn.style.borderColor = '#ea580c';
-                standardBtn.style.background = '#fff7ed';
-            }
-
-            // Hide palette after selection
-            document.getElementById('colorPalette').style.display = 'none';
-        }
-
-        function selectColor(color) {
-            // Update main color buttons (Wie auf dem Foto / Individuell)
-            document.querySelectorAll('#colorSelection > div > .color-option').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.color === color) {
-                    btn.classList.add('active');
-                    btn.style.borderColor = '#ea580c';
-                    btn.style.background = '#fff7ed';
-                } else {
-                    btn.style.borderColor = '#e7e5e4';
-                    btn.style.background = 'white';
-                }
-            });
-            document.getElementById('selectedColor').value = color;
-
-            // Save selection to preferences
-            const productId = document.getElementById('modalProductId').value;
-            const currentSize = document.getElementById('selectedSize').value;
-            saveUserPreferences(productId, currentSize, color);
-
-            // Show/hide custom color note and color selection button
-            const customNote = document.getElementById('customColorNote');
-            const additionalColors = document.getElementById('additionalColors');
-            if (color === 'custom') {
-                customNote.style.display = 'block';
-                // Show "Farbe wählen" button when custom is selected
-                additionalColors.style.display = 'block';
-            } else {
-                customNote.style.display = 'none';
-                // Hide color selection when standard is selected
-                additionalColors.style.display = 'none';
-            }
-        }
-
-        function confirmAddToCart() {
-            const productId = document.getElementById('modalProductId').value;
-            const size = document.getElementById('selectedSize').value;
-            const color = document.getElementById('selectedColor').value;
-
-            // Check if custom size or color
-            if (size === 'custom' || color === 'custom') {
-                // For custom options, redirect to contact
-                closeSizeColorModal();
-                alert('Vielen Dank! Wir werden uns schnellstmöglich mit Ihnen in Verbindung setzen, um die Details zu besprechen.');
-                window.location.href = 'mailto:info@layerstore.eu?subject=Anfrage für benutzerdefinierte Größe/Farbe';
-                return;
-            }
-
-            // Add to cart with size and color info
-            const product = products[productId];
-            const cartItem = {
-                id: productId,
-                name: product.name,
-                price: product.price,
-                size: size,
-                color: color,
-                quantity: 1,
-                image: product.images ? product.images[0] : null
-            };
-
-            const cart = getCart();
-            const existingItem = cart.find(item =>
-                item.id === cartItem.id &&
-                item.size === cartItem.size &&
-                item.color === cartItem.color
-            );
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push(cartItem);
-            }
-
-            saveCart(cart);
-            updateCartCount();
-
-            // Show notification
-            const notification = document.getElementById('cartNotification');
-            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
-
-            notification.style.opacity = '1';
-            notification.style.transform = 'translateY(0)';
-
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateY(20px)';
-            }, 2000);
-
-            closeSizeColorModal();
-        }
-
         function addToCartWithOptions(btn, size, color) {
             const productId = btn.dataset.product;
             const product = products[productId];
@@ -1746,253 +1462,6 @@
             }, 2000);
         }
 
-        // Override existing addToCart to open modal
-        function addToCart(btn) {
-            const productId = btn.dataset.product;
-            openSizeColorModal(productId);
-        }
-
     </script>
-
-    <!-- Compact Size and Color Selection Modal -->
-
-    <!-- Compact Size and Color Selection Modal -->
-    <div id="customizeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 3000; align-items: center; justify-content: center; padding: 1rem;">
-        <div style="background: white; border-radius: 16px; padding: 1.5rem; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
-            <button onclick="closeCustomizeModal()" style="position: absolute; top: 0.75rem; right: 0.75rem; background: #f5f5f4; border: 1px solid #e7e5e4; color: #57534e; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">×</button>
-
-            <!-- Product Image -->
-            <div style="width: 100%; height: 200px; background: #f5f5f4; border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <img id="customizeProductImg" src="" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-            </div>
-
-            <!-- Size Selection -->
-            <div id="customizeSizeSelection" style="margin-bottom: 1.5rem;">
-                <div style="font-size: 0.85rem; font-weight: 600; color: #1c1917; margin-bottom: 0.5rem;">Größe</div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <button class="customize-size-option active" data-size="standard" onclick="selectCustomizeSize('standard')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-size-option" data-size="custom" onclick="selectCustomizeSize('custom')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Individuell
-                    </button>
-                </div>
-                <div id="customizeSizeNote" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: #fff7ed; border-radius: 8px; font-size: 0.8rem; color: #ea580c; text-align: center;">
-                    Zur Bestimmung von Größe und Preis melden wir uns bei Ihnen
-                </div>
-            </div>
-
-            <!-- Color Selection -->
-            <div id="customizeColorSelection" style="margin-bottom: 1.5rem;">
-                <div style="font-size: 0.85rem; font-weight: 600; color: #1c1917; margin-bottom: 0.5rem;">Farbe</div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <button class="customize-color-option active" data-color="standard" onclick="selectCustomizeColor('standard')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-color-option" data-color="custom" onclick="selectCustomizeColor('custom')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Individuell
-                    </button>
-                </div>
-
-                <!-- Color Palette (shown when custom is selected) -->
-                <div id="customizeColorPalette" style="display: none; margin-top: 1rem; background: white; border: 2px solid #e7e5e4; border-radius: 12px; padding: 1rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
-                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; max-height: 300px; overflow-y: auto;">
-                        <button class="customize-color-swatch" data-color="asphalt" onclick="selectCustomizeColorFromPalette('asphalt')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Asphalt">
-                            <img src="/colors/asphalt.jpeg" alt="Asphalt" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="blue" onclick="selectCustomizeColorFromPalette('blue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Blue">
-                            <img src="/colors/blue.jpeg" alt="Blue" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="deeppink" onclick="selectCustomizeColorFromPalette('deeppink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Deep Pink">
-                            <img src="/colors/deeppink.jpeg" alt="Deep Pink" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="lemonyellow" onclick="selectCustomizeColorFromPalette('lemonyellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Lemon Yellow">
-                            <img src="/colors/lemonyellow.jpeg" alt="Lemon Yellow" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="lightgreen" onclick="selectCustomizeColorFromPalette('lightgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Light Green">
-                            <img src="/colors/lightgreen.jpeg" alt="Light Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="mintgreen" onclick="selectCustomizeColorFromPalette('mintgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Mint Green">
-                            <img src="/colors/mintgreen.jpeg" alt="Mint Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="newpink" onclick="selectCustomizeColorFromPalette('newpink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="New Pink">
-                            <img src="/colors/newpink.jpeg" alt="New Pink" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="olivegreen" onclick="selectCustomizeColorFromPalette('olivegreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Olive Green">
-                            <img src="/colors/olivegreen.jpeg" alt="Olive Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="orange" onclick="selectCustomizeColorFromPalette('orange')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Orange">
-                            <img src="/colors/orange.jpeg" alt="Orange" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="purple" onclick="selectCustomizeColorFromPalette('purple')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Purple">
-                            <img src="/colors/purple.jpeg" alt="Purple" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="red" onclick="selectCustomizeColorFromPalette('red')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Red">
-                            <img src="/colors/red.jpeg" alt="Red" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="skyblue" onclick="selectCustomizeColorFromPalette('skyblue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Sky Blue">
-                            <img src="/colors/skyblue.jpeg" alt="Sky Blue" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                        <button class="customize-color-swatch" data-color="yellow" onclick="selectCustomizeColorFromPalette('yellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Yellow">
-                            <img src="/colors/yellow.jpeg" alt="Yellow" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Compact Size and Color Selection Modal -->
-    <div id="sizeColorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 3000; align-items: center; justify-content: center; padding: 1rem;">
-        <div style="background: white; border-radius: 16px; padding: 1.5rem; max-width: 400px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
-            <button onclick="closeSizeColorModal()" style="position: absolute; top: 0.75rem; right: 0.75rem; background: #f5f5f4; border: 1px solid #e7e5e4; color: #57534e; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">×</button>
-
-            <!-- Product Image -->
-            <div id="modalProductImage" style="width: 100%; height: 200px; background: #f5f5f4; border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <img id="modalProductImg" src="" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-            </div>
-
-            <!-- Size Selection -->
-            <div id="sizeSelection" style="margin-bottom: 1.5rem;">
-                <div style="font-size: 0.85rem; font-weight: 600; color: #1c1917; margin-bottom: 0.5rem;">Größe</div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <button class="size-option active" data-size="standard" onclick="selectSize('standard')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="size-option" data-size="custom" onclick="selectSize('custom')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Individuell
-                    </button>
-                </div>
-                <div id="customSizeNote" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: #fff7ed; border-radius: 8px; font-size: 0.8rem; color: #ea580c; text-align: center;">
-                    Zur Bestimmung von Größe und Preis melden wir uns bei Ihnen
-                </div>
-            </div>
-
-            <!-- Color Selection -->
-            <div id="colorSelection" style="margin-bottom: 1.5rem;">
-                <div style="font-size: 0.85rem; font-weight: 600; color: #1c1917; margin-bottom: 0.5rem;">Farbe</div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <button class="color-option active" data-color="standard" onclick="selectColor('standard')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="color-option" data-color="custom" onclick="selectColor('custom')" style="flex: 1; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; font-weight: 500;">
-                        Individuell
-                    </button>
-                </div>
-                <div id="customColorNote" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: #fff7ed; border-radius: 8px; font-size: 0.8rem; color: #ea580c; text-align: center;">
-                    Zur Bestimmung der Farbe melden wir uns bei Ihnen
-                </div>
-
-                <!-- Color Selection Button (shown only when custom is selected) -->
-                <div id="additionalColors" style="display: none; margin-top: 1rem;">
-                    <button onclick="toggleColorPalette()" style="width: 100%; padding: 0.75rem; border: 2px solid #e7e5e4; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                        <span>🎨</span>
-                        <span>Farbe wählen</span>
-                        <span id="colorChevron">▼</span>
-                    </button>
-
-                    <!-- Color Palette Popup -->
-                    <div id="colorPalette" style="display: none; margin-top: 0.75rem; background: white; border: 2px solid #e7e5e4; border-radius: 12px; padding: 1rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
-                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; max-height: 300px; overflow-y: auto;">
-                            <button class="color-swatch-option" data-color="asphalt" onclick="selectColorFromPalette('asphalt')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Asphalt">
-                                <img src="/colors/asphalt.jpeg" alt="Asphalt" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="blue" onclick="selectColorFromPalette('blue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Blue">
-                                <img src="/colors/blue.jpeg" alt="Blue" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="deeppink" onclick="selectColorFromPalette('deeppink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Deep Pink">
-                                <img src="/colors/deeppink.jpeg" alt="Deep Pink" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="lemonyellow" onclick="selectColorFromPalette('lemonyellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Lemon Yellow">
-                                <img src="/colors/lemonyellow.jpeg" alt="Lemon Yellow" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="lightgreen" onclick="selectColorFromPalette('lightgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Light Green">
-                                <img src="/colors/lightgreen.jpeg" alt="Light Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="mintgreen" onclick="selectColorFromPalette('mintgreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Mint Green">
-                                <img src="/colors/mintgreen.jpeg" alt="Mint Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="newpink" onclick="selectColorFromPalette('newpink')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="New Pink">
-                                <img src="/colors/newpink.jpeg" alt="New Pink" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="olivegreen" onclick="selectColorFromPalette('olivegreen')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Olive Green">
-                                <img src="/colors/olivegreen.jpeg" alt="Olive Green" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="orange" onclick="selectColorFromPalette('orange')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Orange">
-                                <img src="/colors/orange.jpeg" alt="Orange" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="purple" onclick="selectColorFromPalette('purple')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Purple">
-                                <img src="/colors/purple.jpeg" alt="Purple" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="red" onclick="selectColorFromPalette('red')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Red">
-                                <img src="/colors/red.jpeg" alt="Red" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="skyblue" onclick="selectColorFromPalette('skyblue')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Sky Blue">
-                                <img src="/colors/skyblue.jpeg" alt="Sky Blue" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                            <button class="color-swatch-option" data-color="yellow" onclick="selectColorFromPalette('yellow')" style="aspect-ratio: 1; border: 2px solid #e7e5e4; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s ease;" title="Yellow">
-                                <img src="/colors/yellow.jpeg" alt="Yellow" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add to Cart Button -->
-                <button id="modalConfirmBtn" onclick="confirmAddToCart()" style="width: 100%; padding: 1rem; background: #ea580c; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1.5rem;">
-                    In den Warenkorb
-                </button>
-            </div>
-        </div>
-
-            <input type="hidden" id="selectedSize" value="standard">
-            <input type="hidden" id="selectedColor" value="standard">
-            <input type="hidden" id="modalProductId" value="">
-
-            <button id="confirmAddToCart" onclick="confirmAddToCart()" style="width: 100%; padding: 0.875rem; background: #ea580c; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
-                In den Warenkorb
-            </button>
-        </div>
-    </div>
-
-    <style>
-        .size-option.active, .color-option.active, .color-swatch-option.active {
-            border-color: #ea580c !important;
-            background: #fff7ed !important;
-        }
-
-        .size-option:hover, .color-option:hover {
-            border-color: #ea580c;
-        }
-
-        .color-swatch-option:hover {
-            border-color: #ea580c;
-            transform: scale(1.05);
-        }
-
-        .color-swatch-option img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        #colorPalette::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #colorPalette::-webkit-scrollbar-track {
-            background: #f5f5f4;
-            border-radius: 3px;
-        }
-
-        #colorPalette::-webkit-scrollbar-thumb {
-            background: #e7e5e4;
-            border-radius: 3px;
-        }
-
-        #colorPalette::-webkit-scrollbar-thumb:hover {
-            background: #d6d3d1;
-        }
-    </style>
 </body>
 </html>
