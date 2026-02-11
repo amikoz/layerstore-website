@@ -1617,17 +1617,13 @@
         }
 
         function selectCustomizeOption(option) {
-            if (option === 'color') {
-                // Hide size options and show color grid
-                document.getElementById('sizeOptions').style.display = 'none';
-                document.getElementById('colorOptions').style.display = 'none';
-                colorGrid.classList.add('visible');
-                loadColorOptions();
-            } else if (option === 'as-photo') {
-                // Do nothing - button stays selected as default
+            // 'Wie auf dem Foto' does nothing in both cases
+            if (option === 'as-photo') {
                 return;
-            } else if (option === 'custom') {
-                // Just show color grid - no action, no close
+            }
+
+            // Both 'Individuell' buttons show color grid
+            if (option === 'color' || option === 'custom') {
                 document.getElementById('sizeOptions').style.display = 'none';
                 document.getElementById('colorOptions').style.display = 'none';
                 colorGrid.classList.add('visible');
