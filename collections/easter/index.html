@@ -1162,7 +1162,7 @@
             <h2 class="customize-title" id="customizeProductName">Produkt</h2>
             <p class="customize-subtitle">Größe</p>
             <div class="customize-options" id="sizeOptions">
-                <button class="customize-option-btn" onclick="selectCustomizeOption('as-photo')">
+                <button class="customize-option-btn default-option" onclick="selectCustomizeOption('as-photo')">
                     Wie auf dem Foto
                 </button>
                 <button class="customize-option-btn" onclick="selectCustomizeOption('custom')">
@@ -1544,11 +1544,16 @@
             currentCustomizeProductId = productId;
             document.getElementById('customizeProductName').textContent = productName;
 
-            // Hide color options initially
-            document.getElementById('colorOptions').style.display = 'none';
+            // Hide color grid initially, set default 'Wie auf dem Foto' as selected
+            document.getElementById('colorOptions').style.display = 'flex';
             document.getElementById('colorGrid').classList.remove('visible');
             document.getElementById('sizeOptions').style.display = 'flex';
-            document.getElementById('colorOptions').style.display = 'flex';
+
+            // Mark 'as-photo' as default option
+            document.querySelectorAll('#sizeOptions .customize-option-btn').forEach(btn => {
+                btn.classList.remove('default-option');
+            });
+            document.querySelector('#sizeOptions .customize-option-btn:first-child').classList.add('default-option');
 
             customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1597,6 +1602,14 @@
             });
             btnElement.classList.add('selected');
 
+            // Save selected color to cart item
+            const cart = getCart();
+            const productItem = cart.find(item => item.id === currentCustomizeProductId);
+            if (productItem) {
+                productItem.color = color;
+                saveCart(cart);
+            }
+
             // Close modal after selection
             setTimeout(() => {
                 closeCustomizeModal();
@@ -1611,10 +1624,8 @@
                 colorGrid.classList.add('visible');
                 loadColorOptions();
             } else if (option === 'as-photo') {
-                // Reset to show size options
-                document.getElementById('sizeOptions').style.display = 'flex';
-                document.getElementById('colorOptions').style.display = 'flex';
-                colorGrid.classList.remove('visible');
+                // Do nothing - button stays selected as default
+                return;
             } else if (option === 'custom') {
                 alert('Wir melden uns bei Ihnen um Details zu besprechen.');
                 setTimeout(() => {
