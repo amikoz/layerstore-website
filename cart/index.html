@@ -304,6 +304,14 @@
             color: var(--text-secondary);
         }
 
+        .cart-item-size-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
         .cart-item-price {
             font-size: 1.2rem;
             font-weight: 600;
@@ -963,7 +971,8 @@
                 const imagePath = getImagePath(item);
                 const colorText = item.color && item.color !== 'standard' ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
                 const sizeText = item.option && item.option !== 'as-photo' ? `<span class="cart-item-size">Größe: Nach Absprache</span>` : '';
-                const optionsText = (colorText || sizeText) ? `<div class="cart-item-options">${colorText}${sizeText}</div>` : '';
+                const sizeDescText = item.sizeDescription ? `<span class="cart-item-size-desc">${item.sizeDescription}</span>` : '';
+                const optionsText = (colorText || sizeText || sizeDescText) ? `<div class="cart-item-options">${colorText}${sizeText}${sizeDescText}</div>` : '';
                 const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
 
                 return `
@@ -1100,6 +1109,11 @@
                 // Add size option if not as-photo
                 if (item.option && item.option !== 'as-photo') {
                     itemDetails += `\n   Größe: Nach Absprache`;
+                }
+
+                // Add size description if provided
+                if (item.sizeDescription) {
+                    itemDetails += `\n   (${item.sizeDescription})`;
                 }
 
                 // Show price as null if size is custom

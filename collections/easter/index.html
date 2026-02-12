@@ -742,6 +742,36 @@
             gap: 0.75rem;
         }
 
+        .size-custom-input {
+            display: none;
+            margin-top: 0.75rem;
+        }
+
+        .size-custom-input.visible {
+            display: block;
+        }
+
+        .size-custom-input input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            transition: border-color 0.3s ease;
+        }
+
+        .size-custom-input input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .size-custom-input input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
         .customize-modal-actions {
             display: flex;
             margin-top: 1.5rem;
@@ -1155,6 +1185,9 @@
                     Individuell
                 </button>
             </div>
+            <div class="size-custom-input" id="sizeCustomInput">
+                <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
+            </div>
             <p class="customize-subtitle">Farbe</p>
             <div class="customize-options" id="colorOptions">
                 <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
@@ -1387,7 +1420,7 @@
             updateProductButtons(); // Update all buttons and quantity displays
         }
 
-        function addToCartWithOption(id, name, price, image, option, color = null) {
+        function addToCartWithOption(id, name, price, image, option, color = null, sizeDescription = null) {
             const cart = getCart();
 
             // Check if product already exists in cart
@@ -1397,6 +1430,7 @@
                 existingItem.quantity += 1;
                 existingItem.option = option;
                 if (color) existingItem.color = color;
+                if (sizeDescription) existingItem.sizeDescription = sizeDescription;
             } else {
                 cart.push({
                     id: id,
@@ -1405,7 +1439,8 @@
                     image: image,
                     quantity: 1,
                     option: option,
-                    color: color
+                    color: color,
+                    sizeDescription: sizeDescription
                 });
             }
 
@@ -1582,6 +1617,10 @@
                 btn.classList.remove('selected');
             });
 
+            // Reset size custom input
+            document.getElementById('sizeCustomInput').classList.remove('visible');
+            document.getElementById('sizeCustomText').value = '';
+
             customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -1640,13 +1679,17 @@
         }
 
         function saveCustomizeSelection() {
+            // Get size description if user selected custom size and entered text
+            const sizeCustomText = document.getElementById('sizeCustomText');
+            const sizeDescription = (selectedSizeOption === 'custom' && sizeCustomText.value.trim()) ? sizeCustomText.value.trim() : null;
+
             // Check if user selected a specific color
             if (selectedColor) {
                 // User chose custom color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'custom', selectedColor);
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'custom', selectedColor, sizeDescription);
             } else {
                 // User chose "Wie auf dem Foto" for color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, selectedSizeOption);
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, selectedSizeOption, null, sizeDescription);
             }
 
             // Reset selection and close modal
@@ -1672,6 +1715,7 @@
         function selectSizeOption(option, btnElement) {
             // Get all buttons in size options
             const sizeButtons = document.querySelectorAll('#sizeOptions .customize-option-btn');
+            const sizeCustomInput = document.getElementById('sizeCustomInput');
 
             // Remove all state classes from all size buttons
             sizeButtons.forEach(btn => {
@@ -1683,6 +1727,14 @@
 
             // Add selected state to clicked button
             btnElement.classList.add('selected-option');
+
+            // Show/hide custom input based on selection
+            if (option === 'custom') {
+                sizeCustomInput.classList.add('visible');
+            } else {
+                sizeCustomInput.classList.remove('visible');
+                document.getElementById('sizeCustomText').value = '';
+            }
         }
 
         function selectColorOption(option, btnElement) {
