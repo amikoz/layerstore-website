@@ -1786,17 +1786,18 @@
             // Use 'as-photo' as default if no size was selected
             const sizeOptionToSave = selectedSizeOption || 'as-photo';
 
-            // Get product price from products data
+            // Get product data
             const product = products[currentCustomizeProductId];
             const productPrice = product ? product.price : null;
+            const productImage = product && product.images && product.images[0] ? `/collections/easter/images/${product.images[0]}` : null;
 
             // Check if user selected a specific color
             if (selectedColor) {
                 // User chose custom color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, null, sizeOptionToSave, selectedColor, sizeDescription);
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, selectedColor, sizeDescription);
             } else {
                 // User chose "Wie auf dem Foto" for color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, null, sizeOptionToSave, null, sizeDescription);
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, null, sizeDescription);
             }
 
             // Reset selection and close modal
