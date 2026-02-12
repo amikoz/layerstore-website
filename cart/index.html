@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warenkorb | LayerStore</title>
     <link rel="preload" href="/logo.png" as="image">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #fafaf9;
-            --bg-secondary: #f5f5f4;
-            --text-primary: #1c1917;
-            --text-secondary: #57534e;
-            --accent: #ea580c;
-            --accent-light: #fb923c;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #1e3a8a;
+            --accent-light: #3b82f6;
             --border: #e7e5e4;
             --danger: #dc2626;
         }
@@ -27,7 +28,7 @@
         }
 
         body {
-            font-family: 'Work Sans', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
@@ -36,31 +37,18 @@
 
         /* Header */
         header {
-            padding: 0.5rem 0.75rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(250, 250, 249, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-family: 'DM Serif Display', serif;
-            font-size: 1.5rem;
-            font-weight: 400;
-            letter-spacing: -0.02em;
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        nav {
-            display: flex;
-            gap: 3rem;
-            align-items: center;
+            border-bottom: 3px solid var(--accent);
+            z-index: 1000;
         }
 
         .logo {
@@ -77,6 +65,12 @@
 
         .logo:hover img {
             transform: scale(1.05);
+        }
+
+        nav {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
         }
 
         nav a {
