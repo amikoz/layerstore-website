@@ -719,33 +719,35 @@
 
         .customize-options .customize-option-btn {
             flex: 1;
-            padding: 1rem;
-            background: transparent;
-            border: 1px solid #000;
-            border-radius: 8px;
+            padding: 0.75rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 4px;
             color: var(--text-primary);
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
         }
 
         .customize-option-btn.default-option {
-            background: transparent;
-            border: 1px solid #000;
+            background: white;
+            border: 2px solid var(--border);
             color: var(--text-primary);
         }
 
         .customize-option-btn.selected-option {
-            background: transparent;
-            border: 1px solid var(--accent);
+            background: white;
+            border: 2px solid var(--accent);
             color: var(--accent);
         }
 
         .customize-option-btn.selected {
-            background: transparent;
-            border: 1px solid var(--accent);
+            background: white;
+            border: 2px solid var(--accent);
             color: var(--accent);
         }
 
@@ -754,8 +756,8 @@
             height: auto;
             min-height: 100px;
             padding: 0;
-            border: 1px solid #000;
-            border-radius: 8px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
             overflow: hidden;
