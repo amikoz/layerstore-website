@@ -964,6 +964,7 @@
                 const colorText = item.color && item.color !== 'standard' ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
                 const sizeText = item.option && item.option !== 'as-photo' ? `<span class="cart-item-size">Größe: Nach Absprache</span>` : '';
                 const optionsText = (colorText || sizeText) ? `<div class="cart-item-options">${colorText}${sizeText}</div>` : '';
+                const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
 
                 return `
                     <div class="cart-item" data-index="${index}">
@@ -971,7 +972,7 @@
                         <div class="cart-item-details">
                             <div class="cart-item-name">${item.name}</div>
                             ${optionsText}
-                            <div class="cart-item-price">${item.price}</div>
+                            <div class="cart-item-price">${priceText}</div>
                         </div>
                         <div class="cart-item-actions">
                             <div class="quantity-controls">
@@ -1101,7 +1102,9 @@
                     itemDetails += `\n   Größe: Nach Absprache`;
                 }
 
-                itemDetails += ` - ${item.price}`;
+                // Show price as null if size is custom
+                const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
+                itemDetails += ` - ${priceText}`;
                 orderDetails += itemDetails + '\n';
                 totalItems += item.quantity;
             });
