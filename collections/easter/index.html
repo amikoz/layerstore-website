@@ -1650,6 +1650,10 @@
             document.querySelectorAll('.color-option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
+
+            // Remove default-option if present
+            btnElement.classList.remove('default-option');
+
             btnElement.classList.add('selected');
 
             // Save color selection and close modal
