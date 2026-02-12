@@ -720,8 +720,8 @@
         .customize-options .customize-option-btn {
             flex: 1;
             padding: 1rem;
-            background: white;
-            border: 2px solid var(--border);
+            background: transparent;
+            border: 1px solid #000;
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 0.85rem;
@@ -732,27 +732,21 @@
         }
 
         .customize-option-btn.default-option {
-            background: var(--bg-secondary);
-            border-color: var(--accent);
-            color: var(--accent);
+            background: transparent;
+            border: 1px solid #000;
+            color: var(--text-primary);
         }
 
         .customize-option-btn.selected-option {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
         }
 
         .customize-option-btn.selected {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .customize-option-btn.selected {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
         }
 
         .color-option-btn {
@@ -760,7 +754,7 @@
             height: auto;
             min-height: 100px;
             padding: 0;
-            border: 2px solid var(--border);
+            border: 1px solid #000;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -784,12 +778,6 @@
             padding: 0.25rem;
         }
 
-        .color-option-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
         .color-option-btn:hover {
             border-color: var(--accent);
             transform: scale(1.05);
@@ -797,7 +785,6 @@
 
         .color-option-btn.selected {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.3);
         }
 
         .color-options-grid {
@@ -813,28 +800,9 @@
             display: grid;
         }
 
-        .customize-option-btn {
-            padding: 1rem;
-            background: white;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
         .customize-option-btn:hover {
             border-color: var(--accent);
             color: var(--accent);
-        }
-
-        .customize-option-btn.selected {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
         }
 
         /* Footer */
@@ -1190,7 +1158,7 @@
             <h2 class="customize-title" id="customizeProductName">Produkt</h2>
             <p class="customize-subtitle">Größe</p>
             <div class="customize-options" id="sizeOptions">
-                <button class="customize-option-btn default-option" onclick="selectSizeOption('as-photo', this)">
+                <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
                     Wie auf dem Foto
                 </button>
                 <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
@@ -1199,7 +1167,7 @@
             </div>
             <p class="customize-subtitle">Farbe</p>
             <div class="customize-options" id="colorOptions">
-                <button class="customize-option-btn default-option" onclick="selectColorOption('as-photo', this)">
+                <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
                     Wie auf dem Foto
                 </button>
                 <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
@@ -1610,12 +1578,8 @@
             // Reset all button states in both sections
             const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
             allButtons.forEach(btn => {
-                btn.classList.remove('default-option', 'selected-option', 'selected');
+                btn.classList.remove('selected-option', 'selected');
             });
-
-            // Set 'Wie auf dem Foto' as default in both sections
-            document.querySelector('#sizeOptions .customize-option-btn:first-child').classList.add('default-option');
-            document.querySelector('#colorOptions .customize-option-btn:first-child').classList.add('default-option');
 
             customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
