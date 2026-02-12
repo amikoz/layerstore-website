@@ -733,8 +733,12 @@
         .customize-subtitle {
             font-size: 0.9rem;
             color: var(--text-secondary);
-            font-weight: 400;
+            font-weight: 700;
             margin-bottom: 1.5rem;
+        }
+
+        .customize-subtitle.color-subtitle {
+            margin-top: 2rem;
         }
 
         .customize-options {
@@ -1188,7 +1192,7 @@
             <div class="size-custom-input" id="sizeCustomInput">
                 <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
             </div>
-            <p class="customize-subtitle">Farbe</p>
+            <p class="customize-subtitle color-subtitle">Farbe</p>
             <div class="customize-options" id="colorOptions">
                 <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
                     Wie auf dem Foto
