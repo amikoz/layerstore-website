@@ -701,6 +701,24 @@
             background: var(--accent-light);
         }
 
+        .customize-modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
         .customize-close {
             position: absolute;
             top: 0.75rem;
@@ -779,14 +797,14 @@
 
         .customize-modal-actions {
             display: flex;
-            margin-top: 1.5rem;
-            position: sticky;
+            position: absolute;
             bottom: 0;
+            left: 0;
+            right: 0;
             background: white;
-            padding-top: 1rem;
-            margin-bottom: -3.5rem;
-            padding-bottom: 1rem;
-            z-index: 10;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            margin-top: 1rem;
         }
 
         .customize-add-button {
