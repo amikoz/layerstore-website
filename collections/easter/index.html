@@ -1626,7 +1626,8 @@
         const customizeModal = document.getElementById('customizeModal');
         const colorGrid = document.getElementById('colorGrid');
         let currentCustomizeProductId = null;
-        let selectedSizeOption = 'as-photo'; // Track size selection: 'as-photo' or 'custom'
+        let selectedSizeOption = null; // Track size selection: 'as-photo' or 'custom'
+        let selectedColorOption = null; // Track if color option has been selected
 
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
@@ -1637,7 +1638,8 @@
 
         function openCustomizeModal(productId, productName) {
             currentCustomizeProductId = productId;
-            selectedSizeOption = 'as-photo'; // Reset to default
+            selectedSizeOption = null; // Reset to null
+            selectedColorOption = null; // Reset color option
             selectedColor = null; // Reset color selection
             document.getElementById('customizeProductName').textContent = productName;
 
@@ -1663,7 +1665,7 @@
             document.getElementById('sizeCustomInput').classList.remove('visible');
             document.getElementById('sizeCustomText').value = '';
 
-            // Disable add to cart button until selections are made
+            // Disable add to cart button until BOTH selections are made
             document.getElementById('addToCartButton').disabled = true;
 
             customizeModal.classList.add('active');
@@ -1674,6 +1676,8 @@
             customizeModal.classList.remove('active');
             document.body.style.overflow = '';
             currentCustomizeProductId = null;
+            selectedSizeOption = null;
+            selectedColorOption = null;
 
             // Reset view to initial state
             setTimeout(() => {
@@ -1713,6 +1717,16 @@
 
         let selectedColor = null;
 
+        function checkAndUpdateCartButton() {
+            // Enable button only if BOTH size AND color options are selected
+            const addToCartButton = document.getElementById('addToCartButton');
+            if (selectedSizeOption !== null && selectedColorOption !== null) {
+                addToCartButton.disabled = false;
+            } else {
+                addToCartButton.disabled = true;
+            }
+        }
+
         function selectColor(color, btnElement) {
             // Remove selected from all color buttons
             document.querySelectorAll('.color-option-btn').forEach(btn => {
@@ -1728,13 +1742,16 @@
             const sizeCustomText = document.getElementById('sizeCustomText');
             const sizeDescription = (selectedSizeOption === 'custom' && sizeCustomText.value.trim()) ? sizeCustomText.value.trim() : null;
 
+            // Use 'as-photo' as default if no size was selected
+            const sizeOptionToSave = selectedSizeOption || 'as-photo';
+
             // Check if user selected a specific color
             if (selectedColor) {
                 // User chose custom color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'custom', selectedColor, sizeDescription);
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, sizeOptionToSave, selectedColor, sizeDescription);
             } else {
                 // User chose "Wie auf dem Foto" for color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, selectedSizeOption, null, sizeDescription);
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, sizeOptionToSave, null, sizeDescription);
             }
 
             // Reset selection and close modal
@@ -1780,6 +1797,9 @@
                 sizeCustomInput.classList.remove('visible');
                 document.getElementById('sizeCustomText').value = '';
             }
+
+            // Enable button only if BOTH size AND color options are selected
+            checkAndUpdateCartButton();
         }
 
         function selectColorOption(option, btnElement) {
@@ -1794,8 +1814,8 @@
             // Add selected state to clicked button
             btnElement.classList.add('selected-option');
 
-            // Enable add to cart button when color option is selected
-            document.getElementById('addToCartButton').disabled = false;
+            // Track that color option has been selected
+            selectedColorOption = option;
 
             if (option === 'custom') {
                 // Show color grid, keep everything visible
@@ -1812,6 +1832,9 @@
                     btn.classList.remove('selected');
                 });
             }
+
+            // Enable button only if BOTH size AND color options are selected
+            checkAndUpdateCartButton();
         }
 
         // Event listeners for customize modal
