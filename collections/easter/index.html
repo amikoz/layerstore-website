@@ -1628,27 +1628,30 @@
         }
 
         function loadColorOptions() {
-            colorGrid.innerHTML = '';
+            // Only load colors when called
+            if (colorGrid.innerHTML.trim() !== '') {
+                colorGrid.innerHTML = '';
 
-            availableColors.forEach(color => {
-                const btn = document.createElement('button');
-                btn.className = 'color-option-btn';
-                btn.onclick = () => selectColor(color, btn);
-                btn.title = color.charAt(0).toUpperCase() + color.slice(1);
+                availableColors.forEach(color => {
+                    const btn = document.createElement('button');
+                    btn.className = 'color-option-btn';
+                    btn.onclick = () => selectColor(color, btn);
+                    btn.title = color.charAt(0).toUpperCase() + color.slice(1);
 
-                const img = document.createElement('img');
-                img.src = `/colors/${color}.jpeg`;
-                img.alt = color;
-                img.loading = 'lazy';
+                    const img = document.createElement('img');
+                    img.src = `/colors/${color}.jpeg`;
+                    img.alt = color;
+                    img.loading = 'lazy';
 
-                const colorName = document.createElement('span');
-                colorName.className = 'color-name';
-                colorName.textContent = color.charAt(0).toUpperCase() + color.slice(1);
+                    const colorName = document.createElement('span');
+                    colorName.className = 'color-name';
+                    colorName.textContent = color.charAt(0).toUpperCase() + color.slice(1);
 
-                btn.appendChild(img);
-                btn.appendChild(colorName);
-                colorGrid.appendChild(btn);
-            });
+                    btn.appendChild(img);
+                    btn.appendChild(colorName);
+                    colorGrid.appendChild(btn);
+                });
+            }
         }
 
         function selectColor(color, btnElement) {
