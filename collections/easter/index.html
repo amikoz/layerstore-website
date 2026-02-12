@@ -675,12 +675,36 @@
             position: relative;
             width: 350px;
             max-height: 80vh;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             background: white;
             border-radius: 16px;
-            padding: 1.5rem;
-            padding-bottom: 5rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .customize-scrollable-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .customize-scrollable-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .customize-scrollable-area::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        .customize-scrollable-area::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .customize-scrollable-area::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
         }
 
         .customize-modal-content::-webkit-scrollbar {
@@ -797,14 +821,10 @@
 
         .customize-modal-actions {
             display: flex;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            flex-shrink: 0;
             background: white;
             padding: 1rem 1.5rem;
             border-top: 1px solid var(--border);
-            margin-top: 1rem;
         }
 
         .customize-add-button {
@@ -1217,30 +1237,32 @@
     <div class="customize-modal" id="customizeModal">
         <button class="customize-close" id="closeCustomizeModal">&times;</button>
         <div class="customize-modal-content">
-            <h2 class="customize-title" id="customizeProductName">Produkt</h2>
-            <p class="customize-subtitle">Größe</p>
-            <div class="customize-options" id="sizeOptions">
-                <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
-                    Wie auf dem Foto
-                </button>
-                <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
-                    Individuell
-                </button>
-            </div>
-            <div class="size-custom-input" id="sizeCustomInput">
-                <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
-            </div>
-            <p class="customize-subtitle color-subtitle">Farbe</p>
-            <div class="customize-options" id="colorOptions">
-                <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
-                    Wie auf dem Foto
-                </button>
-                <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
-                    Individuell
-                </button>
-            </div>
-            <div class="color-options-grid" id="colorGrid">
-                <!-- Colors will be loaded here by JavaScript -->
+            <div class="customize-scrollable-area">
+                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
+                <p class="customize-subtitle">Größe</p>
+                <div class="customize-options" id="sizeOptions">
+                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="size-custom-input" id="sizeCustomInput">
+                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
+                </div>
+                <p class="customize-subtitle color-subtitle">Farbe</p>
+                <div class="customize-options" id="colorOptions">
+                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="color-options-grid" id="colorGrid">
+                    <!-- Colors will be loaded here by JavaScript -->
+                </div>
             </div>
             <div class="customize-modal-actions">
                 <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
