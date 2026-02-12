@@ -1487,14 +1487,18 @@
         function addToCartWithOption(id, name, price, image, option, color = null, sizeDescription = null) {
             const cart = getCart();
 
-            // Check if product already exists in cart
-            const existingItem = cart.find(item => item.id === id);
+            // Create unique variant key from id + color + option + sizeDescription
+            // This ensures different variants of the same product are treated as separate cart items
+            const variantKey = `${id}|${color || 'null'}|${option || 'as-photo'}|${sizeDescription || 'null'}`;
+
+            // Check if product with EXACT same variant already exists in cart
+            const existingItem = cart.find(item => {
+                const itemKey = `${item.id}|${item.color || 'null'}|${item.option || 'as-photo'}|${item.sizeDescription || 'null'}`;
+                return itemKey === variantKey;
+            });
 
             if (existingItem) {
                 existingItem.quantity += 1;
-                existingItem.option = option;
-                if (color) existingItem.color = color;
-                if (sizeDescription) existingItem.sizeDescription = sizeDescription;
             } else {
                 cart.push({
                     id: id,
