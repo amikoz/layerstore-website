@@ -717,14 +717,30 @@
             margin-bottom: 1.5rem;
         }
 
-        .customize-options {
-            display: flex;
-            flex-direction: row;
-            gap: 0.75rem;
-        }
-
         .customize-options .customize-option-btn {
             flex: 1;
+            padding: 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .customize-option-btn.default-option {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .customize-option-btn.selected {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
 
         .color-option-btn {
