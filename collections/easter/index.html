@@ -1165,16 +1165,16 @@
                 <button class="customize-option-btn default-option" onclick="saveSelectionAndClose('as-photo')">
                     Wie auf dem Foto
                 </button>
-                <button class="customize-option-btn" onclick="selectCustomizeOption('custom')">
+                <button class="customize-option-btn" onclick="switchToCustomizeOption()">
                     Individuell
                 </button>
             </div>
             <p class="customize-subtitle">Farbe</p>
             <div class="customize-options" id="colorOptions">
-                <button class="customize-option-btn" onclick="selectCustomizeOption('color')">
+                <button class="customize-option-btn default-option" onclick="saveSelectionAndClose('as-photo')">
                     Wie auf dem Foto
                 </button>
-                <button class="customize-option-btn" onclick="selectCustomizeOption('custom')">
+                <button class="customize-option-btn" onclick="switchToCustomizeOption()">
                     Individuell
                 </button>
             </div>
@@ -1640,12 +1640,12 @@
         }
 
         function selectCustomizeOption(option) {
-            // 'Wie auf dem Foto' does nothing in both cases
+            // 'Wie auf dem Foto' does nothing in both cases (for size and color sections)
             if (option === 'as-photo') {
                 return;
             }
 
-            // Both 'Individuell' buttons show color grid
+            // 'Individuell' buttons show color grid
             if (option === 'color' || option === 'custom') {
                 document.getElementById('sizeOptions').style.display = 'none';
                 document.getElementById('colorOptions').style.display = 'none';
@@ -1656,10 +1656,23 @@
 
         function saveSelectionAndClose(option) {
             if (option === 'as-photo') {
-                // Save default selection and close
+                // Save default option and close
                 addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'as-photo');
                 closeCustomizeModal();
             }
+        }
+
+        function switchToCustomizeOption() {
+            // Remove default-option from both 'Wie auf dem Foto' buttons
+            document.querySelectorAll('#sizeOptions .customize-option-btn:first-child, #colorOptions .customize-option-btn:first-child').forEach(btn => {
+                btn.classList.remove('default-option');
+            });
+
+            // Show color grid
+            document.getElementById('sizeOptions').style.display = 'none';
+            document.getElementById('colorOptions').style.display = 'none';
+            colorGrid.classList.add('visible');
+            loadColorOptions();
         }
 
         // Event listeners for customize modal
