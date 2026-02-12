@@ -797,6 +797,18 @@
             text-align: center;
         }
 
+        .customize-add-button:disabled {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .customize-add-button:disabled:hover {
+            background: var(--bg-secondary);
+            transform: none;
+        }
+
         .customize-add-button:hover {
             background: var(--accent-light);
             transform: scale(1.02);
@@ -1205,7 +1217,7 @@
                 <!-- Colors will be loaded here by JavaScript -->
             </div>
             <div class="customize-modal-actions">
-                <button class="customize-add-button" onclick="saveCustomizeSelection()">In den Warenkorb</button>
+                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
             </div>
         </div>
     </div>
@@ -1625,6 +1637,9 @@
             document.getElementById('sizeCustomInput').classList.remove('visible');
             document.getElementById('sizeCustomText').value = '';
 
+            // Disable add to cart button until selections are made
+            document.getElementById('addToCartButton').disabled = true;
+
             customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -1752,6 +1767,9 @@
 
             // Add selected state to clicked button
             btnElement.classList.add('selected-option');
+
+            // Enable add to cart button when color option is selected
+            document.getElementById('addToCartButton').disabled = false;
 
             if (option === 'custom') {
                 // Show color grid, keep everything visible
