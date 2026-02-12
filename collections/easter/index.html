@@ -1162,7 +1162,7 @@
             <h2 class="customize-title" id="customizeProductName">Produkt</h2>
             <p class="customize-subtitle">Größe</p>
             <div class="customize-options" id="sizeOptions">
-                <button class="customize-option-btn default-option" onclick="selectCustomizeOption('as-photo')">
+                <button class="customize-option-btn default-option" onclick="saveSelectionAndClose('as-photo')">
                     Wie auf dem Foto
                 </button>
                 <button class="customize-option-btn" onclick="selectCustomizeOption('custom')">
@@ -1388,13 +1388,41 @@
                     name: name,
                     price: price,
                     image: image,
-                    quantity: 1
+                    quantity: 1,
+                    option: 'as-photo' // Default option
                 });
             }
 
             saveCart(cart);
             showCartNotification();
             updateProductButtons(); // Update all buttons and quantity displays
+        }
+
+        function addToCartWithOption(id, name, price, image, option, color = null) {
+            const cart = getCart();
+
+            // Check if product already exists in cart
+            const existingItem = cart.find(item => item.id === id);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+                existingItem.option = option;
+                if (color) existingItem.color = color;
+            } else {
+                cart.push({
+                    id: id,
+                    name: name,
+                    price: price,
+                    image: image,
+                    quantity: 1,
+                    option: option,
+                    color: color
+                });
+            }
+
+            saveCart(cart);
+            showCartNotification();
+            updateProductButtons();
         }
 
         function removeFromCart(id) {
@@ -1602,13 +1630,8 @@
             });
             btnElement.classList.add('selected');
 
-            // Save selected color to cart item
-            const cart = getCart();
-            const productItem = cart.find(item => item.id === currentCustomizeProductId);
-            if (productItem) {
-                productItem.color = color;
-                saveCart(cart);
-            }
+            // Save color selection and close modal
+            addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'custom', color);
 
             // Close modal after selection
             setTimeout(() => {
@@ -1628,6 +1651,14 @@
                 document.getElementById('colorOptions').style.display = 'none';
                 colorGrid.classList.add('visible');
                 loadColorOptions();
+            }
+        }
+
+        function saveSelectionAndClose(option) {
+            if (option === 'as-photo') {
+                // Save default selection and close
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'as-photo');
+                closeCustomizeModal();
             }
         }
 
