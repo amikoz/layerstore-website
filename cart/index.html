@@ -962,7 +962,7 @@
             let itemsHTML = cart.map((item, index) => {
                 const imagePath = getImagePath(item);
                 const colorText = item.color && item.color !== 'standard' ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
-                const sizeText = item.size && item.size !== 'standard' ? `<span class="cart-item-size">Größe: ${item.size === 'custom' ? 'Nach Absprache' : 'Standard'}</span>` : '';
+                const sizeText = item.option && item.option !== 'as-photo' ? `<span class="cart-item-size">Größe: Nach Absprache</span>` : '';
                 const optionsText = (colorText || sizeText) ? `<div class="cart-item-options">${colorText}${sizeText}</div>` : '';
 
                 return `
@@ -1096,10 +1096,9 @@
                     itemDetails += `\n   Farbe: ${colorName}`;
                 }
 
-                // Add size if not standard
-                if (item.size && item.size !== 'standard') {
-                    const sizeName = item.size === 'custom' ? 'Nach Absprache' : 'Standard';
-                    itemDetails += `\n   Größe: ${sizeName}`;
+                // Add size option if not as-photo
+                if (item.option && item.option !== 'as-photo') {
+                    itemDetails += `\n   Größe: Nach Absprache`;
                 }
 
                 itemDetails += ` - ${item.price}`;
