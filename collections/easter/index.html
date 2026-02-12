@@ -1775,6 +1775,16 @@
                 // Show color grid, keep everything visible
                 colorGrid.style.display = 'grid';
                 loadColorOptions();
+            } else {
+                // Hide color grid when "Wie auf dem Foto" is selected
+                colorGrid.style.display = 'none';
+                // Also clear selected color state
+                selectedColor = null;
+                // Reset color button selections
+                const colorButtons = document.querySelectorAll('.color-option-btn');
+                colorButtons.forEach(btn => {
+                    btn.classList.remove('selected');
+                });
             }
         }
 
