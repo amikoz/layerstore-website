@@ -1190,19 +1190,19 @@
             <h2 class="customize-title" id="customizeProductName">Produkt</h2>
             <p class="customize-subtitle">Größe</p>
             <div class="customize-options" id="sizeOptions">
-                <button class="customize-option-btn default-option" onclick="saveSelectionAndClose('as-photo')">
+                <button class="customize-option-btn default-option" onclick="selectSizeOption('as-photo', this)">
                     Wie auf dem Foto
                 </button>
-                <button class="customize-option-btn" onclick="switchToCustomizeOption()">
+                <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
                     Individuell
                 </button>
             </div>
             <p class="customize-subtitle">Farbe</p>
             <div class="customize-options" id="colorOptions">
-                <button class="customize-option-btn default-option" onclick="saveSelectionAndClose('as-photo')">
+                <button class="customize-option-btn default-option" onclick="selectColorOption('as-photo', this)">
                     Wie auf dem Foto
                 </button>
-                <button class="customize-option-btn" onclick="switchToCustomizeOption()">
+                <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
                     Individuell
                 </button>
             </div>
@@ -1588,6 +1588,7 @@
         const customizeModal = document.getElementById('customizeModal');
         const colorGrid = document.getElementById('colorGrid');
         let currentCustomizeProductId = null;
+        let selectedSizeOption = 'as-photo'; // Track size selection: 'as-photo' or 'custom'
 
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
@@ -1598,18 +1599,23 @@
 
         function openCustomizeModal(productId, productName) {
             currentCustomizeProductId = productId;
+            selectedSizeOption = 'as-photo'; // Reset to default
             document.getElementById('customizeProductName').textContent = productName;
 
-            // Hide color grid initially, set default 'Wie auf dem Foto' as selected
+            // Hide color grid initially, show both sections
             document.getElementById('colorOptions').style.display = 'flex';
             document.getElementById('colorGrid').classList.remove('visible');
             document.getElementById('sizeOptions').style.display = 'flex';
 
-            // Mark 'as-photo' as default option
-            document.querySelectorAll('#sizeOptions .customize-option-btn').forEach(btn => {
-                btn.classList.remove('default-option');
+            // Reset all button states in both sections
+            const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
+            allButtons.forEach(btn => {
+                btn.classList.remove('default-option', 'selected-option', 'selected');
             });
+
+            // Set 'Wie auf dem Foto' as default in both sections
             document.querySelector('#sizeOptions .customize-option-btn:first-child').classList.add('default-option');
+            document.querySelector('#colorOptions .customize-option-btn:first-child').classList.add('default-option');
 
             customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1665,7 +1671,9 @@
 
             btnElement.classList.add('selected');
 
-            // Save color selection and close modal
+            // Save color selection
+            // If user selected a color, it means they chose "Individuell" for color
+            // The size selection is tracked in selectedSizeOption
             addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'custom', color);
 
             // Close modal after selection
@@ -1697,22 +1705,63 @@
             }
         }
 
-        function switchToCustomizeOption() {
-            // Remove default-option from both 'Wie auf dem Foto' buttons
-            document.querySelectorAll('#sizeOptions .customize-option-btn:first-child, #colorOptions .customize-option-btn:first-child').forEach(btn => {
-                btn.classList.remove('default-option');
+        function selectSizeOption(option, btnElement) {
+            // Get all buttons in size options
+            const sizeButtons = document.querySelectorAll('#sizeOptions .customize-option-btn');
+
+            // Remove all state classes from all size buttons
+            sizeButtons.forEach(btn => {
+                btn.classList.remove('default-option', 'selected-option');
             });
 
-            // Add selected-option to "Individuell" buttons (for size and color)
-            document.querySelectorAll('#sizeOptions .customize-option-btn:nth-child(2), #colorOptions .customize-option-btn:nth-child(2)').forEach(btn => {
-                btn.classList.add('selected-option');
+            // Track selection
+            selectedSizeOption = option;
+
+            // Add appropriate state class
+            if (option === 'as-photo') {
+                btnElement.classList.add('selected-option');
+                // Save and close
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'as-photo');
+                closeCustomizeModal();
+            } else if (option === 'custom') {
+                btnElement.classList.add('selected-option');
+                // Just show as selected, do nothing else
+                // User wants: "size - Individuell - when i press, i receive a list of colors. this should not happen"
+                // So we do NOT show colors here
+            }
+        }
+
+        function selectColorOption(option, btnElement) {
+            // Get all buttons in color options
+            const colorButtons = document.querySelectorAll('#colorOptions .customize-option-btn');
+
+            // Remove all state classes from all color buttons
+            colorButtons.forEach(btn => {
+                btn.classList.remove('default-option', 'selected-option');
             });
 
-            // Show color grid
-            document.getElementById('sizeOptions').style.display = 'none';
-            document.getElementById('colorOptions').style.display = 'none';
-            colorGrid.classList.add('visible');
-            loadColorOptions();
+            // Add appropriate state class
+            if (option === 'as-photo') {
+                btnElement.classList.add('selected-option');
+
+                // Save based on what user selected for size
+                if (selectedSizeOption === 'custom') {
+                    // User selected "Individuell" for size, "Wie auf dem Foto" for color
+                    addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'custom');
+                    closeCustomizeModal();
+                } else {
+                    // User selected "Wie auf dem Foto" for both size and color
+                    addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, null, null, 'as-photo');
+                    closeCustomizeModal();
+                }
+            } else if (option === 'custom') {
+                btnElement.classList.add('selected-option');
+                // Hide options and show color grid
+                document.getElementById('sizeOptions').style.display = 'none';
+                document.getElementById('colorOptions').style.display = 'none';
+                colorGrid.classList.add('visible');
+                loadColorOptions();
+            }
         }
 
         // Event listeners for customize modal
