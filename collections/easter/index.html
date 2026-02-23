@@ -232,6 +232,7 @@
         .product-card:nth-child(5) { animation-delay: 0.5s; }
         .product-card:nth-child(6) { animation-delay: 0.6s; }
         .product-card:nth-child(7) { animation-delay: 0.7s; }
+        .product-card:nth-child(8) { animation-delay: 0.8s; }
 
         @keyframes fadeInUp {
             from {
@@ -353,50 +354,6 @@
             color: var(--text-secondary);
         }
 
-        .product-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .product-actions-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .product-actions-row .product-button {
-            flex: 1;
-        }
-
-        .product-actions-row .quantity-controls {
-            margin-top: 0;
-        }
-
-        /* Customize Button */
-        .customize-button {
-            display: block;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: white;
-            color: var(--text-primary);
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .customize-button:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
         /* Quantity Controls */
         .quantity-controls {
             display: none;
@@ -444,37 +401,56 @@
             font-size: 1rem;
         }
 
-        .product-actions {
+        /* Product Buttons Container */
+        .product-buttons {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
 
-        .product-actions-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0.75rem;
+        .add-to-cart-btn {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            cursor: pointer;
         }
 
-        .product-actions-row .product-button {
-            flex: 1;
+        .add-to-cart-btn:hover {
+            background: transparent;
+            color: var(--accent);
         }
 
-        .product-actions-row .quantity-controls {
-            margin-top: 0;
+        .add-to-cart-btn.added {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-color: var(--border);
+            cursor: default;
+            pointer-events: none;
         }
 
-        /* Customize Button */
-        .customize-button {
+        .add-to-cart-btn.added:hover {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        .customize-btn {
             display: block;
             width: 100%;
             padding: 0.5rem 1rem;
             background: white;
             color: var(--text-primary);
             text-align: center;
-            text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 400;
             letter-spacing: 0.05em;
             text-transform: uppercase;
@@ -484,7 +460,7 @@
             cursor: pointer;
         }
 
-        .customize-button:hover {
+        .customize-btn:hover {
             border-color: var(--accent);
             color: var(--accent);
         }
@@ -1109,9 +1085,7 @@
                     <h3>Osterkarotte</h3>
                     <p>Süßer Karotten-Behälter für kleine Osterüberraschungen.</p>
                     <div class="product-price">13,00 €</div>
-                    <div class="product-actions">
-                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('osterkarotte', 'Osterkarotte')">Anpassen</button>
-                    </div>
+                    <button class="add-to-cart-btn" data-product="carrot" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                 </div>
             </div>
 
@@ -1125,8 +1099,9 @@
                     <h3>Hasenkorb</h3>
                     <p>Charmanter Korb mit Hasenohren und süßen Pfötchen.</p>
                     <div class="product-price">13,00 €</div>
-                    <div class="product-actions">
-                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('hasenkorb', 'Hasenkorb')">Anpassen</button>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="bunnybasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnybasket" onclick="event.stopPropagation(); openCustomizeModal('bunnybasket')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1141,8 +1116,9 @@
                     <h3>Osterei mit Beinen</h3>
                     <p>Verspieltes Ei mit beweglichen Beinen für Kinder-Überraschungen.</p>
                     <div class="product-price">2,00 €</div>
-                    <div class="product-actions">
-                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('osterei', 'Osterei mit Beinen')">Anpassen</button>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="legsegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="legsegg" onclick="event.stopPropagation(); openCustomizeModal('legsegg')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1157,8 +1133,9 @@
                     <h3>Gestricktes Ei</h3>
                     <p>Elegantes Osterei im Strick-Look.</p>
                     <div class="product-price">5,00 €</div>
-                    <div class="product-actions">
-                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('gestricktesei', 'Gestricktes Ei')">Anpassen</button>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="knittedegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="knittedegg" onclick="event.stopPropagation(); openCustomizeModal('knittedegg')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1167,13 +1144,15 @@
             <div class="product-card" onclick="openImageGallery('kinderhalter', 0)">
                 <div class="product-image-container">
                     <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/bunnykinderholder1.jpeg" alt="Hasen-Kinderhalter" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
                     <h3>Hasen-Kinderhalter</h3>
                     <p>Niedlicher Hase speziell für Kinder-Überraschungseier.</p>
                     <div class="product-price">3,00 €</div>
-                    <div class="product-actions">
-                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('kinderhalter', 'Hasen-Kinderhalter')">Anpassen</button>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); openCustomizeModal('bunnykinderholder')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1188,8 +1167,9 @@
                     <h3>Hase mit Korb</h3>
                     <p>Hase mit Korb für Oster-Deko.</p>
                     <div class="product-price">5,00 €</div>
-                    <div class="product-actions">
-                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('hasemmitkorb', 'Hase mit Korb')">Anpassen</button>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1203,11 +1183,242 @@
                     <h3>Hasen-Kinderrahmen</h3>
                     <p>Schöner Halter für U-Ei.</p>
                     <div class="product-price">2,00 €</div>
-                    <div class="product-actions">
-                        <button class="customize-button" onclick="event.stopPropagation(); openCustomizeModal('kinderrahmen', 'Hasen-Kinderrahmen')">Anpassen</button>
+                    <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                </div>
+            </div>
+
+            <!-- Product 8: Hase mit Korb 2 -->
+            <div class="product-card" onclick="openImageGallery('hasemmitkorb2', 0)">
+                <div class="product-image-container">
+                    <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/bunnywithbasket3.jpeg" alt="Hase mit Korb" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                </div>
+                <div class="product-info">
+                    <h3>Hase mit Korb</h3>
+                    <p>Hase mit Korb für Oster-Deko.</p>
+                    <div class="product-price">5,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket3')">Anpassen</button>
                     </div>
                 </div>
             </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="/contact">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
+    </footer>
+
+    <!-- Customize Modal -->
+    <div class="customize-modal" id="customizeModal">
+        <button class="customize-close" id="closeCustomizeModal">&times;</button>
+        <div class="customize-modal-content">
+            <div class="customize-scrollable-area">
+                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
+                <p class="customize-subtitle" id="sizeSubtitle">Größe</p>
+                <div class="customize-options" id="sizeOptions">
+                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="size-custom-input" id="sizeCustomInput">
+                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
+                </div>
+                <p class="customize-subtitle color-subtitle" id="colorSubtitle">Farbe</p>
+                <div class="customize-options" id="colorOptions">
+                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="color-options-grid" id="colorGrid">
+                    <!-- Colors will be loaded here by JavaScript -->
+                </div>
+            </div>
+            <div class="customize-modal-actions">
+                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Gallery Modal -->
+    <div class="image-gallery-modal" id="imageGalleryModal">
+        <button class="gallery-close" id="closeImageGallery">&times;</button>
+        <div class="image-gallery-modal-content">
+            <div class="gallery-image-container">
+                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
+            </div>
+            <div class="gallery-info">
+                <h3 id="galleryProductName">Produktname</h3>
+                <div class="gallery-counter">
+                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">3</span>
+                </div>
+            </div>
+            <button class="gallery-arrow prev" id="galleryPrev">&#10094;</button>
+            <button class="gallery-arrow next" id="galleryNext">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        // Product data with all images in correct order
+        const products = {
+            osterkarotte: {
+                name: 'Osterkarotte',
+                price: '13,00 €',
+                images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
+            },
+            hasenkorb: {
+                name: 'Hasenkorb',
+                price: '13,00 €',
+                images: [
+                    'bunnybasketbeige.jpeg',
+                    'bunnybasketbeige1.jpeg',
+                    'bunnybasketbeige2.jpeg',
+                    'bunnybasketbeige3.jpeg',
+                    'bunnybasketbeige4.jpeg',
+                    'bunnybasketbeige5.jpeg',
+                    'bunnybasketpink.jpg',
+                    'bunnybasketpurple.jpeg'
+                ]
+            },
+            osterei: {
+                name: 'Osterei mit Beinen',
+                price: '2,00 €',
+                images: [
+                    'legseggkinder.jpeg',
+                    'legseggkinder1.jpeg',
+                    'legseggkinder2.jpeg',
+                    'legseggkinder3.jpeg',
+                    'legseggkinder4.jpeg'
+                ]
+            },
+            gestricktesei: {
+                name: 'Gestricktes Ei',
+                price: '5,00 €',
+                images: [
+                    'knittedeggmintgreen.jpeg',
+                    'knittedeggmintgreen1.jpeg',
+                    'knittedeggmintgreen2.jpeg',
+                    'knittedeggmintgreen3.jpeg',
+                    'knittedeggmintgreen4.jpeg',
+                    'knittedeggmintgreen5.jpeg'
+                ]
+            },
+            kinderhalter: {
+                name: 'Hasen-Kinderhalter',
+                price: '3,00 €',
+                images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
+            },
+            hasemmitkorb: {
+                name: 'Hase mit Korb',
+                price: '5,00 €',
+                images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
+            },
+            kinderrahmen: {
+                name: 'Hasen-Kinderrahmen',
+                price: '2,00 €',
+                images: ['kinderrahmen.jpg']
+            },
+            // Add new product IDs for buttons
+            carrot: {
+                name: 'Osterkarotte',
+                price: '13,00 €',
+                images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
+            },
+            bunnybasket: {
+                name: 'Hasenkorb',
+                price: '13,00 €',
+                images: [
+                    'bunnybasketbeige.jpeg',
+                    'bunnybasketbeige1.jpeg',
+                    'bunnybasketbeige2.jpeg',
+                    'bunnybasketbeige3.jpeg',
+                    'bunnybasketbeige4.jpeg',
+                    'bunnybasketbeige5.jpeg',
+                    'bunnybasketpink.jpg',
+                    'bunnybasketpurple.jpeg'
+                ]
+            },
+            legsegg: {
+                name: 'Osterei mit Beinen',
+                price: '2,00 €',
+                images: [
+                    'legseggkinder.jpeg',
+                    'legseggkinder1.jpeg',
+                    'legseggkinder2.jpeg',
+                    'legseggkinder3.jpeg'
+                ]
+            },
+            knittedegg: {
+                name: 'Gestricktes Ei',
+                price: '5,00 €',
+                images: [
+                    'knittedeggmintgreen.jpeg',
+                    'knittedeggmintgreen1.jpeg',
+                    'knittedeggmintgreen2.jpeg',
+                    'knittedeggmintgreen3.jpeg',
+                    'knittedeggmintgreen4.jpeg',
+                    'knittedeggmintgreen5.jpeg'
+                ]
+            },
+            bunnykinderholder: {
+                name: 'Hasen-Kinderhalter',
+                price: '3,00 €',
+                images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
+            },
+            bunnywithbasket2: {
+                name: 'Hase mit Korb',
+                price: '5,00 €',
+                images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg']
+            },
+            bunnywithbasket3: {
+                name: 'Hase mit Korb',
+                price: '5,00 €',
+                images: ['bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
+            },
+            kinderrahmen: {
+                name: 'Hasen-Kinderrahmen',
+                price: '2,00 €',
+                images: ['kinderrahmen.jpg']
+            },
+            hasemmitkorb2: {
+                name: 'Hase mit Korb',
+                price: '5,00 €',
+                images: ['bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
+            }
+        };
 
         </div>
     </section>
@@ -1344,7 +1555,7 @@
             kinderhalter: {
                 name: 'Hasen-Kinderhalter',
                 price: '3,00 €',
-                images: ['bunnykinderholder.jpeg']
+                images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
             },
             hasemmitkorb: {
                 name: 'Hase mit Korb',
@@ -1475,28 +1686,36 @@
             updateCartCount();
         }
 
-        function addToCart(id, name, price, image, buttonElement) {
+        function addToCart(buttonElement) {
+            const productId = buttonElement.getAttribute('data-product');
+            const product = products[productId];
+
+            if (!product) {
+                console.error('Product not found:', productId);
+                return;
+            }
+
             const cart = getCart();
 
             // Check if product already exists in cart
-            const existingItem = cart.find(item => item.id === id);
+            const existingItem = cart.find(item => item.id === productId);
 
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
                 cart.push({
-                    id: id,
-                    name: name,
-                    price: price,
-                    image: image,
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    image: `/collections/easter/images/${product.images[0]}`,
                     quantity: 1,
-                    option: 'as-photo' // Default option
+                    option: 'as-photo'
                 });
             }
 
             saveCart(cart);
             showCartNotification();
-            updateProductButtons(); // Update all buttons and quantity displays
+            updateProductButtons(buttonElement);
         }
 
         function addToCartWithOption(id, name, price, image, option, color = null, sizeDescription = null) {
@@ -1552,49 +1771,23 @@
             }
         }
 
-        function updateProductButtons() {
+        function updateProductButtons(clickedButton = null) {
             const cart = getCart();
             const cartProductIds = cart.map(item => item.id);
 
-            // Update all product buttons based on cart state
-            document.querySelectorAll('.product-button[data-product-id]').forEach(button => {
-                const productId = button.getAttribute('data-product-id');
+            // Update all add-to-cart buttons based on cart state
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                const productId = button.getAttribute('data-product');
 
                 if (cartProductIds.includes(productId)) {
-                    button.textContent = 'Hinzugefügt';
-                    button.classList.add('added');
-
-                    // Show quantity controls
-                    const qtyControls = document.getElementById(`qty-controls-${productId}`);
-                    if (qtyControls) {
-                        qtyControls.classList.add('visible');
-                    }
-
-                    // Update quantity value
                     const cartItem = cart.find(item => item.id === productId);
-                    if (cartItem) {
-                        const qtyValue = document.getElementById(`qty-value-${productId}`);
-                        if (qtyValue) {
-                            qtyValue.textContent = cartItem.quantity;
-                        }
+                    if (cartItem && cartItem.quantity > 0) {
+                        button.textContent = 'Hinzugefügt';
+                        button.classList.add('added');
                     }
                 } else {
                     button.textContent = 'In den Warenkorb';
                     button.classList.remove('added');
-
-                    // Hide quantity controls
-                    const qtyControls = document.getElementById(`qty-controls-${productId}`);
-                    if (qtyControls) {
-                        qtyControls.classList.remove('visible');
-                    }
-                }
-            });
-
-            // Also hide all quantity controls that don't have a matching cart item
-            document.querySelectorAll('.quantity-controls').forEach(qtyControls => {
-                const productId = qtyControls.id.replace('qty-controls-', '');
-                if (!cartProductIds.includes(productId)) {
-                    qtyControls.classList.remove('visible');
                 }
             });
         }
@@ -1677,18 +1870,41 @@
             'purple', 'red', 'sakurapink', 'skyblue', 'yellow'
         ];
 
-        function openCustomizeModal(productId, productName) {
+        function openCustomizeModal(productId) {
             currentCustomizeProductId = productId;
-            selectedSizeOption = null; // Reset to null
-            selectedColorOption = null; // Reset color option
-            selectedColor = null; // Reset color selection
-            document.getElementById('customizeProductName').textContent = productName;
+            const product = products[productId];
+
+            if (!product) {
+                console.error('Product not found:', productId);
+                return;
+            }
+
+            selectedSizeOption = null;
+            selectedColorOption = null;
+            selectedColor = null;
+            document.getElementById('customizeProductName').textContent = product.name;
+
+            // Check if this product should only show color options (no size)
+            const productsWithOnlyColor = ['legsegg'];
+
+            if (productsWithOnlyColor.includes(productId)) {
+                // Hide size options for products that only have color selection
+                document.getElementById('sizeSubtitle').style.display = 'none';
+                document.getElementById('sizeOptions').style.display = 'none';
+                document.getElementById('sizeCustomInput').classList.remove('visible');
+
+                // Automatically set size to 'as-photo' for these products
+                selectedSizeOption = 'as-photo';
+            } else {
+                // Show size options for products that have both size and color
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('sizeOptions').style.display = 'flex';
+            }
 
             // Hide color grid initially, show both sections
             document.getElementById('colorOptions').style.display = 'flex';
             document.getElementById('colorGrid').classList.remove('visible');
             document.getElementById('colorGrid').style.display = 'none';
-            document.getElementById('sizeOptions').style.display = 'flex';
 
             // Reset all button states in both sections
             const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
@@ -1706,7 +1922,7 @@
             document.getElementById('sizeCustomInput').classList.remove('visible');
             document.getElementById('sizeCustomText').value = '';
 
-            // Disable add to cart button until BOTH selections are made
+            // Disable add to cart button until BOTH selections are made (or just color for legsegg)
             document.getElementById('addToCartButton').disabled = true;
 
             customizeModal.classList.add('active');
@@ -1725,6 +1941,7 @@
                 document.getElementById('colorOptions').style.display = 'flex';
                 document.getElementById('colorGrid').style.display = 'none';
                 document.getElementById('sizeOptions').style.display = 'flex';
+                document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('colorGrid').classList.remove('visible');
             }, 300);
         }
@@ -1759,12 +1976,24 @@
         let selectedColor = null;
 
         function checkAndUpdateCartButton() {
-            // Enable button only if BOTH size AND color options are selected
+            // Enable button based on product type
             const addToCartButton = document.getElementById('addToCartButton');
-            if (selectedSizeOption !== null && selectedColorOption !== null) {
-                addToCartButton.disabled = false;
+            const productsWithOnlyColor = ['legsegg'];
+
+            if (productsWithOnlyColor.includes(currentCustomizeProductId)) {
+                // For legsegg, only need color selection
+                if (selectedColorOption !== null) {
+                    addToCartButton.disabled = false;
+                } else {
+                    addToCartButton.disabled = true;
+                }
             } else {
-                addToCartButton.disabled = true;
+                // For other products, need BOTH size AND color options selected
+                if (selectedSizeOption !== null && selectedColorOption !== null) {
+                    addToCartButton.disabled = false;
+                } else {
+                    addToCartButton.disabled = true;
+                }
             }
         }
 
@@ -1844,7 +2073,7 @@
                 document.getElementById('sizeCustomText').value = '';
             }
 
-            // Enable button only if BOTH size AND color options are selected
+            // Check if button should be enabled
             checkAndUpdateCartButton();
         }
 
@@ -1864,7 +2093,7 @@
             selectedColorOption = option;
 
             if (option === 'custom') {
-                // Show color grid, keep everything visible
+                // Show color grid
                 colorGrid.style.display = 'grid';
                 loadColorOptions();
             } else {
@@ -1873,13 +2102,13 @@
                 // Also clear selected color state
                 selectedColor = null;
                 // Reset color button selections
-                const colorButtons = document.querySelectorAll('.color-option-btn');
-                colorButtons.forEach(btn => {
+                const colorBtns = document.querySelectorAll('.color-option-btn');
+                colorBtns.forEach(btn => {
                     btn.classList.remove('selected');
                 });
             }
 
-            // Enable button only if BOTH size AND color options are selected
+            // Check if button should be enabled
             checkAndUpdateCartButton();
         }
 
