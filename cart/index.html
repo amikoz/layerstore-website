@@ -393,6 +393,90 @@
             font-weight: 600;
         }
 
+        .summary-row.discount {
+            color: #22c55e;
+            font-weight: 500;
+        }
+
+        /* Promo Code Section */
+        .promo-code-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+        }
+
+        .promo-code-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .promo-code-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .promo-code-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .promo-code-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .promo-code-input.invalid {
+            border-color: var(--danger);
+        }
+
+        .promo-code-input.valid {
+            border-color: #22c55e;
+        }
+
+        .promo-code-apply-btn {
+            padding: 0.75rem 1.25rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .promo-code-apply-btn:hover {
+            background: var(--accent-light);
+        }
+
+        .promo-code-message {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .promo-code-message.success {
+            display: block;
+            color: #22c55e;
+            background: #dcfce7;
+        }
+
+        .promo-code-message.error {
+            display: block;
+            color: var(--danger);
+            background: #fecaca;
+        }
+
         .checkout-btn {
             width: 100%;
             padding: 0.5rem 1rem;
@@ -1018,16 +1102,41 @@
 
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+            // Get discount from applied promo code
+            const discount = calculateDiscount();
+
             const summaryHTML = `
                 <div class="cart-summary">
                     <div class="summary-row">
                         <span>Anzahl Artikel:</span>
                         <span>${totalItems}</span>
                     </div>
+                    ${discount > 0 ? `
+                    <div class="summary-row discount">
+                        <span>Rabatt (Promo-Code):</span>
+                        <span>-${discount.toFixed(2)} €</span>
+                    </div>
+                    ` : ''}
                     <div class="summary-row total">
                         <span>Gesamt:</span>
                         <span>${totalItems} ${totalItems === 1 ? 'Artikel' : 'Artikel'}</span>
                     </div>
+
+                    <div class="promo-code-section">
+                        <div class="promo-code-label">Promo-Code eingeben:</div>
+                        <div class="promo-code-input-group">
+                            <input
+                                type="text"
+                                id="promoCodeInput"
+                                class="promo-code-input"
+                                placeholder="Ihr Code"
+                                maxlength="20"
+                            >
+                            <button class="promo-code-apply-btn" onclick="applyPromoCode()">Anwenden</button>
+                        </div>
+                        <div id="promoCodeMessage" class="promo-code-message"></div>
+                    </div>
+
                     <button class="checkout-btn" onclick="checkout()">Anfrage senden</button>
                 </div>
             `;
@@ -1060,6 +1169,85 @@
             saveCart(cart);
             renderCart();
         }
+
+        // Promo Code Management
+        const PROMO_CODES = {
+            'OSTER2025': { discount: 0.10, description: '10% Rabatt' },
+            'LAYER10': { discount: 0.10, description: '10% Rabatt' },
+            'SPRING20': { discount: 0.20, description: '20% Rabatt' },
+            'WELCOME5': { discount: 0.05, description: '5% Rabatt' }
+        };
+
+        function getAppliedPromoCode() {
+            return localStorage.getItem('layerstore_promo_code') || null;
+        }
+
+        function setAppliedPromoCode(code) {
+            if (code) {
+                localStorage.setItem('layerstore_promo_code', code);
+            } else {
+                localStorage.removeItem('layerstore_promo_code');
+            }
+        }
+
+        function calculateDiscount() {
+            const promoCode = getAppliedPromoCode();
+            if (!promoCode || !PROMO_CODES[promoCode]) {
+                return 0;
+            }
+
+            const cart = getCart();
+            const total = cart.reduce((sum, item) => {
+                if (!item.price || item.option === 'individuell') return sum;
+                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                return sum + (priceNum * item.quantity);
+            }, 0);
+
+            const discountPercent = PROMO_CODES[promoCode].discount;
+            return total * discountPercent;
+        }
+
+        function applyPromoCode() {
+            const input = document.getElementById('promoCodeInput');
+            const messageDiv = document.getElementById('promoCodeMessage');
+            const code = input.value.trim().toUpperCase();
+
+            if (!code) {
+                messageDiv.textContent = 'Bitte geben Sie einen Promo-Code ein.';
+                messageDiv.className = 'promo-code-message error';
+                input.classList.add('invalid');
+                return;
+            }
+
+            if (PROMO_CODES[code]) {
+                setAppliedPromoCode(code);
+                messageDiv.textContent = `✓ Code "${code}" angewendet! ${PROMO_CODES[code].description}`;
+                messageDiv.className = 'promo-code-message success';
+                input.classList.remove('invalid');
+                input.classList.add('valid');
+                input.value = code;
+                renderCart();
+            } else {
+                messageDiv.textContent = '✗ Ungültiger Promo-Code';
+                messageDiv.className = 'promo-code-message error';
+                input.classList.add('invalid');
+                input.classList.remove('valid');
+                setAppliedPromoCode(null);
+            }
+        }
+
+        // Allow Enter key to apply promo code
+        document.addEventListener('DOMContentLoaded', () => {
+            const promoInput = document.getElementById('promoCodeInput');
+            if (promoInput) {
+                promoInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyPromoCode();
+                    }
+                });
+            }
+        });
 
         // Checkout
         function checkout() {
