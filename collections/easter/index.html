@@ -444,6 +444,59 @@
             color: var(--text-secondary);
         }
 
+        /* Quantity Controls for Products */
+        .product-qty-container {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-qty-container.visible {
+            display: flex;
+        }
+
+        .product-qty-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .product-qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+
+        .product-qty-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: white;
+            color: var(--text-primary);
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .product-qty-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .product-qty-value {
+            min-width: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+
         .customize-btn {
             display: block;
             width: 100%;
@@ -1743,45 +1796,65 @@
 
         function updateProductButtons(clickedButton = null) {
             const cart = getCart();
-            const cartProductIds = cart.map(item => item.id);
 
-            // Update all add-to-cart buttons based on cart state
-            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            // Update all product cards
+            document.querySelectorAll('.product-card').forEach(card => {
+                const button = card.querySelector('.add-to-cart-btn');
+                if (!button) return;
+
                 const productId = button.getAttribute('data-product');
+                const cartItem = cart.find(item => item.id === productId);
+                const buttonsContainer = card.querySelector('.product-buttons');
 
-                if (cartProductIds.includes(productId)) {
-                    const cartItem = cart.find(item => item.id === productId);
-                    if (cartItem && cartItem.quantity > 0) {
-                        button.textContent = 'Hinzugefügt';
-                        button.classList.add('added');
-                    }
+                // Remove existing qty container if any
+                const existingQty = buttonsContainer.querySelector('.product-qty-container');
+                if (existingQty) {
+                    existingQty.remove();
+                }
+
+                if (cartItem && cartItem.quantity > 0) {
+                    // Hide add-to-cart button
+                    button.style.display = 'none';
+                    button.classList.remove('added');
+
+                    // Create and show quantity controls
+                    const qtyContainer = document.createElement('div');
+                    qtyContainer.className = 'product-qty-container visible';
+                    qtyContainer.innerHTML = `
+                        <span class="product-qty-label">Im Warenkorb</span>
+                        <div class="product-qty-controls">
+                            <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', -1)">−</button>
+                            <span class="product-qty-value">${cartItem.quantity}</span>
+                            <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', 1)">+</button>
+                        </div>
+                    `;
+                    buttonsContainer.appendChild(qtyContainer);
                 } else {
+                    // Show add-to-cart button
+                    button.style.display = 'block';
                     button.textContent = 'In den Warenkorb';
                     button.classList.remove('added');
                 }
             });
         }
 
-        function updateQuantity(id, change) {
-            let cart = getCart();
-            const item = cart.find(item => item.id === id);
+        // Update product quantity from product card
+        function updateProductQuantity(productId, change) {
+            const cart = getCart();
+            const item = cart.find(i => i.id === productId);
 
             if (!item) return;
 
-            // Update quantity
             item.quantity += change;
 
-            // Remove item if quantity goes to 0
+            // Remove item if quantity is 0
             if (item.quantity <= 0) {
                 const index = cart.indexOf(item);
                 cart.splice(index, 1);
-            } else {
-                // Ensure minimum quantity is 1
-                if (item.quantity < 1) item.quantity = 1;
             }
 
-            // Save and update
             saveCart(cart);
+            updateCartCount();
             updateProductButtons();
         }
 
