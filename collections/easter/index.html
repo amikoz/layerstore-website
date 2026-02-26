@@ -58,7 +58,7 @@
             top: 0;
             left: 0;
             right: 0;
-            padding: 1.4rem 2.8rem;
+            padding: 0.5rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -87,7 +87,7 @@
         }
 
         .logo img {
-            height: 80px;
+            height: 50px;
             width: auto;
             transition: transform 0.2s ease;
         }
@@ -98,13 +98,13 @@
 
         nav {
             display: flex;
-            gap: 3rem;
+            gap: 1.5rem;
         }
 
         nav a {
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 400;
             letter-spacing: 0.02em;
             transition: color 0.3s ease;
@@ -114,7 +114,7 @@
         nav a::after {
             content: '';
             position: absolute;
-            bottom: -4px;
+            bottom: -3px;
             left: 0;
             width: 0;
             height: 1px;
@@ -134,7 +134,7 @@
         .cart-icon {
             position: relative;
             cursor: pointer;
-            padding: 0.5rem 1rem;
+            padding: 0.3rem 0.5rem;
             transition: transform 0.2s ease;
         }
 
@@ -143,8 +143,8 @@
         }
 
         .cart-icon svg {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             fill: var(--text-secondary);
             transition: fill 0.3s ease;
         }
@@ -155,19 +155,19 @@
 
         .cart-count {
             position: absolute;
-            top: 0;
-            right: 0;
+            top: -2px;
+            right: -2px;
             background: var(--accent);
             color: white;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 9px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 5px;
+            padding: 0 4px;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -1118,7 +1118,7 @@
     <!-- Header -->
     <header>
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore Logo" width="200" height="80" loading="eager" decoding="sync" fetchpriority="high">
+            <img src="/logo.png" alt="LayerStore Logo" width="125" height="50" loading="eager" decoding="sync" fetchpriority="high">
         </a>
         <nav>
             <a href="/">Startseite</a>
