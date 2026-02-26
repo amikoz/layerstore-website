@@ -1188,8 +1188,8 @@
                             >
                             <button class="promo-code-apply-btn" id="promoApplyBtn" onclick="applyPromoCode()">Anwenden</button>
                         </div>
-                        <div id="promoCodeApplied" class="promo-code-applied">
-                            <span class="promo-code-applied-text"></span>
+                        <div id="promoCodeApplied" class="promo-code-applied${getAppliedPromoCode() ? ' visible' : ''}">
+                            <span class="promo-code-applied-text">${getAppliedPromoCode() ? 'Promo-Code: ' + getAppliedPromoCode() : ''}</span>
                             <button class="promo-code-applied-remove" onclick="removePromoCode()" title="Promo-Code entfernen">×</button>
                         </div>
                         <div id="promoCodeMessage" class="promo-code-message"></div>
@@ -1265,8 +1265,6 @@
         function applyPromoCode() {
             const input = document.getElementById('promoCodeInput');
             const messageDiv = document.getElementById('promoCodeMessage');
-            const appliedDiv = document.getElementById('promoCodeApplied');
-            const appliedText = appliedDiv.querySelector('.promo-code-applied-text');
             const code = input.value.trim().toUpperCase();
 
             if (!code) {
@@ -1283,10 +1281,7 @@
                 input.value = '';
                 messageDiv.style.display = 'none';
 
-                // Show applied promo code
-                appliedText.textContent = `Promo-Code: ${code}`;
-                appliedDiv.classList.add('visible');
-
+                // Re-render cart to update prices and show promo code
                 renderCart();
             } else {
                 messageDiv.textContent = '✗ Ungültiger Promo-Code';
@@ -1299,26 +1294,10 @@
         }
 
         function removePromoCode() {
-            const input = document.getElementById('promoCodeInput');
-            const messageDiv = document.getElementById('promoCodeMessage');
-            const appliedDiv = document.getElementById('promoCodeApplied');
-
             // Clear promo code
             setAppliedPromoCode(null);
 
-            // Reset input
-            input.value = '';
-            input.removeAttribute('readonly');
-            input.classList.remove('valid', 'invalid');
-
-            // Reset messages
-            messageDiv.textContent = '';
-            messageDiv.style.display = 'none';
-
-            // Hide applied promo code
-            appliedDiv.classList.remove('visible');
-
-            // Re-render cart
+            // Re-render cart to update prices and hide promo code
             renderCart();
         }
 
@@ -1333,26 +1312,7 @@
                     }
                 });
             }
-
-            // Restore promo code state on page load
-            restorePromoCodeState();
         });
-
-        // Restore promo code state (input value, buttons visibility)
-        function restorePromoCodeState() {
-            const appliedCode = getAppliedPromoCode();
-            const appliedDiv = document.getElementById('promoCodeApplied');
-            const appliedText = appliedDiv.querySelector('.promo-code-applied-text');
-            const messageDiv = document.getElementById('promoCodeMessage');
-
-            if (appliedCode && PROMO_CODES[appliedCode]) {
-                appliedText.textContent = `Promo-Code: ${appliedCode}`;
-                appliedDiv.classList.add('visible');
-                messageDiv.style.display = 'none';
-            } else {
-                appliedDiv.classList.remove('visible');
-            }
-        }
 
         // Checkout
         function checkout() {
