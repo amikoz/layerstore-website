@@ -233,6 +233,8 @@
         .product-card:nth-child(6) { animation-delay: 0.6s; }
         .product-card:nth-child(7) { animation-delay: 0.7s; }
         .product-card:nth-child(8) { animation-delay: 0.8s; }
+        .product-card:nth-child(9) { animation-delay: 0.9s; }
+        .product-card:nth-child(10) { animation-delay: 1.0s; }
 
         @keyframes fadeInUp {
             from {
@@ -1084,8 +1086,11 @@
                 <div class="product-info">
                     <h3>Osterkarotte</h3>
                     <p>Süßer Karotten-Behälter für kleine Osterüberraschungen.</p>
-                    <div class="product-price">13,00 €</div>
-                    <button class="add-to-cart-btn" data-product="carrot" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                    <div class="product-price">15,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="carrot" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="carrot" onclick="event.stopPropagation(); openCustomizeModal('carrot')">Anpassen</button>
+                    </div>
                 </div>
             </div>
 
@@ -1098,7 +1103,7 @@
                 <div class="product-info">
                     <h3>Hasenkorb</h3>
                     <p>Charmanter Korb mit Hasenohren und süßen Pfötchen.</p>
-                    <div class="product-price">13,00 €</div>
+                    <div class="product-price">14,00 €</div>
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="bunnybasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="bunnybasket" onclick="event.stopPropagation(); openCustomizeModal('bunnybasket')">Anpassen</button>
@@ -1115,7 +1120,7 @@
                 <div class="product-info">
                     <h3>Osterei mit Beinen</h3>
                     <p>Verspieltes Ei mit beweglichen Beinen für Kinder-Überraschungen.</p>
-                    <div class="product-price">2,00 €</div>
+                    <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="legsegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="legsegg" onclick="event.stopPropagation(); openCustomizeModal('legsegg')">Anpassen</button>
@@ -1166,7 +1171,7 @@
                 <div class="product-info">
                     <h3>Hase mit Korb</h3>
                     <p>Hase mit Korb für Oster-Deko.</p>
-                    <div class="product-price">5,00 €</div>
+                    <div class="product-price">6,00 €</div>
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
@@ -1182,8 +1187,11 @@
                 <div class="product-info">
                     <h3>Hasen-Kinderrahmen</h3>
                     <p>Schöner Halter für U-Ei.</p>
-                    <div class="product-price">2,00 €</div>
-                    <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                    <div class="product-price">3,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); openCustomizeModal('kinderrahmen')">Anpassen</button>
+                    </div>
                 </div>
             </div>
 
@@ -1196,10 +1204,44 @@
                 <div class="product-info">
                     <h3>Hase mit Korb</h3>
                     <p>Hase mit Korb für Oster-Deko.</p>
-                    <div class="product-price">5,00 €</div>
+                    <div class="product-price">6,00 €</div>
                     <div class="product-buttons">
                         <button class="add-to-cart-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
                         <button class="customize-btn" data-product="bunnywithbasket3" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket3')">Anpassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 9: Hase Deko Chocolate -->
+            <div class="product-card" onclick="openImageGallery('hasedekochoco', 0)">
+                <div class="product-image-container">
+                    <img src="images/fuzzybunnydekochoco1.jpeg" alt="Hase Deko Chocolate" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/fuzzybunnydekochoco2.jpeg" alt="Hase Deko Chocolate" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                </div>
+                <div class="product-info">
+                    <h3>Hase Deko Chocolate</h3>
+                    <p>Stilvoller Hase in schokoladenbraun für elegante Osterdeko.</p>
+                    <div class="product-price">10,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="hasedekochoco" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="hasedekochoco" onclick="event.stopPropagation(); openCustomizeModal('hasedekochoco')">Anpassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 10: Hase Deko White -->
+            <div class="product-card" onclick="openImageGallery('hasedekowhite', 0)">
+                <div class="product-image-container">
+                    <img src="images/fuzzybunnydekowhite.jpeg" alt="Hase Deko White" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/fuzzybunnydekowhite1.jpeg" alt="Hase Deko White" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                </div>
+                <div class="product-info">
+                    <h3>Hase Deko White</h3>
+                    <p>Stilvoller weißer Hase für elegante Osterdeko.</p>
+                    <div class="product-price">6,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="hasedekowhite" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="hasedekowhite" onclick="event.stopPropagation(); openCustomizeModal('hasedekowhite')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1296,12 +1338,12 @@
         const products = {
             osterkarotte: {
                 name: 'Osterkarotte',
-                price: '13,00 €',
+                price: '15,00 €',
                 images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
             },
             hasenkorb: {
                 name: 'Hasenkorb',
-                price: '13,00 €',
+                price: '14,00 €',
                 images: [
                     'bunnybasketbeige.jpeg',
                     'bunnybasketbeige1.jpeg',
@@ -1315,7 +1357,7 @@
             },
             osterei: {
                 name: 'Osterei mit Beinen',
-                price: '2,00 €',
+                price: '5,00 €',
                 images: [
                     'legseggkinder.jpeg',
                     'legseggkinder1.jpeg',
@@ -1343,23 +1385,23 @@
             },
             hasemmitkorb: {
                 name: 'Hase mit Korb',
-                price: '5,00 €',
+                price: '6,00 €',
                 images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
             },
             kinderrahmen: {
                 name: 'Hasen-Kinderrahmen',
-                price: '2,00 €',
+                price: '3,00 €',
                 images: ['kinderrahmen.jpg']
             },
             // Add new product IDs for buttons
             carrot: {
                 name: 'Osterkarotte',
-                price: '13,00 €',
+                price: '15,00 €',
                 images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
             },
             bunnybasket: {
                 name: 'Hasenkorb',
-                price: '13,00 €',
+                price: '14,00 €',
                 images: [
                     'bunnybasketbeige.jpeg',
                     'bunnybasketbeige1.jpeg',
@@ -1373,7 +1415,7 @@
             },
             legsegg: {
                 name: 'Osterei mit Beinen',
-                price: '2,00 €',
+                price: '5,00 €',
                 images: [
                     'legseggkinder.jpeg',
                     'legseggkinder1.jpeg',
@@ -1400,23 +1442,39 @@
             },
             bunnywithbasket2: {
                 name: 'Hase mit Korb',
-                price: '5,00 €',
+                price: '6,00 €',
                 images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg']
             },
             bunnywithbasket3: {
                 name: 'Hase mit Korb',
-                price: '5,00 €',
+                price: '6,00 €',
                 images: ['bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
-            },
-            kinderrahmen: {
-                name: 'Hasen-Kinderrahmen',
-                price: '2,00 €',
-                images: ['kinderrahmen.jpg']
             },
             hasemmitkorb2: {
                 name: 'Hase mit Korb',
-                price: '5,00 €',
+                price: '6,00 €',
                 images: ['bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
+            },
+            // New Hase Deko products
+            hasedekochoco: {
+                name: 'Hase Deko Chocolate',
+                price: '10,00 €',
+                images: [
+                    'fuzzybunnydekochoco1.jpeg',
+                    'fuzzybunnydekochoco2.jpeg',
+                    'fuzzybunnydekochoco3.jpeg'
+                ]
+            },
+            hasedekowhite: {
+                name: 'Hase Deko White',
+                price: '6,00 €',
+                images: [
+                    'fuzzybunnydekowhite.jpeg',
+                    'fuzzybunnydekowhite1.jpeg',
+                    'fuzzybunnydekowhite2.jpeg',
+                    'fuzzybunnydekowhite3.jpeg',
+                    'fuzzybunnydekowhite4.jpeg'
+                ]
             }
         };
 
@@ -1512,12 +1570,12 @@
         const products = {
             osterkarotte: {
                 name: 'Osterkarotte',
-                price: '13,00 €',
+                price: '15,00 €',
                 images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
             },
             hasenkorb: {
                 name: 'Hasenkorb',
-                price: '13,00 €',
+                price: '14,00 €',
                 images: [
                     'bunnybasketbeige.jpeg',
                     'bunnybasketbeige1.jpeg',
@@ -1531,7 +1589,7 @@
             },
             osterei: {
                 name: 'Osterei mit Beinen',
-                price: '2,00 €',
+                price: '5,00 €',
                 images: [
                     'legseggkinder.jpeg',
                     'legseggkinder1.jpeg',
@@ -1559,13 +1617,34 @@
             },
             hasemmitkorb: {
                 name: 'Hase mit Korb',
-                price: '5,00 €',
+                price: '6,00 €',
                 images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
             },
             kinderrahmen: {
                 name: 'Hasen-Kinderrahmen',
-                price: '2,00 €',
+                price: '3,00 €',
                 images: ['kinderrahmen.jpg']
+            },
+            // New Hase Deko products
+            hadekochoco: {
+                name: 'Hase Deko Chocolate',
+                price: '10,00 €',
+                images: [
+                    'fuzzybunnydekochoco1.jpeg',
+                    'fuzzybunnydekochoco2.jpeg',
+                    'fuzzybunnydekochoco3.jpeg'
+                ]
+            },
+            hadekowhite: {
+                name: 'Hase Deko White',
+                price: '6,00 €',
+                images: [
+                    'fuzzybunnydekowhite.jpeg',
+                    'fuzzybunnydekowhite1.jpeg',
+                    'fuzzybunnydekowhite2.jpeg',
+                    'fuzzybunnydekowhite3.jpeg',
+                    'fuzzybunnydekowhite4.jpeg'
+                ]
             }
         };
 
