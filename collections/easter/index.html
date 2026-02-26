@@ -1550,7 +1550,7 @@
         let currentImageIndex = 0;
 
         function openImageGallery(productId, startIndex = 0) {
-            currentProduct = products[productId];
+            currentProduct = window.products[productId];
             currentImageIndex = startIndex;
 
             updateGalleryImage();
@@ -1657,12 +1657,8 @@
         }
 
         function addToCart(buttonElement) {
-            console.log('addToCart called');
             const productId = buttonElement.getAttribute('data-product');
-            console.log('Product ID:', productId);
-            console.log('Products object:', window.products);
-            const product = window.products[productId];
-            console.log('Product found:', product);
+            const product = window.window.products[productId];
 
             if (!product) {
                 console.error('Product not found:', productId);
@@ -1846,7 +1842,7 @@
 
         function openCustomizeModal(productId) {
             currentCustomizeProductId = productId;
-            const product = products[productId];
+            const product = window.products[productId];
 
             if (!product) {
                 console.error('Product not found:', productId);
@@ -1990,7 +1986,7 @@
             const sizeOptionToSave = selectedSizeOption || 'as-photo';
 
             // Get product data
-            const product = products[currentCustomizeProductId];
+            const product = window.products[currentCustomizeProductId];
             const productPrice = product ? product.price : null;
             const productImage = product && product.images && product.images[0] ? `/collections/easter/images/${product.images[0]}` : null;
 
