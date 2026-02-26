@@ -55,7 +55,7 @@
             top: 0;
             left: 0;
             right: 0;
-            padding: 1rem 2rem;
+            padding: 0.5rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -78,7 +78,7 @@
         }
 
         .logo img {
-            height: 80px;
+            height: 50px;
             width: auto;
             border: none;
             padding: 0;
@@ -88,7 +88,7 @@
 
         nav {
             display: flex;
-            gap: 2.5rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
@@ -99,7 +99,7 @@
         nav a {
             text-decoration: none;
             color: var(--text-primary);
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 500;
             letter-spacing: 0.02em;
             transition: color 0.3s ease, opacity 0.3s ease;
@@ -109,10 +109,10 @@
         nav a::after {
             content: '';
             position: absolute;
-            bottom: -4px;
+            bottom: -3px;
             left: 0;
             width: 0;
-            height: 2px;
+            height: 1.5px;
             background: var(--accent);
             transition: width 0.3s ease;
         }
@@ -124,7 +124,7 @@
         .cart-icon {
             position: relative;
             cursor: pointer;
-            padding: 0.5rem 1rem;
+            padding: 0.3rem 0.5rem;
             transition: transform 0.2s ease;
         }
 
@@ -133,21 +133,21 @@
         }
 
         .cart-icon svg {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             fill: var(--text-primary);
             transition: fill 0.3s ease;
         }
 
         .cart-count {
             position: absolute;
-            top: 0;
-            right: 0;
+            top: -2px;
+            right: -2px;
             background: var(--accent);
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            min-width: 18px;
+            min-width: 16px;
             height: 18px;
             border-radius: 9px;
             display: flex;
@@ -172,7 +172,7 @@
             position: relative;
             background: var(--bg-primary);
             overflow: hidden;
-            padding-top: 120px;
+            padding-top: 80px;
         }
 
         .hero-container {
@@ -568,7 +568,7 @@
     <!-- Header -->
     <header id="header">
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore" width="200" height="80" loading="eager" decoding="sync" fetchpriority="high">
+            <img src="/logo.png" alt="LayerStore" width="125" height="50" loading="eager" decoding="sync" fetchpriority="high">
         </a>
         <nav>
             <a href="/collections">Kollektionen</a>
