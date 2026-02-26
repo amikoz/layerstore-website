@@ -1658,7 +1658,7 @@
 
         function addToCart(buttonElement) {
             const productId = buttonElement.getAttribute('data-product');
-            const product = window.window.products[productId];
+            const product = window.products[productId];
 
             if (!product) {
                 console.error('Product not found:', productId);
