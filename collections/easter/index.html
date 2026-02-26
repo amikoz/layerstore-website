@@ -1805,6 +1805,7 @@
             // Update all product cards
             document.querySelectorAll('.product-card').forEach(card => {
                 const button = card.querySelector('.add-to-cart-btn');
+                const customizeBtn = card.querySelector('.customize-btn');
                 if (!button) return;
 
                 const productId = button.getAttribute('data-product');
@@ -1822,7 +1823,7 @@
                     button.style.display = 'none';
                     button.classList.remove('added');
 
-                    // Create and show quantity controls with text
+                    // Create and show quantity controls with text (insert after button, before customize)
                     const qtyContainer = document.createElement('div');
                     qtyContainer.className = 'product-qty-container visible';
                     qtyContainer.innerHTML = `
@@ -1833,7 +1834,7 @@
                             <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', 1)">+</button>
                         </div>
                     `;
-                    buttonsContainer.appendChild(qtyContainer);
+                    buttonsContainer.insertBefore(qtyContainer, customizeBtn);
                 } else {
                     // Show add-to-cart button
                     button.style.display = 'block';
