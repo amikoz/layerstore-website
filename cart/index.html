@@ -457,6 +457,39 @@
             background: var(--accent-light);
         }
 
+        .promo-code-input-wrapper {
+            display: flex;
+            flex: 1;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .promo-code-remove-btn {
+            display: none;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--danger);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .promo-code-remove-btn:hover {
+            background: #b91c1c;
+        }
+
+        .promo-code-remove-btn.visible {
+            display: flex;
+        }
+
         .promo-code-message {
             font-size: 0.85rem;
             margin-top: 0.5rem;
@@ -1136,7 +1169,7 @@
 
                     <div class="promo-code-section">
                         <div class="promo-code-label">Promo-Code eingeben:</div>
-                        <div class="promo-code-input-group">
+                        <div class="promo-code-input-wrapper">
                             <input
                                 type="text"
                                 id="promoCodeInput"
@@ -1144,7 +1177,8 @@
                                 placeholder="Ihr Code"
                                 maxlength="20"
                             >
-                            <button class="promo-code-apply-btn" onclick="applyPromoCode()">Anwenden</button>
+                            <button class="promo-code-apply-btn" id="promoApplyBtn" onclick="applyPromoCode()">Anwenden</button>
+                            <button class="promo-code-remove-btn" id="promoRemoveBtn" onclick="removePromoCode()" title="Promo-Code entfernen">×</button>
                         </div>
                         <div id="promoCodeMessage" class="promo-code-message"></div>
                     </div>
@@ -1219,6 +1253,8 @@
         function applyPromoCode() {
             const input = document.getElementById('promoCodeInput');
             const messageDiv = document.getElementById('promoCodeMessage');
+            const applyBtn = document.getElementById('promoApplyBtn');
+            const removeBtn = document.getElementById('promoRemoveBtn');
             const code = input.value.trim().toUpperCase();
 
             if (!code) {
@@ -1235,6 +1271,9 @@
                 input.classList.remove('invalid');
                 input.classList.add('valid');
                 input.value = code;
+                input.setAttribute('readonly', true);
+                applyBtn.style.display = 'none';
+                removeBtn.classList.add('visible');
                 renderCart();
             } else {
                 messageDiv.textContent = '✗ Ungültiger Promo-Code';
@@ -1242,6 +1281,70 @@
                 input.classList.add('invalid');
                 input.classList.remove('valid');
                 setAppliedPromoCode(null);
+            }
+        }
+
+        function removePromoCode() {
+            const input = document.getElementById('promoCodeInput');
+            const messageDiv = document.getElementById('promoCodeMessage');
+            const applyBtn = document.getElementById('promoApplyBtn');
+            const removeBtn = document.getElementById('promoRemoveBtn');
+
+            // Clear promo code
+            setAppliedPromoCode(null);
+
+            // Reset input
+            input.value = '';
+            input.removeAttribute('readonly');
+            input.classList.remove('valid', 'invalid');
+
+            // Reset messages
+            messageDiv.textContent = '';
+            messageDiv.className = 'promo-code-message';
+
+            // Reset buttons
+            applyBtn.style.display = '';
+            removeBtn.classList.remove('visible');
+
+            // Re-render cart
+            renderCart();
+        }
+
+        // Allow Enter key to apply promo code
+        document.addEventListener('DOMContentLoaded', () => {
+            const promoInput = document.getElementById('promoCodeInput');
+            if (promoInput) {
+                promoInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyPromoCode();
+                    }
+                });
+            }
+
+            // Restore promo code state on page load
+            restorePromoCodeState();
+        });
+
+        // Restore promo code state (input value, buttons visibility)
+        function restorePromoCodeState() {
+            const appliedCode = getAppliedPromoCode();
+            const input = document.getElementById('promoCodeInput');
+            const applyBtn = document.getElementById('promoApplyBtn');
+            const removeBtn = document.getElementById('promoRemoveBtn');
+
+            if (appliedCode && PROMO_CODES[appliedCode]) {
+                input.value = appliedCode;
+                input.classList.add('valid');
+                input.setAttribute('readonly', true);
+                applyBtn.style.display = 'none';
+                removeBtn.classList.add('visible');
+            } else {
+                input.value = '';
+                input.removeAttribute('readonly');
+                input.classList.remove('valid', 'invalid');
+                applyBtn.style.display = '';
+                removeBtn.classList.remove('visible');
             }
         }
 
@@ -1256,7 +1359,32 @@
                     }
                 });
             }
+
+            // Restore promo code state on page load
+            restorePromoCodeState();
         });
+
+        // Restore promo code state (input value, buttons visibility)
+        function restorePromoCodeState() {
+            const appliedCode = getAppliedPromoCode();
+            const input = document.getElementById('promoCodeInput');
+            const applyBtn = document.getElementById('promoApplyBtn');
+            const removeBtn = document.getElementById('promoRemoveBtn');
+
+            if (appliedCode && PROMO_CODES[appliedCode]) {
+                input.value = appliedCode;
+                input.classList.add('valid');
+                input.setAttribute('readonly', true);
+                applyBtn.style.display = 'none';
+                removeBtn.classList.add('visible');
+            } else {
+                input.value = '';
+                input.removeAttribute('readonly');
+                input.classList.remove('valid', 'invalid');
+                applyBtn.style.display = '';
+                removeBtn.classList.remove('visible');
+            }
+        }
 
         // Checkout
         function checkout() {
