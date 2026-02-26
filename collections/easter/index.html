@@ -432,16 +432,17 @@
         }
 
         .add-to-cart-btn.added {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            border-color: var(--border);
-            cursor: default;
-            pointer-events: none;
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            cursor: pointer;
         }
 
         .add-to-cart-btn.added:hover {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
+            background: var(--accent-light);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
         }
 
         /* Quantity Controls for Products */
@@ -1813,15 +1814,14 @@
                 }
 
                 if (cartItem && cartItem.quantity > 0) {
-                    // Hide add-to-cart button
-                    button.style.display = 'none';
-                    button.classList.remove('added');
+                    // Change button text and style
+                    button.textContent = 'HINZUGEFÜGT';
+                    button.classList.add('added');
 
                     // Create and show quantity controls
                     const qtyContainer = document.createElement('div');
                     qtyContainer.className = 'product-qty-container visible';
                     qtyContainer.innerHTML = `
-                        <span class="product-qty-label">Im Warenkorb</span>
                         <div class="product-qty-controls">
                             <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', -1)">−</button>
                             <span class="product-qty-value">${cartItem.quantity}</span>
