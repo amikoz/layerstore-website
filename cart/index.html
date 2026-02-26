@@ -1331,6 +1331,15 @@
 
             orderDetails += `\n=== ZUSAMMENFASSUNG ===\n`;
             orderDetails += `Gesamt: ${totalItems} Artikel\n`;
+
+            // Add promo code info if applied
+            const promoCode = getAppliedPromoCode();
+            if (promoCode && PROMO_CODES[promoCode]) {
+                const discount = calculateDiscount();
+                orderDetails += `Promo-Code: ${promoCode} (${PROMO_CODES[promoCode].description})\n`;
+                orderDetails += `Rabatt: -${discount.toFixed(2)} €\n`;
+            }
+
             orderDetails += `Datum: ${new Date().toLocaleDateString('de-DE')}\n`;
             orderDetails += `Zeit: ${new Date().toLocaleTimeString('de-DE')}\n`;
 

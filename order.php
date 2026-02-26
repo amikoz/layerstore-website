@@ -66,10 +66,12 @@ $email = cleanInput($_POST['email'] ?? '');
 $name = cleanInput($_POST['name'] ?? '');
 $whatsapp = cleanInput($_POST['whatsapp'] ?? '');
 $orderDetails = cleanInput($_POST['order_details'] ?? '');
+$promoCode = cleanInput($_POST['promo_code'] ?? '');
 
 logMessage("Email: '$email'");
 logMessage("Name: '$name'");
 logMessage("WhatsApp: '$whatsapp'");
+logMessage("Promo Code: '$promoCode'");
 logMessage("Order details length: " . strlen($orderDetails) . " chars");
 
 // Validate email
@@ -93,6 +95,7 @@ E-Mail: $email
 ($whatsapp ? "WhatsApp: $whatsapp\n" : "") . "
 
 $orderDetails
+" . ($promoCode ? "\n=== VERWENDETER PROMO-CODE ===\nPromo-Code: $promoCode\n" : "") . "
 
 Gesendet am: " . date('d.m.Y') . " um " . date('H:i') . "
 IP Adresse: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . "
