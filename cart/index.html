@@ -1102,14 +1102,22 @@
 
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+            // Calculate total price in EUR
+            const total = cart.reduce((sum, item) => {
+                if (!item.price || item.option === 'individuell') return sum;
+                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                return sum + (priceNum * item.quantity);
+            }, 0);
+
             // Get discount from applied promo code
             const discount = calculateDiscount();
+            const finalTotal = total - discount;
 
             const summaryHTML = `
                 <div class="cart-summary">
                     <div class="summary-row">
-                        <span>Anzahl Artikel:</span>
-                        <span>${totalItems}</span>
+                        <span>Zwischensumme:</span>
+                        <span>${total.toFixed(2)} €</span>
                     </div>
                     ${discount > 0 ? `
                     <div class="summary-row discount">
@@ -1117,9 +1125,13 @@
                         <span>-${discount.toFixed(2)} €</span>
                     </div>
                     ` : ''}
+                    <div class="summary-row">
+                        <span>Anzahl Artikel:</span>
+                        <span>${totalItems}</span>
+                    </div>
                     <div class="summary-row total">
                         <span>Gesamt:</span>
-                        <span>${totalItems} ${totalItems === 1 ? 'Artikel' : 'Artikel'}</span>
+                        <span>${finalTotal.toFixed(2)} €</span>
                     </div>
 
                     <div class="promo-code-section">
