@@ -1317,7 +1317,7 @@
 
     <script>
         // Product data with all images in correct order
-        const products = {
+        window.products = {
             osterkarotte: {
                 name: 'Osterkarotte',
                 price: '15,00 €',
@@ -1657,8 +1657,12 @@
         }
 
         function addToCart(buttonElement) {
+            console.log('addToCart called');
             const productId = buttonElement.getAttribute('data-product');
-            const product = products[productId];
+            console.log('Product ID:', productId);
+            console.log('Products object:', window.products);
+            const product = window.products[productId];
+            console.log('Product found:', product);
 
             if (!product) {
                 console.error('Product not found:', productId);
