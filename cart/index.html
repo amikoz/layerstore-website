@@ -457,37 +457,46 @@
             background: var(--accent-light);
         }
 
-        .promo-code-input-wrapper {
+        .promo-code-input-group {
             display: flex;
-            flex: 1;
             gap: 0.5rem;
-            align-items: center;
         }
 
-        .promo-code-remove-btn {
+        .promo-code-applied {
             display: none;
-            width: 28px;
-            height: 28px;
-            border: none;
-            background: var(--danger);
-            color: white;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
+            justify-content: space-between;
+            margin-top: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            border-radius: 4px;
+            font-size: 0.85rem;
         }
 
-        .promo-code-remove-btn:hover {
-            background: #b91c1c;
-        }
-
-        .promo-code-remove-btn.visible {
+        .promo-code-applied.visible {
             display: flex;
+        }
+
+        .promo-code-applied-text {
+            color: #166534;
+            font-weight: 500;
+        }
+
+        .promo-code-applied-remove {
+            background: none;
+            border: none;
+            color: #166534;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0 0.3rem;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .promo-code-applied-remove:hover {
+            color: #dc2626;
         }
 
         .promo-code-message {
@@ -1169,7 +1178,7 @@
 
                     <div class="promo-code-section">
                         <div class="promo-code-label">Promo-Code eingeben:</div>
-                        <div class="promo-code-input-wrapper">
+                        <div class="promo-code-input-group">
                             <input
                                 type="text"
                                 id="promoCodeInput"
@@ -1178,7 +1187,10 @@
                                 maxlength="20"
                             >
                             <button class="promo-code-apply-btn" id="promoApplyBtn" onclick="applyPromoCode()">Anwenden</button>
-                            <button class="promo-code-remove-btn" id="promoRemoveBtn" onclick="removePromoCode()" title="Promo-Code entfernen">×</button>
+                        </div>
+                        <div id="promoCodeApplied" class="promo-code-applied">
+                            <span class="promo-code-applied-text"></span>
+                            <button class="promo-code-applied-remove" onclick="removePromoCode()" title="Promo-Code entfernen">×</button>
                         </div>
                         <div id="promoCodeMessage" class="promo-code-message"></div>
                     </div>
@@ -1253,31 +1265,33 @@
         function applyPromoCode() {
             const input = document.getElementById('promoCodeInput');
             const messageDiv = document.getElementById('promoCodeMessage');
-            const applyBtn = document.getElementById('promoApplyBtn');
-            const removeBtn = document.getElementById('promoRemoveBtn');
+            const appliedDiv = document.getElementById('promoCodeApplied');
+            const appliedText = appliedDiv.querySelector('.promo-code-applied-text');
             const code = input.value.trim().toUpperCase();
 
             if (!code) {
                 messageDiv.textContent = 'Bitte geben Sie einen Promo-Code ein.';
                 messageDiv.className = 'promo-code-message error';
+                messageDiv.style.display = 'block';
                 input.classList.add('invalid');
                 return;
             }
 
             if (PROMO_CODES[code]) {
                 setAppliedPromoCode(code);
-                messageDiv.textContent = `✓ Code "${code}" angewendet! ${PROMO_CODES[code].description}`;
-                messageDiv.className = 'promo-code-message success';
                 input.classList.remove('invalid');
-                input.classList.add('valid');
-                input.value = code;
-                input.setAttribute('readonly', true);
-                applyBtn.style.display = 'none';
-                removeBtn.classList.add('visible');
+                input.value = '';
+                messageDiv.style.display = 'none';
+
+                // Show applied promo code
+                appliedText.textContent = `Promo-Code: ${code}`;
+                appliedDiv.classList.add('visible');
+
                 renderCart();
             } else {
                 messageDiv.textContent = '✗ Ungültiger Promo-Code';
                 messageDiv.className = 'promo-code-message error';
+                messageDiv.style.display = 'block';
                 input.classList.add('invalid');
                 input.classList.remove('valid');
                 setAppliedPromoCode(null);
@@ -1287,8 +1301,7 @@
         function removePromoCode() {
             const input = document.getElementById('promoCodeInput');
             const messageDiv = document.getElementById('promoCodeMessage');
-            const applyBtn = document.getElementById('promoApplyBtn');
-            const removeBtn = document.getElementById('promoRemoveBtn');
+            const appliedDiv = document.getElementById('promoCodeApplied');
 
             // Clear promo code
             setAppliedPromoCode(null);
@@ -1300,11 +1313,10 @@
 
             // Reset messages
             messageDiv.textContent = '';
-            messageDiv.className = 'promo-code-message';
+            messageDiv.style.display = 'none';
 
-            // Reset buttons
-            applyBtn.style.display = '';
-            removeBtn.classList.remove('visible');
+            // Hide applied promo code
+            appliedDiv.classList.remove('visible');
 
             // Re-render cart
             renderCart();
@@ -1329,60 +1341,16 @@
         // Restore promo code state (input value, buttons visibility)
         function restorePromoCodeState() {
             const appliedCode = getAppliedPromoCode();
-            const input = document.getElementById('promoCodeInput');
-            const applyBtn = document.getElementById('promoApplyBtn');
-            const removeBtn = document.getElementById('promoRemoveBtn');
+            const appliedDiv = document.getElementById('promoCodeApplied');
+            const appliedText = appliedDiv.querySelector('.promo-code-applied-text');
+            const messageDiv = document.getElementById('promoCodeMessage');
 
             if (appliedCode && PROMO_CODES[appliedCode]) {
-                input.value = appliedCode;
-                input.classList.add('valid');
-                input.setAttribute('readonly', true);
-                applyBtn.style.display = 'none';
-                removeBtn.classList.add('visible');
+                appliedText.textContent = `Promo-Code: ${appliedCode}`;
+                appliedDiv.classList.add('visible');
+                messageDiv.style.display = 'none';
             } else {
-                input.value = '';
-                input.removeAttribute('readonly');
-                input.classList.remove('valid', 'invalid');
-                applyBtn.style.display = '';
-                removeBtn.classList.remove('visible');
-            }
-        }
-
-        // Allow Enter key to apply promo code
-        document.addEventListener('DOMContentLoaded', () => {
-            const promoInput = document.getElementById('promoCodeInput');
-            if (promoInput) {
-                promoInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        applyPromoCode();
-                    }
-                });
-            }
-
-            // Restore promo code state on page load
-            restorePromoCodeState();
-        });
-
-        // Restore promo code state (input value, buttons visibility)
-        function restorePromoCodeState() {
-            const appliedCode = getAppliedPromoCode();
-            const input = document.getElementById('promoCodeInput');
-            const applyBtn = document.getElementById('promoApplyBtn');
-            const removeBtn = document.getElementById('promoRemoveBtn');
-
-            if (appliedCode && PROMO_CODES[appliedCode]) {
-                input.value = appliedCode;
-                input.classList.add('valid');
-                input.setAttribute('readonly', true);
-                applyBtn.style.display = 'none';
-                removeBtn.classList.add('visible');
-            } else {
-                input.value = '';
-                input.removeAttribute('readonly');
-                input.classList.remove('valid', 'invalid');
-                applyBtn.style.display = '';
-                removeBtn.classList.remove('visible');
+                appliedDiv.classList.remove('visible');
             }
         }
 
