@@ -9,17 +9,10 @@
     <!-- Performance Optimization -->
     <link rel="preload" href="/logo.png" as="image">
     <link rel="preload" href="/background4.jpg" as="image">
-    <link rel="preload" href="/fonts/superpop-variable.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Changa+One&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'superpop-variable';
-            src: url('/fonts/superpop-variable.woff2') format('woff2-variations'),
-                 url('/fonts/superpop-variable.woff2') format('woff2');
-            font-weight: 100 900;
-            font-stretch: 75% 125%;
-            font-style: normal;
-            font-display: swap;
-        }
         :root {
             --bg-primary: #F0ECDA;
             --bg-secondary: #E8E4D2;
@@ -41,9 +34,9 @@
         }
 
         body {
-            font-family: superpop-variable, sans-serif;
+            font-family: 'Changa One', cursive;
             font-style: normal;
-            font-variation-settings: "wght" 200;
+            font-weight: 400;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
