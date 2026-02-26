@@ -1378,6 +1378,7 @@
             // Close modal and clear cart
             closeCheckoutModal();
             localStorage.removeItem('layerstore_cart');
+            setAppliedPromoCode(null);  // Clear promo code
             updateCartCount();
             renderCart();
             nameInput.value = '';
@@ -1417,6 +1418,7 @@
             // Close modal and clear cart
             closeCheckoutModal();
             localStorage.removeItem('layerstore_cart');
+            setAppliedPromoCode(null);  // Clear promo code
             updateCartCount();
             renderCart();
             nameInput.value = '';
