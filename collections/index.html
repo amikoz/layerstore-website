@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kollektionen | LayerStore</title>
     <link rel="preload" href="/logo.png" as="image">
-    <link rel="preload" href="/collections/easter/images/easterblockbackground.jpeg" as="image">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +24,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -58,11 +61,6 @@
         .logo img {
             height: 50px;
             width: auto;
-            transition: transform 0.2s ease;
-        }
-
-        .logo:hover img {
-            transform: scale(1.05);
         }
 
         nav {
@@ -76,51 +74,23 @@
             color: var(--text-secondary);
             font-size: 0.85rem;
             font-weight: 400;
-            letter-spacing: 0.02em;
             transition: color 0.3s ease;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent);
-            transition: width 0.3s ease;
         }
 
         nav a:hover {
             color: var(--accent);
         }
 
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Cart Icon */
         .cart-icon {
             position: relative;
             cursor: pointer;
             padding: 0.3rem 0.5rem;
-            transition: transform 0.2s ease;
-        }
-
-        .cart-icon:hover {
-            transform: scale(1.1);
         }
 
         .cart-icon svg {
             width: 20px;
             height: 20px;
             fill: var(--text-secondary);
-            transition: fill 0.3s ease;
-        }
-
-        .cart-icon:hover svg {
-            fill: var(--accent);
         }
 
         .cart-count {
@@ -139,104 +109,102 @@
             justify-content: center;
             padding: 0 4px;
             opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .cart-count.visible {
             opacity: 1;
         }
 
-        /* Collections Section */
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Main Content */
+        .main-content {
+            padding: 100px 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* Collections Grid */
-        .collections-section {
-            padding: 6rem 4rem;
-            max-width: 1400px;
-            margin: 0 auto;
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            text-align: center;
         }
 
         .collections-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
         }
 
         .collection-card {
             background: white;
-            border: 2px solid var(--border);
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            transition: all 0.4s ease;
-            position: relative;
-        }
-
-        .collection-card.available {
+            transition: all 0.3s ease;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        .collection-card.available:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(30, 58, 138, 0.2);
-            border-color: var(--accent);
+        .collection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .collection-card.unavailable {
-            opacity: 0.7;
+        .collection-card.coming-soon {
+            opacity: 0.6;
             cursor: not-allowed;
         }
 
-        .collection-card.unavailable:hover {
+        .collection-card.coming-soon:hover {
             transform: none;
-            border-color: var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .collection-image {
             width: 100%;
-            height: 200px;
+            height: 240px;
             object-fit: cover;
             background: var(--bg-secondary);
         }
 
-        .collection-info {
-            padding: 0.5rem 1rem;
-            text-align: center;
-        }
-
-        .collection-icon {
+        .collection-placeholder {
+            width: 100%;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 4rem;
-            margin-bottom: 1rem;
-            display: block;
         }
 
-        .collection-info h2 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 2rem;
-            font-weight: 400;
+        .collection-info {
+            padding: 1.5rem;
+        }
+
+        .collection-emoji {
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            color: var(--accent);
         }
 
-        .collection-info p {
-            font-size: 1rem;
+        .collection-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .collection-desc {
+            font-size: 0.95rem;
             color: var(--text-secondary);
-            font-weight: 300;
+            line-height: 1.5;
             margin-bottom: 1rem;
-            line-height: 1.6;
         }
 
-        .status-badge {
+        .collection-status {
             display: inline-block;
-            padding: 0.5rem 1.5rem;
+            padding: 0.4rem 1rem;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
         }
 
         .status-available {
@@ -244,109 +212,27 @@
             color: white;
         }
 
-        .status-unavailable {
+        .status-coming {
             background: var(--bg-secondary);
             color: var(--text-secondary);
-            border: 1px solid var(--border);
-        }
-
-        .arrow {
-            display: inline-block;
-            margin-left: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .collection-card.available:hover .arrow {
-            transform: translateX(5px);
         }
 
         /* Footer */
         footer {
-            padding: 4rem 4rem;
             background: var(--bg-primary);
+            padding: 3rem 2rem;
             border-top: 1px solid var(--border);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 3rem;
-        }
-
-        .footer-section h4 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .footer-section p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            font-weight: 300;
-        }
-
-        .footer-section a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: var(--accent);
-        }
-
-        .footer-bottom {
             text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 300;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            header {
-                padding: 0.7rem 1rem;
-            }
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
 
-            .logo img {
-                height: 55px;
-            }
-
-            nav {
-                gap: 1.5rem;
-            }
-
-            .hero {
-                padding: 4rem 2rem 3rem;
-            }
-
-            .collections-section {
-                padding: 4rem 2rem;
-            }
-
+        @media (max-width: 600px) {
             .collections-grid {
                 grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .collection-image {
-                height: 160px;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
             }
         }
     </style>
@@ -355,11 +241,11 @@
     <!-- Header -->
     <header>
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore Logo" width="125" height="50" loading="eager" decoding="sync" fetchpriority="high">
+            <img src="/logo.png" alt="LayerStore" width="125" height="50" loading="eager">
         </a>
         <nav>
+            <a href="/">Startseite</a>
             <a href="/collections">Kollektionen</a>
-            <a href="/collections">Über uns</a>
             <a href="/contact">Kontakt</a>
             <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -370,140 +256,79 @@
         </nav>
     </header>
 
-    <!-- Collections Grid -->
-    <section class="collections-section">
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">Kollektionen</h1>
+
         <div class="collections-grid">
-            <!-- Ostern - Available -->
-            <div class="collection-card available" onclick="window.location.href='/collections/easter'">
-                <img src="/collections/easter/images/carrot1.jpeg" alt="Ostern Kollektion" class="collection-image" loading="eager" decoding="async" width="600" height="400" fetchpriority="high">
+            <!-- Easter Collection -->
+            <a href="/collections/easter" class="collection-card">
+                <img src="/collections/easter/images/carrot1.jpeg" alt="Ostern" class="collection-image">
                 <div class="collection-info">
-                    <span class="collection-icon">🐰</span>
-                    <h2>Ostern</h2>
-                    <p>Frühlhafte Dekorationen, Osternester und Geschenke für das Osterfest</p>
-                    <span class="status-badge status-available">
-                        Jetzt ansehen <span class="arrow">→</span>
-                    </span>
+                    <div class="collection-emoji">🐰</div>
+                    <h2 class="collection-title">Ostern</h2>
+                    <p class="collection-desc">Osterhasen, Dekorationen und Geschenke für das Osterfest</p>
+                    <span class="collection-status status-available">Jetzt ansehen</span>
                 </div>
-            </div>
+            </a>
 
             <!-- Weihnachten - Coming Soon -->
-            <div class="collection-card unavailable">
-                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 5rem;">🎄</span>
+            <div class="collection-card coming-soon">
+                <div class="collection-placeholder" style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);">
+                    🎄
                 </div>
                 <div class="collection-info">
-                    <span class="collection-icon">🎄</span>
-                    <h2>Weihnachten</h2>
-                    <p>Weiße Weihnachten, Dekorationen und festliche Accessoires</p>
-                    <span class="status-badge status-unavailable">Bald verfügbar</span>
+                    <div class="collection-emoji">🎄</div>
+                    <h2 class="collection-title">Weihnachten</h2>
+                    <p class="collection-desc">Weiße Weihnachten, Dekorationen und festliche Accessoires</p>
+                    <span class="collection-status status-coming">Bald verfügbar</span>
                 </div>
             </div>
 
             <!-- Geburtstag - Coming Soon -->
-            <div class="collection-card unavailable">
-                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%); display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 5rem;">🎂</span>
+            <div class="collection-card coming-soon">
+                <div class="collection-placeholder" style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);">
+                    🎂
                 </div>
                 <div class="collection-info">
-                    <span class="collection-icon">🎂</span>
-                    <h2>Geburtstag</h2>
-                    <p>Personalisierte Geschenke, Dekorationen und Accessoires</p>
-                    <span class="status-badge status-unavailable">Bald verfügbar</span>
-                </div>
-            </div>
-
-            <!-- Wohnaccessoires - Coming Soon -->
-            <div class="collection-card unavailable">
-                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #d9f99d 0%, #a3e635 100%); display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 5rem;">🏠</span>
-                </div>
-                <div class="collection-info">
-                    <span class="collection-icon">🏠</span>
-                    <h2>Wohnaccessoires</h2>
-                    <p>Einzigartige Heimdekoration und praktische Accessoires</p>
-                    <span class="status-badge status-unavailable">Bald verfügbar</span>
-                </div>
-            </div>
-
-            <!-- Büro - Coming Soon -->
-            <div class="collection-card unavailable">
-                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%); display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 5rem;">💼</span>
-                </div>
-                <div class="collection-info">
-                    <span class="collection-icon">💼</span>
-                    <h2>Büro</h2>
-                    <p>Praktische Schreibtischaccessoires und Organizer</p>
-                    <span class="status-badge status-unavailable">Bald verfügbar</span>
-                </div>
-            </div>
-
-            <!-- Geschenke - Coming Soon -->
-            <div class="collection-card unavailable">
-                <div style="width: 100%; height: 250px; background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); display: flex; align-items: center; justify-content: center;">
-                    <span style="font-size: 5rem;">🎁</span>
-                </div>
-                <div class="collection-info">
-                    <span class="collection-icon">🎁</span>
-                    <h2>Geschenke</h2>
-                    <p>Für jeden Anlass das passende Geschenk</p>
-                    <span class="status-badge status-unavailable">Bald verfügbar</span>
+                    <div class="collection-emoji">🎂</div>
+                    <h2 class="collection-title">Geburtstag</h2>
+                    <p class="collection-desc">Personalisierte Geschenke, Dekorationen und Accessoires</p>
+                    <span class="collection-status status-coming">Bald verfügbar</span>
                 </div>
             </div>
         </div>
-    </section>
+    </main>
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LayerStore</h4>
-                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
-                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-
-            <div class="footer-section">
-                <h4>Entdecken</h4>
-                <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">🐰 Ostern</a>
-                <a href="/cart">Warenkorb</a>
-            </div>
-
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <a href="/datenschutz">🔒 Datenschutz</a>
-                <a href="/impressum">ℹ️ Impressum</a>
-                <a href="/contact">📧 Kontakt</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            Mit Präzision gedruckt in Deutschland
-        </div>
+        <p>&copy; 2025 LayerStore. Alle Rechte vorbehalten.</p>
     </footer>
 
     <script>
-        // Cart functionality
-        function getCart() {
-            const cart = localStorage.getItem('layerstore_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
+        // Cart count
         function updateCartCount() {
-            const cart = getCart();
-            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cart = JSON.parse(localStorage.getItem('layerstore_cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
             const cartCount = document.getElementById('cartCount');
-            cartCount.textContent = totalCount;
-
-            if (totalCount > 0) {
+            if (count > 0) {
+                cartCount.textContent = count;
                 cartCount.classList.add('visible');
             } else {
                 cartCount.classList.remove('visible');
             }
         }
 
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
+
+            // Listen for cart updates from other pages
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'layerstore_cart') {
+                    updateCartCount();
+                }
+            });
         });
     </script>
 </body>
