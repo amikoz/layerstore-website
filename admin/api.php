@@ -83,20 +83,21 @@ $action = $_GET['action'] ?? '';
 
 // Login
 if ($action === 'login') {
-    $rawInput = file_get_contents('php://input');
-    $input = json_decode($rawInput, true);
+    // Get from POST (FormData) or JSON body
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    // Also try POST array if JSON is empty
-    if (empty($input)) {
-        $input = $_POST;
+    // If empty, try JSON
+    if (empty($username)) {
+        $rawInput = file_get_contents('php://input');
+        $input = json_decode($rawInput, true);
+        $username = $input['username'] ?? '';
+        $password = $input['password'] ?? '';
     }
 
-    $username = $input['username'] ?? '';
-    $password = $input['password'] ?? '';
-
     // Debug logging
-    $log = date('Y-m-d H:i:s') . " | Login attempt | User: '$username' | Pass: '$password' | Raw: " . substr($rawInput, 0, 100) . "\n";
-    file_put_contents(__DIR__ . '/debug.log', $log, FILE_APPEND);
+    $log = date('Y-m-d H:i:s') . " | Login | User: '$username' | Pass: '$password'\n";
+    @file_put_contents(__DIR__ . '/debug.log', $log, FILE_APPEND);
 
     if ($username === ADMIN_USERNAME && $password === ADMIN_PASSWORD) {
         $token = generateToken($username);

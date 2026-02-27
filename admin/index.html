@@ -307,24 +307,38 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
+            console.log('Attempting login...');
+            console.log('API URL:', API_URL + '?action=login');
+
             try {
+                // Try with FormData instead of JSON
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+
                 const response = await fetch(API_URL + '?action=login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: formData
                 });
 
-                const data = await response.json();
+                console.log('Response status:', response.status);
+
+                const text = await response.text();
+                console.log('Response text:', text);
+
+                const data = JSON.parse(text);
 
                 if (data.success) {
                     localStorage.setItem('admin_token', data.token);
                     showDashboard();
                 } else {
                     document.getElementById('loginError').style.display = 'block';
+                    document.getElementById('loginError').textContent = 'Fehler: ' + (data.message || 'Unbekannter Fehler');
                 }
             } catch (err) {
-                console.error(err);
+                console.error('Login error:', err);
                 document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginError').textContent = 'Verbindungsfehler: ' + err.message;
             }
         });
 
