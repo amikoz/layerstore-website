@@ -1229,20 +1229,16 @@
         // Promo Code Management
         let PROMO_CODES = {};
 
-        // Load promo codes from localStorage (set by admin panel)
-        function loadPromoCodes() {
-            const stored = localStorage.getItem('layerstore_promo_codes');
-            if (stored) {
-                try {
-                    PROMO_CODES = JSON.parse(stored);
-                } catch (e) {
-                    // Default fallback
-                    PROMO_CODES = {
-                        'OSTER2025': { discount: 0.15, description: 'Oster-Sonderangebot' }
-                    };
+        // Load promo codes from API
+        async function loadPromoCodes() {
+            try {
+                const response = await fetch('/api/promos.php?t=' + Date.now());
+                if (response.ok) {
+                    PROMO_CODES = await response.json();
                 }
-            } else {
-                // Default fallback
+            } catch (err) {
+                console.error('Failed to load promo codes from API, using fallback', err);
+                // Fallback to default
                 PROMO_CODES = {
                     'OSTER2025': { discount: 0.15, description: 'Oster-Sonderangebot' }
                 };
