@@ -1227,9 +1227,18 @@
         }
 
         // Promo Code Management
-        const PROMO_CODES = {
-            'OSTER': { discount: 0.10, description: '10% Rabatt' }
-        };
+        let PROMO_CODES = {};
+
+        // Load promo codes from server
+        async function loadPromoCodes() {
+            try {
+                const response = await fetch('/promo-api.php');
+                PROMO_CODES = await response.json();
+            } catch (err) {
+                console.error('Failed to load promo codes', err);
+                PROMO_CODES = {};
+            }
+        }
 
         function getAppliedPromoCode() {
             return localStorage.getItem('layerstore_promo_code') || null;
@@ -1494,7 +1503,8 @@
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadPromoCodes();
             updateCartCount();
             renderCart();
 
