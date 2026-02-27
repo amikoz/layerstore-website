@@ -237,6 +237,36 @@
             color: #dc2626;
         }
 
+        .export-section {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .export-section h3 {
+            font-size: 1rem;
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .export-section p {
+            font-size: 0.85rem;
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .export-code {
+            background: #fff;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            word-break: break-all;
+            margin-bottom: 0.5rem;
+        }
+
         @media (max-width: 600px) {
             .add-promo-form {
                 grid-template-columns: 1fr;
@@ -274,6 +304,12 @@
         <div class="admin-content">
             <div class="message" id="message"></div>
 
+            <!-- Info section -->
+            <div class="export-section">
+                <h3>⚠️ Promo-Codes werden lokal gespeichert</h3>
+                <p>Änderungen wirken sich nur für dich. Damit alle Kunden die neuen Promo-Codes sehen, musst du den Code unten kopieren und in die Datei <code>cart/index.html</code> einfügen.</p>
+            </div>
+
             <!-- Promo Codes Section -->
             <div class="section">
                 <h2>Promo-Codes verwalten</h2>
@@ -284,8 +320,18 @@
                     <button type="submit">Hinzufügen</button>
                 </form>
                 <div class="promo-list" id="promoList">
-                    <p style="color: #888; padding: 1rem;">Laden...</p>
+                    <!-- Promo codes will be loaded here -->
                 </div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="section">
+                <h2>Promo-Codes exportieren</h2>
+                <p style="color: #666; margin-bottom: 0.5rem; font-size: 0.85rem;">
+                    Kopiere diesen Code und füge ihn in <code>cart/index.html</code> в секции JavaScript, заменив строку <code>let PROMO_CODES = {};</code>:
+                </p>
+                <pre class="export-code" id="exportCode">let PROMO_CODES = {};</pre>
+                <button onclick="copyExport()" class="btn" style="width: auto;">Kopieren</button>
             </div>
         </div>
     </div>
@@ -297,43 +343,42 @@
         };
 
         const SESSION_KEY = 'layerstore_admin_session';
-        const API_URL = '/api/promos.php';
-        const SAVE_URL = '/api/save-promos.php';
+        const PROMO_KEY = 'layerstore_promo_codes';
 
-        // Get promo codes from API
-        async function getPromoCodes() {
-            try {
-                const response = await fetch(API_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error('Network error');
-                return await response.json();
-            } catch (err) {
-                console.error('Failed to load promo codes:', err);
-                return {};
+        // Default promo codes
+        const DEFAULT_PROMOS = {
+            'OSTER2025': { discount: 0.15, description: 'Oster-Sonderangebot' }
+        };
+
+        // Get promo codes from localStorage
+        function getPromoCodes() {
+            const stored = localStorage.getItem(PROMO_KEY);
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch (e) {
+                    return DEFAULT_PROMOS;
+                }
             }
+            return DEFAULT_PROMOS;
         }
 
-        // Save promo codes to server
-        async function savePromoCodesToServer(promos) {
-            try {
-                const response = await fetch(SAVE_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        password: CREDENTIALS.password,
-                        promos: promos
-                    })
-                });
-                const result = await response.json();
-                return result.success;
-            } catch (err) {
-                console.error('Failed to save promo codes:', err);
-                return false;
-            }
+        // Save promo codes to localStorage
+        function savePromoCodes(promos) {
+            localStorage.setItem(PROMO_KEY, JSON.stringify(promos));
+            updateExport();
+        }
+
+        // Update export code
+        function updateExport() {
+            const promos = getPromoCodes();
+            const code = 'let PROMO_CODES = ' + JSON.stringify(promos, null, 2) + ';';
+            document.getElementById('exportCode').textContent = code;
         }
 
         // Load promo codes into UI
-        async function loadPromoCodes() {
-            const promos = await getPromoCodes();
+        function loadPromoCodes() {
+            const promos = getPromoCodes();
             const list = document.getElementById('promoList');
             list.innerHTML = '';
 
@@ -356,50 +401,49 @@
             } else {
                 list.innerHTML = '<p style="color: #888; padding: 1rem;">Keine Promo-Codes vorhanden.</p>';
             }
+
+            updateExport();
         }
 
         // Add promo code
-        document.getElementById('addPromoForm').addEventListener('submit', async (e) => {
+        document.getElementById('addPromoForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
             const code = document.getElementById('promoCode').value.toUpperCase();
             const discount = parseFloat(document.getElementById('promoDiscount').value) / 100;
             const description = document.getElementById('promoDesc').value || '';
 
-            const promos = await getPromoCodes();
+            const promos = getPromoCodes();
             promos[code] = { discount, description };
+            savePromoCodes(promos);
 
-            const saved = await savePromoCodesToServer(promos);
-            if (saved) {
-                showMessage('Promo-Code hinzugefügt!', 'success');
-                document.getElementById('addPromoForm').reset();
-                loadPromoCodes();
-            } else {
-                showMessage('Fehler beim Speichern', 'error');
-            }
+            showMessage('Promo-Code hinzugefügt! Kopiere den Code unten in cart/index.html', 'success');
+            document.getElementById('addPromoForm').reset();
+            loadPromoCodes();
         });
 
         // Delete promo code
-        async function deletePromoCode(code) {
-            if (!confirm('Promo-Code "' + code + '" wirklich löschen?')) return;
-
-            const promos = await getPromoCodes();
+        function deletePromoCode(code) {
+            const promos = getPromoCodes();
             delete promos[code];
+            savePromoCodes(promos);
 
-            const saved = await savePromoCodesToServer(promos);
-            if (saved) {
-                showMessage('Promo-Code gelöscht!', 'success');
-                loadPromoCodes();
-            } else {
-                showMessage('Fehler beim Löschen', 'error');
-            }
+            showMessage('Promo-Code gelöscht! Kopiere den neuen Code unten in cart/index.html', 'success');
+            loadPromoCodes();
         }
 
-        // Show dashboard
-        async function showDashboard() {
+        // Copy export to clipboard
+        function copyExport() {
+            const code = document.getElementById('exportCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showMessage('In die Zwischenablage kopiert!', 'success');
+            });
+        }
+
+        function showDashboard() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            await loadPromoCodes();
+            loadPromoCodes();
         }
 
         function logout() {
@@ -412,7 +456,7 @@
             msg.textContent = text;
             msg.className = 'message ' + type;
             msg.style.display = 'block';
-            setTimeout(() => msg.style.display = 'none', 3000);
+            setTimeout(() => msg.style.display = 'none', 5000);
         }
 
         // Check session
