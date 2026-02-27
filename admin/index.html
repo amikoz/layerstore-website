@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -289,148 +290,140 @@
                     <!-- Promo codes will be loaded here -->
                 </div>
             </div>
+
+            <!-- Export to cart -->
+            <div class="section">
+                <h2>Promo-Codes exportieren</h2>
+                <p style="color: #666; margin-bottom: 1rem; font-size: 0.9rem;">
+                    Kopiere diesen Code und füge ihn in die <code>cart/index.html</code> ein, um die Promo-Codes zu aktualisieren.
+                </p>
+                <textarea id="exportCode" readonly style="width: 100%; height: 150px; font-family: monospace; font-size: 0.8rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 6px;"></textarea>
+                <button onclick="copyExport()" class="btn" style="width: auto; margin-top: 1rem;">Kopieren</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const API_URL = '/admin/api.php';
+        // Simple authentication (client-side)
+        const CREDENTIALS = {
+            username: 'amikoz',
+            password: 'amikoz'
+        };
+
+        const SESSION_KEY = 'layerstore_admin_session';
+        const PROMO_KEY = 'layerstore_promo_codes';
+
+        // Default promo codes
+        const DEFAULT_PROMOS = {
+            'OSTER2025': { discount: 0.15, description: 'Oster-Sonderangebot' },
+            'FRÜHLING10': { discount: 0.10, description: 'Frühlingsangebot' }
+        };
+
+        // Get promo codes from localStorage
+        function getPromoCodes() {
+            const stored = localStorage.getItem(PROMO_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return DEFAULT_PROMOS;
+        }
+
+        // Save promo codes to localStorage
+        function savePromoCodes(promos) {
+            localStorage.setItem(PROMO_KEY, JSON.stringify(promos));
+        }
 
         // Check if already logged in
-        const token = localStorage.getItem('admin_token');
-        if (token) {
+        const session = localStorage.getItem(SESSION_KEY);
+        if (session === 'valid') {
             showDashboard();
         }
 
         // Login form
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            console.log('Attempting login...');
-            console.log('API URL:', API_URL + '?action=login');
-
-            try {
-                // Try with FormData instead of JSON
-                const formData = new FormData();
-                formData.append('username', username);
-                formData.append('password', password);
-
-                const response = await fetch(API_URL + '?action=login', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                console.log('Response status:', response.status);
-
-                const text = await response.text();
-                console.log('Response text:', text);
-
-                const data = JSON.parse(text);
-
-                if (data.success) {
-                    localStorage.setItem('admin_token', data.token);
-                    showDashboard();
-                } else {
-                    document.getElementById('loginError').style.display = 'block';
-                    document.getElementById('loginError').textContent = 'Fehler: ' + (data.message || 'Unbekannter Fehler');
-                }
-            } catch (err) {
-                console.error('Login error:', err);
+            if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
+                localStorage.setItem(SESSION_KEY, 'valid');
+                showDashboard();
+            } else {
                 document.getElementById('loginError').style.display = 'block';
-                document.getElementById('loginError').textContent = 'Verbindungsfehler: ' + err.message;
             }
         });
 
         // Add promo code
-        document.getElementById('addPromoForm').addEventListener('submit', async (e) => {
+        document.getElementById('addPromoForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const token = localStorage.getItem('admin_token');
 
             const code = document.getElementById('promoCode').value.toUpperCase();
             const discount = parseFloat(document.getElementById('promoDiscount').value) / 100;
             const description = document.getElementById('promoDesc').value || '';
 
-            try {
-                const response = await fetch(API_URL + '?action=addPromo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Auth-Token': token
-                    },
-                    body: JSON.stringify({ code, discount, description })
-                });
+            const promos = getPromoCodes();
+            promos[code] = { discount, description };
+            savePromoCodes(promos);
 
-                const data = await response.json();
-                showMessage(data.success ? 'Promo-Code hinzugefügt!' : 'Fehler: ' + (data.message || ''), data.success ? 'success' : 'error');
-
-                if (data.success) {
-                    document.getElementById('addPromoForm').reset();
-                    loadPromoCodes();
-                }
-            } catch (err) {
-                showMessage('Fehler beim Hinzufügen', 'error');
-            }
+            showMessage('Promo-Code hinzugefügt!', 'success');
+            document.getElementById('addPromoForm').reset();
+            loadPromoCodes();
+            updateExport();
         });
 
         // Delete promo code
-        async function deletePromoCode(code) {
-            const token = localStorage.getItem('admin_token');
+        function deletePromoCode(code) {
+            const promos = getPromoCodes();
+            delete promos[code];
+            savePromoCodes(promos);
 
-            try {
-                const response = await fetch(API_URL + '?action=deletePromo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Auth-Token': token
-                    },
-                    body: JSON.stringify({ code })
-                });
-
-                const data = await response.json();
-                showMessage(data.success ? 'Promo-Code gelöscht!' : 'Fehler: ' + (data.message || ''), data.success ? 'success' : 'error');
-
-                if (data.success) {
-                    loadPromoCodes();
-                }
-            } catch (err) {
-                showMessage('Fehler beim Löschen', 'error');
-            }
+            showMessage('Promo-Code gelöscht!', 'success');
+            loadPromoCodes();
+            updateExport();
         }
 
         // Load promo codes
-        async function loadPromoCodes() {
-            const token = localStorage.getItem('admin_token');
+        function loadPromoCodes() {
+            const promos = getPromoCodes();
+            const list = document.getElementById('promoList');
+            list.innerHTML = '';
 
-            try {
-                const response = await fetch(API_URL + '?action=listPromos', {
-                    headers: { 'X-Auth-Token': token }
+            const codes = Object.keys(promos);
+            if (codes.length > 0) {
+                codes.forEach(code => {
+                    const info = promos[code];
+                    const item = document.createElement('div');
+                    item.className = 'promo-item';
+                    item.innerHTML = `
+                        <div>
+                            <span class="promo-code">${code}</span>
+                            <span class="promo-discount">${(info.discount * 100).toFixed(0)}% Rabatt</span>
+                            ${info.description ? `<span class="promo-desc">${info.description}</span>` : ''}
+                        </div>
+                        <button class="delete-btn" onclick="deletePromoCode('${code}')">Löschen</button>
+                    `;
+                    list.appendChild(item);
                 });
-
-                const data = await response.json();
-                const list = document.getElementById('promoList');
-                list.innerHTML = '';
-
-                if (data.promos && Object.keys(data.promos).length > 0) {
-                    for (const [code, info] of Object.entries(data.promos)) {
-                        const item = document.createElement('div');
-                        item.className = 'promo-item';
-                        item.innerHTML = `
-                            <div>
-                                <span class="promo-code">${code}</span>
-                                <span class="promo-discount">${(info.discount * 100).toFixed(0)}% Rabatt</span>
-                                ${info.description ? `<span class="promo-desc">${info.description}</span>` : ''}
-                            </div>
-                            <button class="delete-btn" onclick="deletePromoCode('${code}')">Löschen</button>
-                        `;
-                        list.appendChild(item);
-                    }
-                } else {
-                    list.innerHTML = '<p style="color: #888; padding: 1rem;">Keine Promo-Codes vorhanden.</p>';
-                }
-            } catch (err) {
-                console.error('Failed to load promo codes', err);
+            } else {
+                list.innerHTML = '<p style="color: #888; padding: 1rem;">Keine Promo-Codes vorhanden.</p>';
             }
+
+            updateExport();
+        }
+
+        // Update export textarea
+        function updateExport() {
+            const promos = getPromoCodes();
+            const exportText = `const PROMO_CODES = ${JSON.stringify(promos, null, 4)};`;
+            document.getElementById('exportCode').value = exportText;
+        }
+
+        // Copy export to clipboard
+        function copyExport() {
+            const textarea = document.getElementById('exportCode');
+            textarea.select();
+            document.execCommand('copy');
+            showMessage('In die Zwischenablage kopiert!', 'success');
         }
 
         function showDashboard() {
@@ -440,7 +433,7 @@
         }
 
         function logout() {
-            localStorage.removeItem('admin_token');
+            localStorage.removeItem(SESSION_KEY);
             location.reload();
         }
 

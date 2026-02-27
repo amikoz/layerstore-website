@@ -1229,14 +1229,23 @@
         // Promo Code Management
         let PROMO_CODES = {};
 
-        // Load promo codes from server
-        async function loadPromoCodes() {
-            try {
-                const response = await fetch('/promo-api.php');
-                PROMO_CODES = await response.json();
-            } catch (err) {
-                console.error('Failed to load promo codes', err);
-                PROMO_CODES = {};
+        // Load promo codes from localStorage (set by admin panel)
+        function loadPromoCodes() {
+            const stored = localStorage.getItem('layerstore_promo_codes');
+            if (stored) {
+                try {
+                    PROMO_CODES = JSON.parse(stored);
+                } catch (e) {
+                    // Default fallback
+                    PROMO_CODES = {
+                        'OSTER2025': { discount: 0.15, description: 'Oster-Sonderangebot' }
+                    };
+                }
+            } else {
+                // Default fallback
+                PROMO_CODES = {
+                    'OSTER2025': { discount: 0.15, description: 'Oster-Sonderangebot' }
+                };
             }
         }
 
@@ -1503,8 +1512,8 @@
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadPromoCodes();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPromoCodes();
             updateCartCount();
             renderCart();
 
