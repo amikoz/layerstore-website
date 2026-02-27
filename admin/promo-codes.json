@@ -1,0 +1,14 @@
+{
+    "OSTER2025": {
+        "discount": 0.15,
+        "description": "Oster-Sonderangebot"
+    },
+    "FRÜHLING10": {
+        "discount": 0.10,
+        "description": "Frühlingsangebot"
+    },
+    "SOMMER20": {
+        "discount": 0.20,
+        "description": "Sommer-Sonderangebot"
+    }
+}
