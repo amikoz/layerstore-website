@@ -4,25 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oster-Kollektion | LayerStore</title>
+    <meta name="description" content="3D-gedruckte Osterdekorationen, Osternester und Geschenke von LayerStore.">
     <link rel="preload" href="/logo.png" as="image">
-
-    <!-- Preload all color images for faster loading -->
-    <link rel="preload" href="/colors/asphalt.jpeg" as="image">
-    <link rel="preload" href="/colors/blue.jpeg" as="image">
-    <link rel="preload" href="/colors/deeppink.jpeg" as="image">
-    <link rel="preload" href="/colors/lightgreen.jpeg" as="image">
-    <link rel="preload" href="/colors/lemonyellow.jpeg" as="image">
-    <link rel="preload" href="/colors/mintgreen.jpeg" as="image">
-    <link rel="preload" href="/colors/newpink.jpeg" as="image">
-    <link rel="preload" href="/colors/olivegreen.jpeg" as="image">
-    <link rel="preload" href="/colors/orange.jpeg" as="image">
-    <link rel="preload" href="/colors/pallette.jpeg" as="image">
-    <link rel="preload" href="/colors/purple.jpeg" as="image">
-    <link rel="preload" href="/colors/red.jpeg" as="image">
-    <link rel="preload" href="/colors/sakurapink.jpeg" as="image">
-    <link rel="preload" href="/colors/skyblue.jpeg" as="image">
-    <link rel="preload" href="/colors/yellow.jpeg" as="image">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -30,12 +13,10 @@
         :root {
             --bg-primary: #FAF9F0;
             --bg-secondary: #F5F3EB;
-            --text-primary: #1c1917;
-            --text-secondary: #57534e;
-            --accent: #ea580c;
-            --accent-light: #fb923c;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #232F3D;
             --border: #e7e5e4;
-            --highlight: #78716c;
         }
 
         * {
@@ -44,12 +25,16 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Quicksand', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
+            min-height: 100vh;
         }
 
         /* Header */
@@ -62,20 +47,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000;
             background: #F0ECDA;
-            animation: slideDown 0.8s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            z-index: 1000;
         }
 
         .logo {
@@ -87,68 +60,35 @@
         .logo img {
             height: 50px;
             width: auto;
-            transition: transform 0.2s ease;
-        }
-
-        .logo:hover img {
-            transform: scale(1.05);
         }
 
         nav {
             display: flex;
             gap: 1.5rem;
+            align-items: center;
         }
 
         nav a {
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.02em;
+            font-size: 0.85rem;
             transition: color 0.3s ease;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent);
-            transition: width 0.3s ease;
         }
 
         nav a:hover {
             color: var(--accent);
         }
 
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Cart Icon */
         .cart-icon {
             position: relative;
             cursor: pointer;
             padding: 0.3rem 0.5rem;
-            transition: transform 0.2s ease;
-        }
-
-        .cart-icon:hover {
-            transform: scale(1.1);
         }
 
         .cart-icon svg {
             width: 20px;
             height: 20px;
             fill: var(--text-secondary);
-            transition: fill 0.3s ease;
-        }
-
-        .cart-icon:hover svg {
-            fill: var(--accent);
         }
 
         .cart-count {
@@ -157,7 +97,7 @@
             right: -2px;
             background: var(--accent);
             color: white;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: 600;
             min-width: 16px;
             height: 16px;
@@ -167,947 +107,196 @@
             justify-content: center;
             padding: 0 4px;
             opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .cart-count.visible {
             opacity: 1;
         }
 
-        /* Hero Section */
-        .collection-hero {
-            padding: 10rem 4rem 4rem;
+        /* Hero */
+        .hero {
+            padding: 120px 2rem 4rem;
             text-align: center;
-            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fca5a5 100%);
         }
 
-        .collection-hero h1 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: clamp(2rem, 5vw, 3.8rem);
-            font-weight: 400;
-            margin-bottom: 1rem;
-            letter-spacing: -0.03em;
+        .hero h1 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
             color: var(--text-primary);
+            margin-bottom: 0.5rem;
         }
 
-        .collection-hero p {
+        .hero p {
             font-size: 1rem;
             color: var(--text-secondary);
-            max-width: 700px;
+            max-width: 600px;
             margin: 0 auto;
-            font-weight: 300;
         }
 
-        /* Products Section */
-        .products-section {
-            padding: 8rem 4rem 6rem;
+        /* Products Grid */
+        .products {
+            padding: 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
         }
 
-        /* Product Card */
         .product-card {
             background: white;
-            border: 1px solid var(--border);
-            transition: all 0.4s ease;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            animation: fadeInUp 0.6s ease-out forwards;
-            cursor: pointer;
-        }
-
-        .product-card:nth-child(1) { animation-delay: 0.1s; }
-        .product-card:nth-child(2) { animation-delay: 0.2s; }
-        .product-card:nth-child(3) { animation-delay: 0.3s; }
-        .product-card:nth-child(4) { animation-delay: 0.4s; }
-        .product-card:nth-child(5) { animation-delay: 0.5s; }
-        .product-card:nth-child(6) { animation-delay: 0.6s; }
-        .product-card:nth-child(7) { animation-delay: 0.7s; }
-        .product-card:nth-child(8) { animation-delay: 0.8s; }
-        .product-card:nth-child(9) { animation-delay: 0.9s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Image Gallery in Card */
-        .product-image-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1;
-            overflow: hidden;
-            background: var(--bg-secondary);
-            cursor: pointer;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
         .product-image {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background: var(--bg-secondary);
+        }
+
+        .product-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.3s ease;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
 
-        .product-image.primary {
-            z-index: 1;
-        }
-
-        .product-image.secondary {
-            z-index: 0;
-            opacity: 0;
-        }
-
-        .product-image-container:hover .product-image.primary {
-            opacity: 0;
-        }
-
-        .product-image-container:hover .product-image.secondary {
-            opacity: 1;
-        }
-
-        /* Product Info */
         .product-info {
-            padding: 0.5rem 1rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+            padding: 1.5rem;
         }
 
-        .product-info h3 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 400;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.01em;
-            color: var(--accent);
-        }
-
-        .product-info p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-            margin-bottom: 1rem;
-            flex-grow: 1;
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
         }
 
         .product-price {
-            font-size: 1.35rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-
-        .product-button {
-            display: block;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: white;
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--accent);
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .product-button:hover {
-            background: transparent;
-            color: var(--accent);
-        }
-
-        .product-button.added {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            border-color: var(--border);
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .product-button.added:hover {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-        }
-
-        /* Quantity Controls */
-        .quantity-controls {
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .quantity-controls.visible {
-            display: flex;
-        }
-
-        .quantity-btn {
-            width: 32px;
-            height: 32px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            line-height: 1;
-        }
-
-        .quantity-btn:hover {
-            background: var(--accent-light);
-            transform: scale(1.1);
-        }
-
-        .quantity-btn:active {
-            transform: scale(0.95);
-        }
-
-        .quantity-value {
-            min-width: 24px;
-            text-align: center;
-            font-weight: 600;
-            color: var(--accent);
             font-size: 1rem;
-        }
-
-        /* Product Buttons Container */
-        .product-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .add-to-cart-btn {
-            display: block;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: white;
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--accent);
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .add-to-cart-btn:hover {
-            background: transparent;
             color: var(--accent);
-        }
-
-        .add-to-cart-btn.added {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            cursor: pointer;
-        }
-
-        .add-to-cart-btn.added:hover {
-            background: var(--accent-light);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
-        }
-
-        /* Quantity Controls for Products */
-        .product-qty-container {
-            display: none;
-            align-items: center;
-            gap: 0.75rem;
-            width: 100%;
-        }
-
-        .product-qty-container.visible {
-            display: flex;
-        }
-
-        .product-qty-text {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            text-align: center;
-            cursor: default;
-            flex: 1;
-        }
-
-        .product-qty-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            background: var(--bg-secondary);
-            border-radius: 4px;
-            padding: 0.25rem;
-            flex-shrink: 0;
-        }
-
-        .product-qty-btn {
-            width: 28px;
-            height: 28px;
-            border: none;
-            background: white;
-            color: var(--text-primary);
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .product-qty-btn:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        .product-qty-value {
-            min-width: 20px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--accent);
-        }
-
-        .customize-btn {
-            display: block;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: white;
-            color: var(--text-primary);
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .customize-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* Image Gallery Modal */
-        .image-gallery-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1rem;
-        }
-
-        .image-gallery-modal.active {
-            display: flex;
-        }
-
-        .image-gallery-modal-content {
-            position: relative;
-            width: 350px;
-            max-width: 90vw;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: white;
-            border-radius: 16px;
-            padding: 0.5rem 1rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-
-        .gallery-image-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-weight: 500;
             margin-bottom: 0.75rem;
         }
 
-        .gallery-image {
+        .product-colors {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .color-swatch.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .btn-cart {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .gallery-image.loaded {
-            opacity: 1;
-        }
-
-        /* Loading spinner */
-        .gallery-image-container::before {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            z-index: 0;
-        }
-
-        .gallery-image-container.loading .gallery-image {
-            opacity: 0;
-        }
-
-        .gallery-image-container:not(.loading) .gallery-image.loaded {
-            opacity: 1;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .gallery-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
+            padding: 0.75rem;
+            background: var(--accent);
+            color: white;
             border: none;
-            color: rgba(234, 88, 12, 0.7);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-cart:hover {
+            background: var(--accent-light);
+        }
+
+        .btn-cart.added {
+            background: #22c55e;
+        }
+
+        /* Quantity controls (shown after adding) */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 4px;
             font-size: 1.2rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .gallery-arrow:hover {
-            color: rgba(234, 88, 12, 1);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .gallery-arrow.prev {
-            left: 0.5rem;
-        }
-
-        .gallery-arrow.next {
-            right: 0.5rem;
-        }
-
-        .gallery-close {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+        .quantity-btn:hover {
             background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .gallery-close:hover {
-            background: var(--accent);
-            color: white;
-            transform: rotate(90deg);
-            border-color: var(--accent);
-        }
-
-        .gallery-info {
+        .quantity-value {
+            font-weight: 600;
+            min-width: 30px;
             text-align: center;
-            color: var(--text-primary);
-            margin-top: 1rem;
-            width: 100%;
         }
 
-        .gallery-info h3 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.3rem;
-            margin-bottom: 0.25rem;
-            color: var(--accent);
-        }
-
-        .gallery-counter {
-            color: var(--text-secondary);
+        .added-text {
+            text-align: center;
+            color: #22c55e;
             font-size: 0.85rem;
-            margin-top: 0.25rem;
-            font-weight: 400;
-        }
-
-        /* Customize Modal */
-        .customize-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1rem;
-        }
-
-        .customize-modal.active {
-            display: flex;
-        }
-
-        .customize-modal-content {
-            position: relative;
-            width: 350px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-        }
-
-        .customize-scrollable-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0.5rem 1rem;
-        }
-
-        .customize-scrollable-area::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .customize-scrollable-area::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-            border-radius: 3px;
-        }
-
-        .customize-scrollable-area::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        .customize-scrollable-area::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-light);
-        }
-
-        .customize-modal-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .customize-modal-content::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-            border-radius: 3px;
-        }
-
-        .customize-modal-content::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        .customize-modal-content::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-light);
-        }
-
-        .customize-modal-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .customize-modal-content::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-            border-radius: 3px;
-        }
-
-        .customize-modal-content::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        .customize-modal-content::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-light);
-        }
-
-        .customize-close {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .customize-close:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        .customize-title {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 0.25rem;
-        }
-
-        .customize-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        .customize-subtitle.color-subtitle {
-            margin-top: 2rem;
-        }
-
-        .customize-options {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .size-custom-input {
-            display: none;
-            margin-top: 0.75rem;
-        }
-
-        .size-custom-input.visible {
-            display: block;
-        }
-
-        .size-custom-input input {
-            width: 100%;
-            padding: 0.6rem 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 0.8rem;
-            color: var(--text-primary);
-            transition: border-color 0.3s ease;
-        }
-
-        .size-custom-input input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .size-custom-input input::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.7;
-        }
-
-        .customize-modal-actions {
-            display: flex;
-            flex-shrink: 0;
-            background: white;
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .customize-add-button {
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .customize-add-button:disabled {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .customize-add-button:disabled:hover {
-            background: var(--bg-secondary);
-            transform: none;
-        }
-
-        .customize-add-button:hover {
-            background: var(--accent-light);
-            transform: scale(1.02);
-        }
-
-        .customize-options .customize-option-btn {
-            flex: 1;
-            padding: 0.6rem 0.75rem;
-            background: white;
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            color: var(--text-primary);
-            font-size: 0.75rem;
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .customize-option-btn.default-option {
-            background: white;
-            border: 2px solid var(--border);
-            color: var(--text-primary);
-        }
-
-        .customize-option-btn.selected-option {
-            background: white;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .customize-option-btn.selected {
-            background: white;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .color-option-btn {
-            width: 80px;
-            height: auto;
-            min-height: 100px;
-            padding: 0;
-            border: 2px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .color-option-btn img {
-            width: 100%;
-            height: 80px;
-            object-fit: cover;
-        }
-
-        .color-option-btn .color-name {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            text-align: center;
-            padding: 0.5rem 1rem;
-        }
-
-        .color-option-btn:hover {
-            border-color: var(--accent);
-            transform: scale(1.05);
-        }
-
-        .color-option-btn.selected {
-            border-color: var(--accent);
-        }
-
-        .color-options-grid {
-            display: none;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 0.75rem;
-            margin-top: 0.75rem;
-        }
-
-        .customize-option-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
         }
 
         /* Footer */
         footer {
-            padding: 4rem 4rem;
             background: var(--bg-primary);
+            padding: 3rem 2rem;
+            text-align: center;
             border-top: 1px solid var(--border);
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 3rem;
-        }
-
-        .footer-section h4 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .footer-section p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            font-weight: 300;
-        }
-
-        .footer-section a {
+        footer a {
             color: var(--text-secondary);
             text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
+            margin: 0 0.5rem;
             font-size: 0.85rem;
-            transition: color 0.3s ease;
         }
 
-        .footer-section a:hover {
-            color: var(--accent);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 0.5rem 0.75rem;
-            }
-
-            .logo img {
-                height: 50px;
-            }
-
-            nav {
-                gap: 0.75rem;
-            }
-
-            nav a {
-                font-size: 0.75rem;
-            }
-
-            .collection-hero {
-                padding: 8rem 2rem 3rem;
-            }
-
-            .products-section {
-                padding: 4rem 2rem;
+        @media (max-width: 600px) {
+            .products {
+                padding: 1rem;
             }
 
             .products-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .image-gallery-modal-content {
-                padding: 0.5rem 1rem;
-                width: 95vw;
-            }
-
-            .gallery-arrow {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
-            }
-
-            .gallery-arrow.prev {
-                left: 0;
-            }
-
-            .gallery-arrow.next {
-                right: 0;
-            }
-
-            .gallery-close {
-                top: 0.75rem;
-                right: 0.75rem;
-                width: 32px;
-                height: 32px;
-            }
-
-            .gallery-info h3 {
-                font-size: 1.2rem;
             }
         }
     </style>
@@ -1116,13 +305,13 @@
     <!-- Header -->
     <header>
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore Logo" width="125" height="50" loading="eager" decoding="sync" fetchpriority="high">
+            <img src="/logo.png" alt="LayerStore" width="125" height="50">
         </a>
         <nav>
             <a href="/">Startseite</a>
-            <a href="#produkte">Produkte</a>
+            <a href="/collections">Kollektionen</a>
             <a href="/contact">Kontakt</a>
-            <a href="/cart" class="cart-icon" id="cartIcon" title="Warenkorb">
+            <a href="/cart" class="cart-icon">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
                 </svg>
@@ -1131,1056 +320,233 @@
         </nav>
     </header>
 
-    <!-- Collection Hero -->
-    <section class="collection-hero">
-        <h1>Oster-Kollektion 2026</h1>
-        <p>Entdecken Sie unsere handverlesene Auswahl an 3D-gedruckten Osterdekorationen. Jedes Stück bringt Freude und Farbe in Ihr Osterfest.</p>
+    <!-- Hero -->
+    <section class="hero">
+        <h1>🐰 Oster-Kollektion</h1>
+        <p>3D-gedruckte Osternester, Dekorationen und Geschenke für dein Osterfest</p>
     </section>
 
-    <!-- Products Grid -->
-    <section id="produkte" class="products-section">
-        <div class="products-grid">
-
-            <!-- Product 1: Osterkarotte -->
-            <div class="product-card" onclick="openImageGallery('osterkarotte', 0)">
-                <div class="product-image-container">
-                    <img src="images/carrot1.jpeg" alt="Osterkarotte" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/carrot2.jpeg" alt="Osterkarotte" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Osterkarotte</h3>
-                    <p>Süßer Karotten-Behälter für kleine Osterüberraschungen.</p>
-                    <div class="product-price">15,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="carrot" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="carrot" onclick="event.stopPropagation(); openCustomizeModal('carrot')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 2: Hasenkorb -->
-            <div class="product-card" onclick="openImageGallery('hasenkorb', 0)">
-                <div class="product-image-container">
-                    <img src="images/bunnybasketbeige.jpeg" alt="Hasenkorb" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/bunnybasketbeige1.jpeg" alt="Hasenkorb" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Hasenkorb</h3>
-                    <p>Charmanter Korb mit Hasenohren und süßen Pfötchen.</p>
-                    <div class="product-price">14,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnybasket" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnybasket" onclick="event.stopPropagation(); openCustomizeModal('bunnybasket')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 3: Osterei mit Beinen -->
-            <div class="product-card" onclick="openImageGallery('osterei', 0)">
-                <div class="product-image-container">
-                    <img src="images/legseggkinder.jpeg" alt="Osterei mit Beinen" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/legseggkinder1.jpeg" alt="Osterei mit Beinen" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Osterei mit Beinen</h3>
-                    <p>Verspieltes Ei mit beweglichen Beinen für Kinder-Überraschungen.</p>
-                    <div class="product-price">5,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="legsegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="legsegg" onclick="event.stopPropagation(); openCustomizeModal('legsegg')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 4: Gestricktes Ei -->
-            <div class="product-card" onclick="openImageGallery('gestricktesei', 0)">
-                <div class="product-image-container">
-                    <img src="images/knittedeggmintgreen.jpeg" alt="Gestricktes Ei" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/knittedeggmintgreen1.jpeg" alt="Gestricktes Ei" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Gestricktes Ei</h3>
-                    <p>Elegantes Osterei im Strick-Look.</p>
-                    <div class="product-price">5,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="knittedegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="knittedegg" onclick="event.stopPropagation(); openCustomizeModal('knittedegg')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 5: Hasen-Kinderhalter -->
-            <div class="product-card" onclick="openImageGallery('kinderhalter', 0)">
-                <div class="product-image-container">
-                    <img src="images/bunnykinderholder.jpeg" alt="Hasen-Kinderhalter" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/bunnykinderholder1.jpeg" alt="Hasen-Kinderhalter" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Hasen-Kinderhalter</h3>
-                    <p>Niedlicher Hase speziell für Kinder-Überraschungseier.</p>
-                    <div class="product-price">3,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); openCustomizeModal('bunnykinderholder')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 6: Hase mit Korb -->
-            <div class="product-card" onclick="openImageGallery('hasemmitkorb', 0)">
-                <div class="product-image-container">
-                    <img src="images/bunnywithbasket.jpeg" alt="Hase mit Korb" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/bunnywithbasket2.jpeg" alt="Hase mit Korb" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Hase mit Korb</h3>
-                    <p>Hase mit Korb für Oster-Deko.</p>
-                    <div class="product-price">6,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 7: Hasen-Kinderrahmen -->
-            <div class="product-card" onclick="openImageGallery('kinderrahmen', 0)">
-                <div class="product-image-container">
-                    <img src="images/kinderrahmen.jpg" alt="Hasen-Kinderrahmen" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Hasen-Kinderrahmen</h3>
-                    <p>Schöner Halter für U-Ei.</p>
-                    <div class="product-price">3,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="kinderrahmen" onclick="event.stopPropagation(); openCustomizeModal('kinderrahmen')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 8: Hase Deko 15cm -->
-            <div class="product-card" onclick="openImageGallery('hasedekochoco', 0)">
-                <div class="product-image-container">
-                    <img src="images/fuzzybunnydekochoco1.jpeg" alt="Hase Deko 15cm" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/fuzzybunnydekochoco2.jpeg" alt="Hase Deko 15cm" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Hase Deko 15cm</h3>
-                    <p>Stilvoller Hase in schokoladenbraun für elegante Osterdeko.</p>
-                    <div class="product-price">10,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="hasedekochoco" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="hasedekochoco" onclick="event.stopPropagation(); openCustomizeModal('hasedekochoco')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product 9: Hase Deko 11cm -->
-            <div class="product-card" onclick="openImageGallery('hasedekowhite', 0)">
-                <div class="product-image-container">
-                    <img src="images/fuzzybunnydekowhite.jpeg" alt="Hase Deko 11cm" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/fuzzybunnydekowhite1.jpeg" alt="Hase Deko 11cm" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
-                </div>
-                <div class="product-info">
-                    <h3>Hase Deko 11cm</h3>
-                    <p>Stilvoller weißer Hase für elegante Osterdeko.</p>
-                    <div class="product-price">6,00 €</div>
-                    <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="hasedekowhite" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="hasedekowhite" onclick="event.stopPropagation(); openCustomizeModal('hasedekowhite')">Anpassen</button>
-                    </div>
-                </div>
-            </div>
-
+    <!-- Products -->
+    <section class="products">
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be loaded here -->
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LayerStore</h4>
-                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
-                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-
-            <div class="footer-section">
-                <h4>Entdecken</h4>
-                <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">🐰 Ostern</a>
-                <a href="/cart">Warenkorb</a>
-            </div>
-
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <a href="/datenschutz">🔒 Datenschutz</a>
-                <a href="/impressum">ℹ️ Impressum</a>
-                <a href="/contact">📧 Kontakt</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            Mit Präzision gedruckt in Deutschland
-        </div>
+        <a href="/">Startseite</a>
+        <a href="/collections">Kollektionen</a>
+        <a href="/impressum">Impressum</a>
+        <a href="/datenschutz">Datenschutz</a>
+        <p>&copy; 2025 LayerStore. Alle Rechte vorbehalten.</p>
     </footer>
 
-    <!-- Customize Modal -->
-    <div class="customize-modal" id="customizeModal">
-        <button class="customize-close" id="closeCustomizeModal">&times;</button>
-        <div class="customize-modal-content">
-            <div class="customize-scrollable-area">
-                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
-                <p class="customize-subtitle" id="sizeSubtitle">Größe</p>
-                <div class="customize-options" id="sizeOptions">
-                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="size-custom-input" id="sizeCustomInput">
-                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
-                </div>
-                <p class="customize-subtitle color-subtitle" id="colorSubtitle">Farbe</p>
-                <div class="customize-options" id="colorOptions">
-                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="color-options-grid" id="colorGrid">
-                    <!-- Colors will be loaded here by JavaScript -->
-                </div>
-            </div>
-            <div class="customize-modal-actions">
-                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Image Gallery Modal -->
-    <div class="image-gallery-modal" id="imageGalleryModal">
-        <button class="gallery-close" id="closeImageGallery">&times;</button>
-        <div class="image-gallery-modal-content">
-            <div class="gallery-image-container">
-                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
-            </div>
-            <div class="gallery-info">
-                <h3 id="galleryProductName">Produktname</h3>
-                <div class="gallery-counter">
-                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">3</span>
-                </div>
-            </div>
-            <button class="gallery-arrow prev" id="galleryPrev">&#10094;</button>
-            <button class="gallery-arrow next" id="galleryNext">&#10095;</button>
-        </div>
-    </div>
-
     <script>
-        // Product data with all images in correct order
-        window.products = {
-            osterkarotte: {
-                name: 'Osterkarotte',
-                price: '15,00 €',
-                images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
-            },
-            hasenkorb: {
-                name: 'Hasenkorb',
-                price: '14,00 €',
-                images: [
-                    'bunnybasketbeige.jpeg',
-                    'bunnybasketbeige1.jpeg',
-                    'bunnybasketbeige2.jpeg',
-                    'bunnybasketbeige3.jpeg',
-                    'bunnybasketbeige4.jpeg',
-                    'bunnybasketbeige5.jpeg',
-                    'bunnybasketpink.jpg',
-                    'bunnybasketpurple.jpeg'
-                ]
-            },
-            osterei: {
-                name: 'Osterei mit Beinen',
-                price: '5,00 €',
-                images: [
-                    'legseggkinder.jpeg',
-                    'legseggkinder1.jpeg',
-                    'legseggkinder2.jpeg',
-                    'legseggkinder3.jpeg',
-                    'legseggkinder4.jpeg'
-                ]
-            },
-            gestricktesei: {
-                name: 'Gestricktes Ei',
-                price: '5,00 €',
-                images: [
-                    'knittedeggmintgreen.jpeg',
-                    'knittedeggmintgreen1.jpeg',
-                    'knittedeggmintgreen2.jpeg',
-                    'knittedeggmintgreen3.jpeg',
-                    'knittedeggmintgreen4.jpeg',
-                    'knittedeggmintgreen5.jpeg'
-                ]
-            },
-            kinderhalter: {
-                name: 'Hasen-Kinderhalter',
-                price: '3,00 €',
-                images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
-            },
-            hasemmitkorb: {
-                name: 'Hase mit Korb',
-                price: '6,00 €',
-                images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg', 'bunnywithbasket3.jpeg']
-            },
-            kinderrahmen: {
-                name: 'Hasen-Kinderrahmen',
-                price: '3,00 €',
-                images: ['kinderrahmen.jpg']
-            },
-            // Add new product IDs for buttons
-            carrot: {
-                name: 'Osterkarotte',
-                price: '15,00 €',
-                images: ['carrot1.jpeg', 'carrot2.jpeg', 'carrot3.jpeg']
-            },
-            bunnybasket: {
-                name: 'Hasenkorb',
-                price: '14,00 €',
-                images: [
-                    'bunnybasketbeige.jpeg',
-                    'bunnybasketbeige1.jpeg',
-                    'bunnybasketbeige2.jpeg',
-                    'bunnybasketbeige3.jpeg',
-                    'bunnybasketbeige4.jpeg',
-                    'bunnybasketbeige5.jpeg',
-                    'bunnybasketpink.jpg',
-                    'bunnybasketpurple.jpeg'
-                ]
-            },
-            legsegg: {
-                name: 'Osterei mit Beinen',
-                price: '5,00 €',
-                images: [
-                    'legseggkinder.jpeg',
-                    'legseggkinder1.jpeg',
-                    'legseggkinder2.jpeg',
-                    'legseggkinder3.jpeg'
-                ]
-            },
-            knittedegg: {
-                name: 'Gestricktes Ei',
-                price: '5,00 €',
-                images: [
-                    'knittedeggmintgreen.jpeg',
-                    'knittedeggmintgreen1.jpeg',
-                    'knittedeggmintgreen2.jpeg',
-                    'knittedeggmintgreen3.jpeg',
-                    'knittedeggmintgreen4.jpeg',
-                    'knittedeggmintgreen5.jpeg'
-                ]
-            },
-            bunnykinderholder: {
-                name: 'Hasen-Kinderhalter',
-                price: '3,00 €',
-                images: ['bunnykinderholder.jpeg', 'bunnykinderholder1.jpeg']
-            },
-            bunnywithbasket2: {
-                name: 'Hase mit Korb',
-                price: '6,00 €',
-                images: ['bunnywithbasket.jpeg', 'bunnywithbasket2.jpeg']
-            },
-            // New Hase Deko products
-            hasedekochoco: {
+        // Products data
+        const products = [
+            {
+                id: 'hase-15cm',
                 name: 'Hase Deko 15cm',
-                price: '10,00 €',
-                images: [
-                    'fuzzybunnydekochoco1.jpeg',
-                    'fuzzybunnydekochoco2.jpeg',
-                    'fuzzybunnydekochoco3.jpeg'
-                ]
+                price: '8.50 €',
+                colors: ['white', 'yellow', 'pink', 'mintgreen', 'orange'],
+                defaultColor: 'white',
+                images: {
+                    white: '/collections/easter/images/hase_weiss.png',
+                    yellow: '/collections/easter/images/hase_gelb.png',
+                    pink: '/collections/easter/images/hase_rosa.png',
+                    mintgreen: '/collections/easter/images/hase_gruen.png',
+                    orange: '/collections/easter/images/hase_orange.png'
+                }
             },
-            hasedekowhite: {
+            {
+                id: 'hase-11cm',
                 name: 'Hase Deko 11cm',
-                price: '6,00 €',
-                images: [
-                    'fuzzybunnydekowhite.jpeg',
-                    'fuzzybunnydekowhite1.jpeg',
-                    'fuzzybunnydekowhite2.jpeg',
-                    'fuzzybunnydekowhite3.jpeg',
-                    'fuzzybunnydekowhite4.jpeg'
-                ]
+                price: '6.50 €',
+                colors: ['white', 'yellow', 'pink', 'mintgreen', 'orange', 'red'],
+                defaultColor: 'white',
+                images: {
+                    white: '/collections/easter/images/hase_11_weiss.png',
+                    yellow: '/collections/easter/images/hase_11_gelb.png',
+                    pink: '/collections/easter/images/hase_11_rosa.png',
+                    mintgreen: '/collections/easter/images/hase_11_gruen.png',
+                    orange: '/collections/easter/images/hase_11_orange.png',
+                    red: '/collections/easter/images/hase_11_rot.png'
+                }
+            },
+            {
+                id: 'eierstock-beige',
+                name: 'Eierstock 10cm',
+                price: '5.00 €',
+                colors: ['white'],
+                defaultColor: 'white',
+                images: {
+                    white: '/collections/easter/images/eierstock_beige.png'
+                }
+            },
+            {
+                id: 'eierkasten-weiss',
+                name: 'Eierkasten Set 6er',
+                price: '12.00 €',
+                colors: ['white'],
+                defaultColor: 'white',
+                images: {
+                    white: '/collections/easter/images/eierkasten_weiss.png'
+                }
+            },
+            {
+                id: 'oster-deko-box',
+                name: 'Oster-Deko Box',
+                price: '15.00 €',
+                colors: ['mix'],
+                defaultColor: 'mix',
+                images: {
+                    mix: '/collections/easter/images/oster_box.png'
+                }
             }
-        };
-    </script>
+        ];
 
-        </div>
-    </section>
+        const cart = JSON.parse(localStorage.getItem('layerstore_cart') || '[]');
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LayerStore</h4>
-                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
-                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-
-            <div class="footer-section">
-                <h4>Entdecken</h4>
-                <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">🐰 Ostern</a>
-                <a href="/cart">Warenkorb</a>
-            </div>
-
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <a href="/datenschutz">🔒 Datenschutz</a>
-                <a href="/impressum">ℹ️ Impressum</a>
-                <a href="/contact">📧 Kontakt</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            Mit Präzision gedruckt in Deutschland
-        </div>
-    </footer>
-
-    <!-- Customize Modal -->
-    <div class="customize-modal" id="customizeModal">
-        <button class="customize-close" id="closeCustomizeModal">&times;</button>
-        <div class="customize-modal-content">
-            <div class="customize-scrollable-area">
-                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
-                <p class="customize-subtitle">Größe</p>
-                <div class="customize-options" id="sizeOptions">
-                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="size-custom-input" id="sizeCustomInput">
-                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
-                </div>
-                <p class="customize-subtitle color-subtitle">Farbe</p>
-                <div class="customize-options" id="colorOptions">
-                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="color-options-grid" id="colorGrid">
-                    <!-- Colors will be loaded here by JavaScript -->
-                </div>
-            </div>
-            <div class="customize-modal-actions">
-                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Image Gallery Modal -->
-    <div class="image-gallery-modal" id="imageGalleryModal">
-        <button class="gallery-close" id="closeImageGallery">&times;</button>
-        <div class="image-gallery-modal-content">
-            <div class="gallery-image-container">
-                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
-            </div>
-            <div class="gallery-info">
-                <h3 id="galleryProductName">Produktname</h3>
-                <div class="gallery-counter">
-                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">3</span>
-                </div>
-            </div>
-            <button class="gallery-arrow prev" id="galleryPrev">&#10094;</button>
-            <button class="gallery-arrow next" id="galleryNext">&#10095;</button>
-        </div>
-    </div>
-
-    <script>
-        // Gallery functionality
-        const modal = document.getElementById('imageGalleryModal');
-        const galleryImage = document.getElementById('galleryImage');
-        const galleryProductName = document.getElementById('galleryProductName');
-        const galleryCurrentIndex = document.getElementById('galleryCurrentIndex');
-        const galleryTotalImages = document.getElementById('galleryTotalImages');
-
-        let currentProduct = null;
-        let currentImageIndex = 0;
-
-        function openImageGallery(productId, startIndex = 0) {
-            currentProduct = window.products[productId];
-            currentImageIndex = startIndex;
-
-            updateGalleryImage();
-            preloadAdjacentImages();
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeImageGallery() {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            currentProduct = null;
-            currentImageIndex = 0;
-        }
-
-        function updateGalleryImage() {
-            if (!currentProduct) return;
-
-            // Show loading state
-            document.querySelector('.gallery-image-container').classList.add('loading');
-            galleryImage.classList.remove('loaded');
-
-            const imagePath = 'images/' + currentProduct.images[currentImageIndex];
-
-            // Load new image
-            galleryImage.src = imagePath;
-            galleryProductName.textContent = currentProduct.name;
-            galleryCurrentIndex.textContent = currentImageIndex + 1;
-            galleryTotalImages.textContent = currentProduct.images.length;
-        }
-
-        // Add image load event listener
-        galleryImage.addEventListener('load', function() {
-            this.classList.add('loaded');
-            document.querySelector('.gallery-image-container').classList.remove('loading');
-        });
-
-        // Preload next and previous images for instant navigation
-        function preloadAdjacentImages() {
-            if (!currentProduct) return;
-
-            const prevIndex = currentImageIndex - 1;
-            const nextIndex = currentImageIndex + 1;
-
-            const indicesToPreload = [];
-            if (prevIndex >= 0) indicesToPreload.push(prevIndex);
-            if (nextIndex < currentProduct.images.length) indicesToPreload.push(nextIndex);
-
-            indicesToPreload.forEach(index => {
-                const img = new Image();
-                img.src = 'images/' + currentProduct.images[index];
-            });
-        }
-
-        function navigateGallery(direction) {
-            if (!currentProduct) return;
-
-            currentImageIndex += direction;
-
-            if (currentImageIndex < 0) {
-                currentImageIndex = currentProduct.images.length - 1;
-            } else if (currentImageIndex >= currentProduct.images.length) {
-                currentImageIndex = 0;
-            }
-
-            updateGalleryImage();
-            preloadAdjacentImages();
-        }
-
-        // Event listeners
-        document.getElementById('closeImageGallery').addEventListener('click', closeImageGallery);
-        document.getElementById('galleryPrev').addEventListener('click', () => navigateGallery(-1));
-        document.getElementById('galleryNext').addEventListener('click', () => navigateGallery(1));
-
-        // Close on background click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeImageGallery();
-            }
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (!modal.classList.contains('active')) return;
-
-            if (e.key === 'Escape') {
-                closeImageGallery();
-            } else if (e.key === 'ArrowLeft') {
-                navigateGallery(-1);
-            } else if (e.key === 'ArrowRight') {
-                navigateGallery(1);
-            }
-        });
-
-        // Cart functionality
-        function getCart() {
-            const cart = localStorage.getItem('layerstore_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
+        function saveCart(newCart) {
+            localStorage.setItem('layerstore_cart', JSON.stringify(newCart));
             updateCartCount();
+            renderProducts();
         }
 
-        function addToCart(buttonElement) {
-            const productId = buttonElement.getAttribute('data-product');
-            const product = window.products[productId];
+        function addToCart(productId, color) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
 
-            if (!product) {
-                console.error('Product not found:', productId);
-                return;
-            }
-
-            const cart = getCart();
-
-            // Check if product already exists in cart
-            const existingItem = cart.find(item => item.id === productId);
+            const existingItem = cart.find(item => item.id === productId && item.selectedColor === color);
 
             if (existingItem) {
-                existingItem.quantity += 1;
+                existingItem.quantity++;
             } else {
                 cart.push({
                     id: productId,
                     name: product.name,
                     price: product.price,
-                    image: `/collections/easter/images/${product.images[0]}`,
-                    quantity: 1,
-                    option: 'as-photo'
+                    selectedColor: color,
+                    quantity: 1
                 });
             }
 
             saveCart(cart);
-            showCartNotification();
-            updateProductButtons(buttonElement);
         }
 
-        function addToCartWithOption(id, name, price, image, option, color = null, sizeDescription = null) {
-            const cart = getCart();
+        function updateQuantity(index, change) {
+            const item = cart[index];
+            item.quantity += change;
 
-            // Create unique variant key from id + color + option + sizeDescription
-            // This ensures different variants of the same product are treated as separate cart items
-            const variantKey = `${id}|${color || 'null'}|${option || 'as-photo'}|${sizeDescription || 'null'}`;
-
-            // Check if product with EXACT same variant already exists in cart
-            const existingItem = cart.find(item => {
-                const itemKey = `${item.id}|${item.color || 'null'}|${item.option || 'as-photo'}|${item.sizeDescription || 'null'}`;
-                return itemKey === variantKey;
-            });
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: id,
-                    name: name,
-                    price: price,
-                    image: image,
-                    quantity: 1,
-                    option: option,
-                    color: color,
-                    sizeDescription: sizeDescription
-                });
+            if (item.quantity <= 0) {
+                cart.splice(index, 1);
             }
 
             saveCart(cart);
-            showCartNotification();
-            updateProductButtons();
         }
 
-        function removeFromCart(id) {
-            let cart = getCart();
-            cart = cart.filter(item => item.id !== id);
+        function removeFromCart(index) {
+            cart.splice(index, 1);
             saveCart(cart);
-            updateProductButtons();
+        }
+
+        function getCartItemState(productId) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                return { added: true, quantity: item.quantity, color: item.selectedColor };
+            }
+            return { added: false, quantity: 0, color: null };
         }
 
         function updateCartCount() {
-            const cart = getCart();
-            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
             const cartCount = document.getElementById('cartCount');
-            cartCount.textContent = totalCount;
-
-            if (totalCount > 0) {
+            if (count > 0) {
+                cartCount.textContent = count;
                 cartCount.classList.add('visible');
             } else {
                 cartCount.classList.remove('visible');
             }
         }
 
-        function updateProductButtons(clickedButton = null) {
-            const cart = getCart();
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
 
-            // Update all product cards
-            document.querySelectorAll('.product-card').forEach(card => {
-                const button = card.querySelector('.add-to-cart-btn');
-                const customizeBtn = card.querySelector('.customize-btn');
-                if (!button) return;
+            products.forEach(product => {
+                const state = getCartItemState(product.id);
 
-                const productId = button.getAttribute('data-product');
-                const cartItem = cart.find(item => item.id === productId);
-                const buttonsContainer = card.querySelector('.product-buttons');
+                const card = document.createElement('div');
+                card.className = 'product-card';
 
-                // Remove existing qty container if any
-                const existingQty = buttonsContainer.querySelector('.product-qty-container');
-                if (existingQty) {
-                    existingQty.remove();
+                let colorsHTML = '';
+                if (product.colors.length > 1) {
+                    colorsHTML = '<div class="product-colors">';
+                    product.colors.forEach(color => {
+                        const isActive = (!state.added && color === product.defaultColor) || (state.added && color === state.color);
+                        colorsHTML += `<div class="color-swatch ${isActive ? 'active' : ''}"
+                            style="background: url('${product.images[color]}') center/cover;"
+                            data-color="${color}"
+                            onclick="selectColor('${product.id}', '${color}')"></div>`;
+                    });
+                    colorsHTML += '</div>';
                 }
 
-                if (cartItem && cartItem.quantity > 0) {
-                    // Hide add-to-cart button
-                    button.style.display = 'none';
-                    button.classList.remove('added');
-
-                    // Create and show quantity controls with text (insert after button, before customize)
-                    const qtyContainer = document.createElement('div');
-                    qtyContainer.className = 'product-qty-container visible';
-                    qtyContainer.innerHTML = `
-                        <span class="product-qty-text">HINZUGEFÜGT</span>
-                        <div class="product-qty-controls">
-                            <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', -1)">−</button>
-                            <span class="product-qty-value">${cartItem.quantity}</span>
-                            <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', 1)">+</button>
-                        </div>
-                    `;
-                    buttonsContainer.insertBefore(qtyContainer, customizeBtn);
-                } else {
-                    // Show add-to-cart button
-                    button.style.display = 'block';
-                    button.textContent = 'In den Warenkorb';
-                    button.classList.remove('added');
-                }
-            });
-        }
-
-        // Update product quantity from product card
-        function updateProductQuantity(productId, change) {
-            const cart = getCart();
-            const item = cart.find(i => i.id === productId);
-
-            if (!item) return;
-
-            item.quantity += change;
-
-            // Remove item if quantity is 0
-            if (item.quantity <= 0) {
-                const index = cart.indexOf(item);
-                cart.splice(index, 1);
-            }
-
-            saveCart(cart);
-            updateCartCount();
-            updateProductButtons();
-        }
-
-        function showCartNotification() {
-            // Create notification element if it doesn't exist
-            let notification = document.getElementById('cartNotification');
-            if (!notification) {
-                notification = document.createElement('div');
-                notification.id = 'cartNotification';
-                notification.style.cssText = `
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    background: var(--accent);
-                    color: white;
-                    padding: 1rem 1.5rem;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    z-index: 3000;
-                    opacity: 0;
-                    transform: translateY(20px);
-                    transition: all 0.3s ease;
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.images[product.defaultColor]}" alt="${product.name}" id="img-${product.id}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-price">${product.price}</p>
+                        ${colorsHTML}
+                        ${state.added ? `
+                            <div class="added-text">HINZUGEFÜGT</div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity('${product.id}', -1)">−</button>
+                                <span class="quantity-value">${state.quantity}</span>
+                                <button class="quantity-btn" onclick="updateQuantity('${product.id}', 1)">+</button>
+                            </div>
+                        ` : `
+                            <button class="btn-cart" onclick="addToCart('${product.id}', '${product.defaultColor}')">In den Warenkorb</button>
+                        `}
+                    </div>
                 `;
-                document.body.appendChild(notification);
-            }
 
-            const cart = getCart();
-            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
-
-            notification.style.opacity = '1';
-            notification.style.transform = 'translateY(0)';
-
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateY(20px)';
-            }, 2000);
+                grid.appendChild(card);
+            });
         }
 
+        function selectColor(productId, color) {
+            const product = products.find(p => p.id === productId);
+            const img = document.getElementById('img-' + productId);
+            if (img) {
+                img.src = product.images[color];
+            }
+
+            // Update active color swatch
+            const container = document.querySelector(`[data-color="${color}"]`);
+            document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+            container.classList.add('active');
+        }
+
+        window.addToCart = addToCart;
+        window.updateQuantity = updateQuantity;
+        window.removeFromCart = removeFromCart;
+        window.selectColor = selectColor;
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
             updateCartCount();
-            updateProductButtons(); // Check cart and update buttons on page load
-        });
 
-        // Customize Modal Functions
-        const customizeModal = document.getElementById('customizeModal');
-        const colorGrid = document.getElementById('colorGrid');
-        let currentCustomizeProductId = null;
-        let selectedSizeOption = null; // Track size selection: 'as-photo' or 'custom'
-        let selectedColorOption = null; // Track if color option has been selected
-
-        // Available colors from /colors folder (only files without numbers)
-        const availableColors = [
-            'asphalt', 'blue', 'deeppink', 'lightgreen', 'lemonyellow',
-            'mintgreen', 'newpink', 'olivegreen', 'orange',
-            'purple', 'red', 'sakurapink', 'skyblue', 'yellow'
-        ];
-
-        function openCustomizeModal(productId) {
-            currentCustomizeProductId = productId;
-            const product = window.products[productId];
-
-            if (!product) {
-                console.error('Product not found:', productId);
-                return;
-            }
-
-            selectedSizeOption = null;
-            selectedColorOption = null;
-            selectedColor = null;
-            document.getElementById('customizeProductName').textContent = product.name;
-
-            // Check if this product should only show color options (no size)
-            const productsWithOnlyColor = ['legsegg'];
-
-            if (productsWithOnlyColor.includes(productId)) {
-                // Hide size options for products that only have color selection
-                document.getElementById('sizeSubtitle').style.display = 'none';
-                document.getElementById('sizeOptions').style.display = 'none';
-                document.getElementById('sizeCustomInput').classList.remove('visible');
-
-                // Automatically set size to 'as-photo' for these products
-                selectedSizeOption = 'as-photo';
-            } else {
-                // Show size options for products that have both size and color
-                document.getElementById('sizeSubtitle').style.display = 'block';
-                document.getElementById('sizeOptions').style.display = 'flex';
-            }
-
-            // Hide color grid initially, show both sections
-            document.getElementById('colorOptions').style.display = 'flex';
-            document.getElementById('colorGrid').classList.remove('visible');
-            document.getElementById('colorGrid').style.display = 'none';
-
-            // Reset all button states in both sections
-            const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
-            allButtons.forEach(btn => {
-                btn.classList.remove('selected-option', 'selected');
-            });
-
-            // Reset color button states
-            const colorButtons = document.querySelectorAll('.color-option-btn');
-            colorButtons.forEach(btn => {
-                btn.classList.remove('selected');
-            });
-
-            // Reset size custom input
-            document.getElementById('sizeCustomInput').classList.remove('visible');
-            document.getElementById('sizeCustomText').value = '';
-
-            // Disable add to cart button until BOTH selections are made (or just color for legsegg)
-            document.getElementById('addToCartButton').disabled = true;
-
-            customizeModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeCustomizeModal() {
-            customizeModal.classList.remove('active');
-            document.body.style.overflow = '';
-            currentCustomizeProductId = null;
-            selectedSizeOption = null;
-            selectedColorOption = null;
-
-            // Reset view to initial state
-            setTimeout(() => {
-                document.getElementById('colorOptions').style.display = 'flex';
-                document.getElementById('colorGrid').style.display = 'none';
-                document.getElementById('sizeOptions').style.display = 'flex';
-                document.getElementById('sizeSubtitle').style.display = 'block';
-                document.getElementById('colorGrid').classList.remove('visible');
-            }, 300);
-        }
-
-        function loadColorOptions() {
-            // Only load colors when called
-            if (colorGrid.innerHTML.trim() !== '') {
-                colorGrid.innerHTML = '';
-
-                availableColors.forEach(color => {
-                    const btn = document.createElement('button');
-                    btn.className = 'color-option-btn';
-                    btn.onclick = () => selectColor(color, btn);
-                    btn.title = color.charAt(0).toUpperCase() + color.slice(1);
-
-                    const img = document.createElement('img');
-                    img.src = `/colors/${color}.jpeg`;
-                    img.alt = color;
-                    img.loading = 'lazy';
-
-                    const colorName = document.createElement('span');
-                    colorName.className = 'color-name';
-                    colorName.textContent = color.charAt(0).toUpperCase() + color.slice(1);
-
-                    btn.appendChild(img);
-                    btn.appendChild(colorName);
-                    colorGrid.appendChild(btn);
-                });
-            }
-        }
-
-        let selectedColor = null;
-
-        function checkAndUpdateCartButton() {
-            // Enable button based on product type
-            const addToCartButton = document.getElementById('addToCartButton');
-            const productsWithOnlyColor = ['legsegg'];
-
-            if (productsWithOnlyColor.includes(currentCustomizeProductId)) {
-                // For legsegg, only need color selection
-                if (selectedColorOption !== null) {
-                    addToCartButton.disabled = false;
-                } else {
-                    addToCartButton.disabled = true;
+            // Listen for storage changes
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'layerstore_cart') {
+                    location.reload();
                 }
-            } else {
-                // For other products, need BOTH size AND color options selected
-                if (selectedSizeOption !== null && selectedColorOption !== null) {
-                    addToCartButton.disabled = false;
-                } else {
-                    addToCartButton.disabled = true;
-                }
-            }
-        }
-
-        function selectColor(color, btnElement) {
-            // Remove selected from all color buttons
-            document.querySelectorAll('.color-option-btn').forEach(btn => {
-                btn.classList.remove('selected');
             });
-
-            btnElement.classList.add('selected');
-            selectedColor = color;
-        }
-
-        function saveCustomizeSelection() {
-            // Get size description if user selected custom size and entered text
-            const sizeCustomText = document.getElementById('sizeCustomText');
-            const sizeDescription = (selectedSizeOption === 'custom' && sizeCustomText.value.trim()) ? sizeCustomText.value.trim() : null;
-
-            // Use 'as-photo' as default if no size was selected
-            const sizeOptionToSave = selectedSizeOption || 'as-photo';
-
-            // Get product data
-            const product = window.products[currentCustomizeProductId];
-            const productPrice = product ? product.price : null;
-            const productImage = product && product.images && product.images[0] ? `/collections/easter/images/${product.images[0]}` : null;
-
-            // Check if user selected a specific color
-            if (selectedColor) {
-                // User chose custom color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, selectedColor, sizeDescription);
-            } else {
-                // User chose "Wie auf dem Foto" for color
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, null, sizeDescription);
-            }
-
-            // Reset selection and close modal
-            selectedColor = null;
-            closeCustomizeModal();
-        }
-
-        function selectCustomizeOption(option) {
-            // 'Wie auf dem Foto' does nothing in both cases (for size and color sections)
-            if (option === 'as-photo') {
-                return;
-            }
-
-            // 'Individuell' buttons show color grid
-            if (option === 'color' || option === 'custom') {
-                document.getElementById('sizeOptions').style.display = 'none';
-                document.getElementById('colorOptions').style.display = 'none';
-                colorGrid.classList.add('visible');
-                loadColorOptions();
-            }
-        }
-
-        function selectSizeOption(option, btnElement) {
-            // Get all buttons in size options
-            const sizeButtons = document.querySelectorAll('#sizeOptions .customize-option-btn');
-            const sizeCustomInput = document.getElementById('sizeCustomInput');
-
-            // Remove all state classes from all size buttons
-            sizeButtons.forEach(btn => {
-                btn.classList.remove('default-option', 'selected-option');
-            });
-
-            // Track selection
-            selectedSizeOption = option;
-
-            // Add selected state to clicked button
-            btnElement.classList.add('selected-option');
-
-            // Show/hide custom input based on selection
-            if (option === 'custom') {
-                sizeCustomInput.classList.add('visible');
-            } else {
-                sizeCustomInput.classList.remove('visible');
-                document.getElementById('sizeCustomText').value = '';
-            }
-
-            // Check if button should be enabled
-            checkAndUpdateCartButton();
-        }
-
-        function selectColorOption(option, btnElement) {
-            // Get all buttons in color options
-            const colorButtons = document.querySelectorAll('#colorOptions .customize-option-btn');
-
-            // Remove all state classes from all color buttons
-            colorButtons.forEach(btn => {
-                btn.classList.remove('default-option', 'selected-option');
-            });
-
-            // Add selected state to clicked button
-            btnElement.classList.add('selected-option');
-
-            // Track that color option has been selected
-            selectedColorOption = option;
-
-            if (option === 'custom') {
-                // Show color grid
-                colorGrid.style.display = 'grid';
-                loadColorOptions();
-            } else {
-                // Hide color grid when "Wie auf dem Foto" is selected
-                colorGrid.style.display = 'none';
-                // Also clear selected color state
-                selectedColor = null;
-                // Reset color button selections
-                const colorBtns = document.querySelectorAll('.color-option-btn');
-                colorBtns.forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-            }
-
-            // Check if button should be enabled
-            checkAndUpdateCartButton();
-        }
-
-        // Event listeners for customize modal
-        document.getElementById('closeCustomizeModal').addEventListener('click', closeCustomizeModal);
-
-        customizeModal.addEventListener('click', (e) => {
-            if (e.target === customizeModal) {
-                closeCustomizeModal();
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (customizeModal.classList.contains('active') && e.key === 'Escape') {
-                closeCustomizeModal();
-            }
         });
     </script>
 </body>
