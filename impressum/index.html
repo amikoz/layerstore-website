@@ -284,6 +284,74 @@
                 gap: 2rem;
             }
         }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #F0ECDA;
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            z-index: 9999;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .cookie-banner.show {
+            display: flex;
+        }
+
+        .cookie-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex: 1;
+            max-width: 800px;
+        }
+
+        .cookie-banner a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .cookie-banner button {
+            padding: 0.6rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .cookie-banner button:hover {
+            background: var(--accent-light);
+        }
+
+        @media (max-width: 768px) {
+            .cookie-banner {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1.5rem;
+            }
+
+            .cookie-banner p {
+                font-size: 0.85rem;
+            }
+
+            .cookie-banner button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -442,6 +510,54 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
+        });
+    </script>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <p>
+            <strong>Wir verwenden Cookies.</strong>
+            Diese Website verwendet technische Cookies (LocalStorage) für den Warenkorb.
+            Zudem werden Google Fonts geladen. Weitere Informationen in unserer
+            <a href="/datenschutz">Datenschutzerklärung</a>.
+        </p>
+        <button id="acceptCookies">Akzeptieren</button>
+    </div>
+
+    <script>
+        // Cookie Consent
+        const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
+
+        function checkCookieConsent() {
+            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted';
+        }
+
+        function setCookieConsent() {
+            localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            const banner = document.getElementById('cookieBanner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkCookieConsent()) {
+                setTimeout(() => {
+                    const banner = document.getElementById('cookieBanner');
+                    if (banner) {
+                        banner.classList.add('show');
+                    }
+                }, 500);
+            }
+
+            const acceptBtn = document.getElementById('acceptCookies');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', setCookieConsent);
+            }
         });
     </script>
 </body>

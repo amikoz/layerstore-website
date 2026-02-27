@@ -307,6 +307,74 @@
                 gap: 2rem;
             }
         }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #F0ECDA;
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            z-index: 9999;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .cookie-banner.show {
+            display: flex;
+        }
+
+        .cookie-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex: 1;
+            max-width: 800px;
+        }
+
+        .cookie-banner a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .cookie-banner button {
+            padding: 0.6rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .cookie-banner button:hover {
+            background: var(--accent-light);
+        }
+
+        @media (max-width: 768px) {
+            .cookie-banner {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1.5rem;
+            }
+
+            .cookie-banner p {
+                font-size: 0.85rem;
+            }
+
+            .cookie-banner button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -429,7 +497,24 @@
     Verschlüsselung. Sie können die verschlüsselte Verbindung an der https:// Adresse des Browsers erkennen.
 </p>
 
-<h2>9. Kontakt zum Datenschutzbeauftragten</h2>
+<h2>9. Externe Dienste</h2>
+
+<h3>9.1 Google Fonts</h3>
+<p>
+    Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten Google Fonts. Beim Aufruf dieser Seite
+    lädt Ihr Browser die benötigten Schriftarten direkt von Google. Dabei wird Ihre IP-Adresse an Google
+    übertragen und auf Servern in den USA verarbeitet.
+</p>
+<p>
+    Google ist unter dem <a href="https://privacyshield.google.com/" target="_blank" style="color: var(--accent);">EU-US Privacy Shield</a>
+    zertifiziert und verpflichtet sich, die Datenschutzstandards der EU einzuhalten.
+</p>
+<div class="contact-info">
+    <p><strong>Weitere Informationen:</strong> <a href="https://policies.google.com/privacy" target="_blank" style="color: var(--accent);">https://policies.google.com/privacy</a></p>
+    <p><strong>Opt-out:</strong> <a href="https://policies.google.com/technologies/partner-sites" target="_blank" style="color: var(--accent);">https://policies.google.com/technologies/partner-sites</a></p>
+</div>
+
+<h2>10. Kontakt zum Datenschutzbeauftragten</h2>
 <p>
     Bei Fragen zum Datenschutz können Sie sich jederzeit per E-Mail an uns wenden:
 </p>
@@ -437,18 +522,19 @@
     <p><strong>E-Mail:</strong> info@layerstore.eu</p>
 </div>
 
-<h2>10. Beschwerde bei einer Aufsichtsbehörde</h2>
+<h2>11. Beschwerde bei einer Aufsichtsbehörde</h2>
 <p>
     Sie haben das Recht, sich bei einer Aufsichtsbehörde über unsere Verarbeitung Ihrer personenbezogenen Daten
-    zu beschweren. Zuständig ist:
+    zu beschweren. Zuständig für Nordrhein-Westfalen ist:
 </p>
 <div class="contact-info">
-    <p><strong>Behörde:</strong> Der Landesbeauftragte für den Datenschutz</p>
-    <p><strong>Adresse:</strong> In Ihrem Bundesland (entsprechend der Landesdatenschutzgesetzgebung)</p>
+    <p><strong>Behörde:</strong> Landesbeauftragte für den Datenschutz und die Informationsfreiheit Nordrhein-Westfalen</p>
+    <p><strong>Adresse:</strong> Postfach 20 04 44, 40105 Düsseldorf</p>
+    <p><strong>Website:</strong> <a href="https://www.ldi.nrw.de" target="_blank" style="color: var(--accent);">https://www.ldi.nrw.de</a></p>
 </div>
 
 <div class="update-date">
-    <p>Diese Datenschutzerklärung wurde zuletzt am 08. Februar 2026 aktualisiert.</p>
+    <p>Diese Datenschutzerklärung wurde zuletzt am 27. Februar 2026 aktualisiert.</p>
 </div>
 
     </div>
@@ -504,6 +590,54 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
+        });
+    </script>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <p>
+            <strong>Wir verwenden Cookies.</strong>
+            Diese Website verwendet technische Cookies (LocalStorage) für den Warenkorb.
+            Zudem werden Google Fonts geladen. Weitere Informationen in unserer
+            <a href="/datenschutz">Datenschutzerklärung</a>.
+        </p>
+        <button id="acceptCookies">Akzeptieren</button>
+    </div>
+
+    <script>
+        // Cookie Consent
+        const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
+
+        function checkCookieConsent() {
+            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted';
+        }
+
+        function setCookieConsent() {
+            localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            const banner = document.getElementById('cookieBanner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkCookieConsent()) {
+                setTimeout(() => {
+                    const banner = document.getElementById('cookieBanner');
+                    if (banner) {
+                        banner.classList.add('show');
+                    }
+                }, 500);
+            }
+
+            const acceptBtn = document.getElementById('acceptCookies');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', setCookieConsent);
+            }
         });
     </script>
 </body>
