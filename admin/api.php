@@ -83,10 +83,23 @@ $action = $_GET['action'] ?? '';
 
 // Login
 if ($action === 'login') {
-    $input = json_decode(file_get_contents('php://input'), true);
+    $rawInput = file_get_contents('php://input');
+    $input = json_decode($rawInput, true);
 
-    if ($input['username'] === ADMIN_USERNAME && $input['password'] === ADMIN_PASSWORD) {
-        $token = generateToken($input['username']);
+    // Also try POST array if JSON is empty
+    if (empty($input)) {
+        $input = $_POST;
+    }
+
+    $username = $input['username'] ?? '';
+    $password = $input['password'] ?? '';
+
+    // Debug logging
+    $log = date('Y-m-d H:i:s') . " | Login attempt | User: '$username' | Pass: '$password' | Raw: " . substr($rawInput, 0, 100) . "\n";
+    file_put_contents(__DIR__ . '/debug.log', $log, FILE_APPEND);
+
+    if ($username === ADMIN_USERNAME && $password === ADMIN_PASSWORD) {
+        $token = generateToken($username);
         sendResponse(true, ['token' => $token], 'Login successful');
     } else {
         sendResponse(false, [], 'Invalid credentials');
