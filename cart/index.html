@@ -965,7 +965,7 @@
             right: 0;
             background: #232E3D;
             border-top: 1px solid var(--border);
-            padding: 2rem;
+            padding: 1.5rem 2rem;
             z-index: 9999;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
             display: none;
@@ -976,204 +976,50 @@
         }
 
         .cookie-content {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
+            text-align: center;
         }
 
         .cookie-title {
             font-size: 1rem;
             color: white;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .cookie-text {
             font-size: 0.85rem;
             color: #ccc;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             line-height: 1.5;
         }
 
-        .cookie-info {
+        .cookie-note {
             font-size: 0.8rem;
-            color: #bbb;
-            margin: 1rem 0;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 6px;
-        }
-
-        .cookie-details {
-            font-size: 0.8rem;
-            color: #bbb;
+            color: #2ecc71;
             margin-bottom: 1rem;
         }
 
-        .cookie-buttons {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .cookie-btn-primary,
-        .cookie-btn-secondary,
-        .cookie-btn-tertiary {
-            padding: 0.7rem 1.2rem;
+        .cookie-btn {
+            padding: 0.7rem 2rem;
             border: none;
             border-radius: 6px;
             font-family: 'Quicksand', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
-            white-space: nowrap;
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .cookie-btn-primary {
             background: var(--accent);
             color: white;
-            order: 3;
         }
 
-        .cookie-btn-primary:hover {
+        .cookie-btn:hover {
             background: var(--accent-light);
-        }
-
-        .cookie-btn-secondary {
-            background: transparent;
-            color: rgba(255,255,255,0.7);
-            border: 1px solid rgba(255,255,255,0.3);
-            order: 2;
-        }
-
-        .cookie-btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .cookie-btn-tertiary {
-            background: rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.6);
-            border: 1px solid rgba(255,255,255,0.15);
-            order: 1;
-        }
-
-        .cookie-btn-tertiary:hover {
-            background: rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.8);
-        }
-
-        .cookie-types {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin: 1rem 0;
-        }
-
-        .cookie-type-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.04);
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .cookie-type-item.required {
-            background: rgba(46, 204, 113, 0.08);
-            border-color: rgba(46, 204, 113, 0.2);
-        }
-
-        .cookie-type-item.optional {
-            background: rgba(255,255,255,0.04);
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        .cookie-type-checkbox {
-            margin-top: 0.2rem;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-
-        .cookie-type-info {
-            flex: 1;
-        }
-
-        .cookie-type-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.25rem;
-        }
-
-        .cookie-type-badge {
-            font-size: 0.65rem;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .cookie-type-badge.required {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-        }
-
-        .cookie-type-badge.optional {
-            background: rgba(241, 196, 15, 0.2);
-            color: #f1c40f;
-        }
-
-        .cookie-type-desc {
-            font-size: 0.75rem;
-            color: #bbb;
-            line-height: 1.4;
-        }
-
-        .cookie-type-item.required .cookie-type-checkbox {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .cookie-no-tracking {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding: 0.6rem 1rem;
-            background: rgba(46, 204, 113, 0.1);
-            border-radius: 6px;
-            font-size: 0.75rem;
-            color: #2ecc71;
-        }
-
-        .cookie-no-tracking svg {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
         }
 
         @media (max-width: 768px) {
             .cookie-banner {
-                padding: 1.5rem;
-            }
-
-            .cookie-buttons {
-                flex-direction: column;
-            }
-
-            .cookie-btn-primary,
-            .cookie-btn-secondary,
-            .cookie-btn-tertiary {
-                width: 100%;
-                min-width: auto;
+                padding: 1.25rem 1.5rem;
             }
         }
     </style>
@@ -1878,82 +1724,28 @@
     <div class="cookie-banner" id="cookieBanner">
         <div class="cookie-content">
             <p class="cookie-title">
-                <strong>Wir verwenden Cookies & ähnliche Technologien</strong>
+                <strong>Cookies & LocalStorage</strong>
             </p>
             <p class="cookie-text">
-                Wir respektieren Ihre Privatsphäre und geben Ihnen volle Kontrolle darüber, welche Technologien auf unserer Website verwendet werden.
+                Wir verwenden nur erforderliche Cookies für den Warenkorb.
             </p>
-
-            <div class="cookie-types">
-                <div class="cookie-type-item required">
-                    <input type="checkbox" id="cookieRequired" class="cookie-type-checkbox" checked disabled>
-                    <div class="cookie-type-info">
-                        <div class="cookie-type-label">
-                            Erforderlich
-                            <span class="cookie-type-badge required">Immer aktiv</span>
-                        </div>
-                        <div class="cookie-type-desc">LocalStorage für den Warenkorb - ohne diese Technologie funktioniert der Warenkorb nicht. Kann nicht abgelehnt werden.</div>
-                    </div>
-                </div>
-                <div class="cookie-type-item optional">
-                    <input type="checkbox" id="cookieOptional" class="cookie-type-checkbox">
-                    <div class="cookie-type-info">
-                        <div class="cookie-type-label">
-                            Schriftarten (Google Fonts)
-                            <span class="cookie-type-badge optional">Optional</span>
-                        </div>
-                        <div class="cookie-type-desc">Lädt externe Schriftarten von Google Fonts für ein besseres Schriftbild. Abwählbar - die Website funktioniert auch ohne diese.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="cookie-no-tracking">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span><strong>Kein Tracking:</strong> Wir verwenden keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gerät.</span>
-            </div>
-
-            <p class="cookie-details" style="margin-top: 1rem;">
-                Weitere Informationen finden Sie in unserer
-                <a href="/datenschutz" target="_blank" style="color: var(--accent); text-decoration: underline;">Datenschutzerklärung</a>.
+            <p class="cookie-note">
+                Keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gerät.
             </p>
-
-            <div class="cookie-buttons">
-                <button id="declineAll" class="cookie-btn-tertiary">Alle ablehnen</button>
-                <button id="acceptEssential" class="cookie-btn-secondary">Nur erforderliche</button>
-                <button id="acceptAll" class="cookie-btn-primary">Alle akzeptieren</button>
-            </div>
+            <button id="cookieAcceptBtn" class="cookie-btn">OK</button>
         </div>
     </div>
 
     <script>
         // Cookie Consent
         const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
-        const COOKIE_OPTIONAL_KEY = 'layerstore_cookie_optional';
 
         function checkCookieConsent() {
-            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted' ||
-                   localStorage.getItem(COOKIE_CONSENT_KEY) === 'essential' ||
-                   localStorage.getItem(COOKIE_CONSENT_KEY) === 'declined';
+            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted';
         }
 
-        function setCookieConsent(type) {
-            const optionalCheckbox = document.getElementById('cookieOptional');
-
-            if (type === 'all') {
-                localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
-                localStorage.setItem(COOKIE_OPTIONAL_KEY, 'accepted');
-                if (optionalCheckbox) optionalCheckbox.checked = true;
-            } else if (type === 'essential') {
-                localStorage.setItem(COOKIE_CONSENT_KEY, 'essential');
-                localStorage.setItem(COOKIE_OPTIONAL_KEY, 'declined');
-                if (optionalCheckbox) optionalCheckbox.checked = false;
-            } else if (type === 'declined') {
-                localStorage.setItem(COOKIE_CONSENT_KEY, 'declined');
-                localStorage.setItem(COOKIE_OPTIONAL_KEY, 'declined');
-                if (optionalCheckbox) optionalCheckbox.checked = false;
-            }
+        function setCookieConsent() {
+            localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
             hideCookieBanner();
         }
 
@@ -1974,33 +1766,9 @@
                 }, 500);
             }
 
-            const acceptAllBtn = document.getElementById('acceptAll');
-            const acceptEssentialBtn = document.getElementById('acceptEssential');
-            const declineAllBtn = document.getElementById('declineAll');
-            const optionalCheckbox = document.getElementById('cookieOptional');
-
-            if (acceptAllBtn) {
-                acceptAllBtn.addEventListener('click', () => setCookieConsent('all'));
-            }
-
-            if (acceptEssentialBtn) {
-                acceptEssentialBtn.addEventListener('click', () => setCookieConsent('essential'));
-            }
-
-            if (declineAllBtn) {
-                declineAllBtn.addEventListener('click', () => setCookieConsent('declined'));
-            }
-
-            // Sync checkbox with buttons
-            if (optionalCheckbox) {
-                optionalCheckbox.addEventListener('change', function() {
-                    // When user manually toggles checkbox, update state
-                    if (this.checked) {
-                        localStorage.setItem(COOKIE_OPTIONAL_KEY, 'accepted');
-                    } else {
-                        localStorage.setItem(COOKIE_OPTIONAL_KEY, 'declined');
-                    }
-                });
+            const acceptBtn = document.getElementById('cookieAcceptBtn');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', setCookieConsent);
             }
         });
     </script>
