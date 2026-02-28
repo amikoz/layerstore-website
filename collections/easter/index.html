@@ -939,48 +939,44 @@
         }
 
         .color-option-btn {
-            width: 40px;
-            height: auto;
-            min-height: 50px;
+            width: 24px;
+            height: 24px;
             padding: 0;
             border: 2px solid var(--border);
-            border-radius: 4px;
+            border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
         .color-option-btn img {
             width: 100%;
-            height: 40px;
+            height: 100%;
             object-fit: cover;
         }
 
         .color-option-btn .color-name {
-            font-size: 0.55rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-            text-align: center;
-            padding: 0.25rem 0.4rem;
-            line-height: 1.1;
+            display: none;
         }
 
         .color-option-btn:hover {
             border-color: var(--accent);
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         .color-option-btn.selected {
             border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
         }
 
         .color-options-grid {
             display: none;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 0.4rem;
+            grid-template-columns: repeat(auto-fill, minmax(24px, 1fr));
+            gap: 0.35rem;
             margin-top: 0.5rem;
         }
 
@@ -2106,7 +2102,7 @@
                     const btn = document.createElement('button');
                     btn.className = 'color-option-btn';
                     btn.onclick = () => selectColor(color, btn);
-                    btn.title = color.charAt(0).toUpperCase() + color.slice(1);
+                    btn.title = getColorLabel(color);
 
                     const img = document.createElement('img');
                     img.src = `/colors/${color}.jpeg`;
