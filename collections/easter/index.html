@@ -1008,6 +1008,21 @@
             margin-top: 0.5rem;
         }
 
+        .color-divider {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: var(--border);
+            margin: 0.5rem 0;
+        }
+
+        .color-marble-notice {
+            grid-column: 1 / -1;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
+
         .customize-option-btn:hover {
             border-color: var(--accent);
             color: var(--accent);
@@ -2018,10 +2033,14 @@
 
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
-            'black', 'chestnut-brown-marble', 'light-green', 'mint-green',
+            'black', 'light-green', 'mint-green',
             'new-pink', 'olive-green', 'peach', 'pink', 'purple',
-            'red', 'sakura-pink', 'sky-blue', 'white', 'yellow'
+            'red', 'sakura-pink', 'sky-blue', 'white', 'yellow',
+            'chestnut-brown-marble'
         ];
+
+        // Marble colors (with extra cost)
+        const marbleColors = ['chestnut-brown-marble'];
 
         // Human-readable color names
         const colorLabels = {
@@ -2126,7 +2145,23 @@
             if (colorGrid.innerHTML.trim() !== '') {
                 colorGrid.innerHTML = '';
 
+                let marbleDividerAdded = false;
+
                 availableColors.forEach(color => {
+                    // Add divider before marble colors
+                    if (marbleColors.includes(color) && !marbleDividerAdded) {
+                        const divider = document.createElement('div');
+                        divider.className = 'color-divider';
+                        colorGrid.appendChild(divider);
+
+                        const notice = document.createElement('div');
+                        notice.className = 'color-marble-notice';
+                        notice.textContent = 'Marmorfarbe (+20% Aufschlag)';
+                        colorGrid.appendChild(notice);
+
+                        marbleDividerAdded = true;
+                    }
+
                     const btn = document.createElement('button');
                     btn.className = 'color-option-btn';
                     btn.onclick = () => selectColor(color, btn);
