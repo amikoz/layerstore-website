@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kollektionen | LayerStore</title>
-    <link rel="preload" href="/logo.png" as="image">
+    <link rel="preload" href="/ls-logo-beige.svg" as="image">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +48,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #F0ECDA;
+            background: #232E3D;
             z-index: 1000;
         }
 
@@ -71,12 +71,16 @@
 
         nav a {
             text-decoration: none;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.85);
             font-size: 0.8rem;
             font-weight: 400;
             letter-spacing: 0.02em;
             transition: color 0.3s ease;
             position: relative;
+        }
+
+        nav a:hover {
+            color: white;
         }
 
         a {
@@ -91,16 +95,12 @@
             left: 0;
             width: 0;
             height: 1.5px;
-            background: var(--accent);
+            background: white;
             transition: width 0.3s ease;
         }
 
         nav a:hover::after {
             width: 100%;
-        }
-
-        nav a:hover {
-            color: var(--accent);
         }
 
         .cart-icon {
@@ -112,7 +112,11 @@
         .cart-icon svg {
             width: 20px;
             height: 20px;
-            fill: var(--text-secondary);
+            fill: rgba(255, 255, 255, 0.85);
+        }
+
+        .cart-icon:hover svg {
+            fill: white;
         }
 
         .cart-count {
@@ -282,7 +286,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #F0ECDA;
+            background: #232E3D;
             border-top: 1px solid var(--border);
             padding: 1.5rem 2rem;
             z-index: 9999;
@@ -349,7 +353,7 @@
     <!-- Header -->
     <header>
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore" width="125" height="50" loading="eager">
+            <img src="/ls-logo-beige.svg" alt="LayerStore" width="125" height="50" loading="eager">
         </a>
         <nav>
             <a href="/">Startseite</a>

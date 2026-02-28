@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oster-Kollektion | LayerStore</title>
-    <link rel="preload" href="/logo.png" as="image">
+    <link rel="preload" href="/ls-logo-beige.svg" as="image">
 
     <!-- Preload all color images for faster loading -->
     <link rel="preload" href="/colors/asphalt.jpeg" as="image">
@@ -63,7 +63,7 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: #F0ECDA;
+            background: #232E3D;
             animation: slideDown 0.8s ease-out;
         }
 
@@ -102,12 +102,16 @@
 
         nav a {
             text-decoration: none;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.85);
             font-size: 0.8rem;
             font-weight: 400;
             letter-spacing: 0.02em;
             transition: color 0.3s ease;
             position: relative;
+        }
+
+        nav a:hover {
+            color: white;
         }
 
         nav a::after {
@@ -117,12 +121,8 @@
             left: 0;
             width: 0;
             height: 1.5px;
-            background: var(--accent);
+            background: white;
             transition: width 0.3s ease;
-        }
-
-        nav a:hover {
-            color: var(--accent);
         }
 
         nav a:hover::after {
@@ -144,12 +144,12 @@
         .cart-icon svg {
             width: 20px;
             height: 20px;
-            fill: var(--text-secondary);
+            fill: rgba(255, 255, 255, 0.85);
             transition: fill 0.3s ease;
         }
 
         .cart-icon:hover svg {
-            fill: var(--accent);
+            fill: white;
         }
 
         .cart-count {
@@ -1120,7 +1120,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: #F0ECDA;
+            background: #232E3D;
             border-top: 1px solid var(--border);
             padding: 1.5rem 2rem;
             z-index: 9999;
@@ -1187,7 +1187,7 @@
     <!-- Header -->
     <header>
         <a href="/" class="logo">
-            <img src="/logo.png" alt="LayerStore Logo" width="125" height="50" loading="eager" decoding="sync" fetchpriority="high">
+            <img src="/ls-logo-beige.svg" alt="LayerStore Logo" width="125" height="50" loading="eager" decoding="sync" fetchpriority="high">
         </a>
         <nav>
             <a href="/">Startseite</a>
