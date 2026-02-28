@@ -723,6 +723,35 @@
             margin-top: 2rem;
         }
 
+        .privacy-consent {
+            margin-top: 1.5rem;
+        }
+
+        .privacy-consent label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .privacy-consent input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .privacy-consent a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+
         .btn-whatsapp {
             display: flex;
             align-items: center;
@@ -1060,6 +1089,13 @@
                 <div class="checkout-choice-text">
                     Wählen Sie Ihre bevorzugte Kontaktmöglichkeit:<br>
                     <strong>Wir melden uns schnellstmöglich bei Ihnen!</strong>
+                </div>
+
+                <div class="privacy-consent">
+                    <label>
+                        <input type="checkbox" id="privacyConsent">
+                        <span>Ich stimme der Verarbeitung meiner Daten gemäß der <a href="/datenschutz" target="_blank">Datenschutzerklärung</a> zu. *</span>
+                    </label>
                 </div>
 
                 <div class="checkout-buttons">
@@ -1527,6 +1563,13 @@
 
         // Order via WhatsApp
         function orderViaWhatsApp() {
+            // Check privacy consent
+            const privacyConsent = document.getElementById('privacyConsent');
+            if (!privacyConsent.checked) {
+                showToast('Fehler', 'Bitte stimmen Sie der Datenschutzerklärung zu.');
+                return;
+            }
+
             const nameInput = document.getElementById('customerName');
             const name = nameInput.value.trim();
 
@@ -1568,6 +1611,13 @@
 
         // Order via Email
         function orderViaEmail() {
+            // Check privacy consent
+            const privacyConsent = document.getElementById('privacyConsent');
+            if (!privacyConsent.checked) {
+                showToast('Fehler', 'Bitte stimmen Sie der Datenschutzerklärung zu.');
+                return;
+            }
+
             const nameInput = document.getElementById('customerName');
             const name = nameInput.value.trim();
 
