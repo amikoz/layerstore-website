@@ -272,6 +272,111 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #232E3D;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            z-index: 9999;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .cookie-banner.show {
+            display: block;
+        }
+
+        .cookie-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cookie-title {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .cookie-text {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .cookie-info {
+            font-size: 0.8rem;
+            color: #bbb;
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+
+        .cookie-details {
+            font-size: 0.8rem;
+            color: #bbb;
+            margin-bottom: 1rem;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .cookie-btn-primary,
+        .cookie-btn-secondary {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .cookie-btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .cookie-btn-primary:hover {
+            background: var(--accent-light);
+        }
+
+        .cookie-btn-secondary {
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .cookie-btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .cookie-banner {
+                padding: 1.5rem;
+            }
+
+            .cookie-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .cookie-btn-primary,
+            .cookie-btn-secondary {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -476,6 +581,85 @@
                 showDashboard();
             } else {
                 document.getElementById('loginError').style.display = 'block';
+            }
+        });
+    </script>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-title">
+                <strong>Wir verwenden Cookies & ähnliche Technologien</strong>
+            </p>
+            <p class="cookie-text">
+                Um unsere Website nutzbar zu machen, verwenden wir technische Cookies undLocalStorage.
+                Diese sind für den Betrieb des Warenkorbs <strong>erforderlich</strong> und können nicht abgelehnt werden.
+            </p>
+            <p class="cookie-text">
+                Zusätzlich laden wir Schriftarten von <strong>Google Fonts</strong> (optional).
+            </p>
+            <p class="cookie-info">
+                <strong>Erforderliche:</strong> LocalStorage (Warenkorb)<br>
+                <strong>Optional:</strong> Google Fonts (Schriftarten)<br>
+                <strong>Kein Tracking:</strong> Wir verwenden keine Analyse- oder Marketing-Cookies.
+            </p>
+            <p class="cookie-details">
+                Ihre Daten werden ausschließlich auf Ihrem Gerät gespeichert. Weitere Informationen finden Sie in unserer
+                <a href="/datenschutz" target="_blank" style="color: #4A5A6A; text-decoration: underline;">Datenschutzerklärung</a>.
+            </p>
+            <div class="cookie-buttons">
+                <button id="acceptEssential" class="cookie-btn-secondary">Nur essentielle</button>
+                <button id="acceptAll" class="cookie-btn-primary">Alle akzeptieren</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cookie Consent
+        const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
+        const COOKIE_CONSENT_ESSENTIAL_KEY = 'layerstore_cookie_essential';
+
+        function checkCookieConsent() {
+            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted' || localStorage.getItem(COOKIE_CONSENT_ESSENTIAL_KEY) === 'essential';
+        }
+
+        function setCookieConsent(type) {
+            if (type === 'all') {
+                localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+                localStorage.setItem(COOKIE_CONSENT_ESSENTIAL_KEY, 'accepted');
+            } else if (type === 'essential') {
+                localStorage.setItem(COOKIE_CONSENT_ESSENTIAL_KEY, 'essential');
+                localStorage.removeItem(COOKIE_CONSENT_KEY);
+            }
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            const banner = document.getElementById('cookieBanner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkCookieConsent()) {
+                setTimeout(() => {
+                    const banner = document.getElementById('cookieBanner');
+                    if (banner) {
+                        banner.classList.add('show');
+                    }
+                }, 500);
+            }
+
+            const acceptAllBtn = document.getElementById('acceptAll');
+            const acceptEssentialBtn = document.getElementById('acceptEssential');
+
+            if (acceptAllBtn) {
+                acceptAllBtn.addEventListener('click', () => setCookieConsent('all'));
+            }
+
+            if (acceptEssentialBtn) {
+                acceptEssentialBtn.addEventListener('click', () => setCookieConsent('essential'));
             }
         });
     </script>
