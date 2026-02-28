@@ -1868,6 +1868,18 @@
         function addToCartWithOption(id, name, price, image, option, color = null, sizeDescription = null) {
             const cart = getCart();
 
+            // Check if marble color is selected
+            const isMarble = color && marbleColors.includes(color);
+            let finalPrice = price;
+            let basePrice = price;
+
+            if (isMarble) {
+                // Parse price (e.g., "15,00 €" -> 15.00)
+                const priceValue = parseFloat(price.replace(',', '.').replace('€', '').trim());
+                const marblePrice = priceValue * 1.20; // +20%
+                finalPrice = marblePrice.toFixed(2).replace('.', ',') + ' €';
+            }
+
             // Create unique variant key from id + color + option + sizeDescription
             // This ensures different variants of the same product are treated as separate cart items
             const variantKey = `${id}|${color || 'null'}|${option || 'as-photo'}|${sizeDescription || 'null'}`;
@@ -1884,12 +1896,14 @@
                 cart.push({
                     id: id,
                     name: name,
-                    price: price,
+                    price: finalPrice,
+                    basePrice: basePrice,
                     image: image,
                     quantity: 1,
                     option: option,
                     color: color,
-                    sizeDescription: sizeDescription
+                    sizeDescription: sizeDescription,
+                    isMarble: isMarble
                 });
             }
 

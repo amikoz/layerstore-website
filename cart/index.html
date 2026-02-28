@@ -321,6 +321,13 @@
             margin-top: 0.25rem;
         }
 
+        .cart-item-marble {
+            font-size: 0.85rem;
+            color: #92400e;
+            font-weight: 500;
+        }
+        }
+
         .cart-item-price {
             font-size: 1.2rem;
             font-weight: 600;
@@ -1201,9 +1208,10 @@
             let itemsHTML = cart.map((item, index) => {
                 const imagePath = getImagePath(item);
                 const colorText = item.color && item.color !== 'standard' ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
+                const marbleText = item.isMarble ? `<span class="cart-item-marble">✨ Marmor (+20%)</span>` : '';
                 const sizeText = item.option && item.option !== 'as-photo' ? `<span class="cart-item-size">Größe: Nach Absprache</span>` : '';
                 const sizeDescText = item.sizeDescription ? `<span class="cart-item-size-desc">${item.sizeDescription}</span>` : '';
-                const optionsText = (colorText || sizeText || sizeDescText) ? `<div class="cart-item-options">${colorText}${sizeText}${sizeDescText}</div>` : '';
+                const optionsText = (colorText || marbleText || sizeText || sizeDescText) ? `<div class="cart-item-options">${colorText}${marbleText}${sizeText}${sizeDescText}</div>` : '';
                 const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
 
                 return `
@@ -1479,7 +1487,8 @@
                 // Add color if not standard
                 if (item.color && item.color !== 'standard') {
                     const colorName = colorNames[item.color] || item.color;
-                    itemDetails += `\n   Farbe: ${colorName}`;
+                    const marbleNote = item.isMarble ? ' (Marmor +20%)' : '';
+                    itemDetails += `\n   Farbe: ${colorName}${marbleNote}`;
                 }
 
                 // Add size option if not as-photo
