@@ -1506,7 +1506,7 @@
             const promoCode = getAppliedPromoCode();
             if (promoCode && PROMO_CODES[promoCode]) {
                 const discount = calculateDiscount();
-                orderDetails += `Promo-Code: ${promoCode} (${PROMO_CODES[promoCode].description})\n`;
+                orderDetails += `Promo-Code: ${promoCode}\n`;
                 orderDetails += `Rabatt: -${discount.toFixed(2)} €\n`;
             }
 
