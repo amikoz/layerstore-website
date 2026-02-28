@@ -387,6 +387,24 @@
             }
         }
     </style>
+
+    <!-- ZXX Anti-OCR Font -->
+    <style>
+        @font-face {
+            font-family: 'ZXX';
+            src: url('https://cdn.jsdelivr.net/gh/SangMun/ZXX@master/assets/fonts/ZXX-Sans.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/gh/SangMun/ZXX@master/assets/fonts/ZXX-Sans.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        .zxx-text {
+            font-family: 'ZXX', 'Quicksand', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 0.05em;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -415,7 +433,7 @@
         <h2>1. Verantwortlicher</h2>
         <p>Verantwortlicher im Sinne von Art. 4 Nr. 7 DSGVO ist:</p>
         <div class="contact-info">
-            <p><strong>[Vorname Nachname]</strong></p>
+            <p><strong><span class="zxx-text">Valeria</span></strong></p>
             <p>Einzelunternehmer, handelnd unter „Layerstore“</p>
             <p>[Adresse]</p>
             <p>[PLZ Ort]</p>
