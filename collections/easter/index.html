@@ -7,21 +7,34 @@
     <link rel="preload" href="/ls-logo-beige.svg" as="image">
 
     <!-- Preload all color images for faster loading -->
-    <link rel="preload" href="/colors/asphalt.jpeg" as="image">
-    <link rel="preload" href="/colors/blue.jpeg" as="image">
-    <link rel="preload" href="/colors/deeppink.jpeg" as="image">
-    <link rel="preload" href="/colors/lightgreen.jpeg" as="image">
-    <link rel="preload" href="/colors/lemonyellow.jpeg" as="image">
-    <link rel="preload" href="/colors/mintgreen.jpeg" as="image">
-    <link rel="preload" href="/colors/newpink.jpeg" as="image">
-    <link rel="preload" href="/colors/olivegreen.jpeg" as="image">
-    <link rel="preload" href="/colors/orange.jpeg" as="image">
-    <link rel="preload" href="/colors/pallette.jpeg" as="image">
+    <link rel="preload" href="/colors/black.jpeg" as="image">
+    <link rel="preload" href="/colors/black-2.jpeg" as="image">
+    <link rel="preload" href="/colors/chestnut-brown-marble.jpeg" as="image">
+    <link rel="preload" href="/colors/chestnut-brown-marble-2.jpeg" as="image">
+    <link rel="preload" href="/colors/light-green.jpeg" as="image">
+    <link rel="preload" href="/colors/light-green-2.jpeg" as="image">
+    <link rel="preload" href="/colors/mint-green.jpeg" as="image">
+    <link rel="preload" href="/colors/mint-green-2.jpeg" as="image">
+    <link rel="preload" href="/colors/new-pink.jpeg" as="image">
+    <link rel="preload" href="/colors/new-pink-2.jpeg" as="image">
+    <link rel="preload" href="/colors/olive-green.jpeg" as="image">
+    <link rel="preload" href="/colors/olive-green-2.jpeg" as="image">
+    <link rel="preload" href="/colors/peach.jpeg" as="image">
+    <link rel="preload" href="/colors/peach-2.jpeg" as="image">
+    <link rel="preload" href="/colors/pink.jpeg" as="image">
+    <link rel="preload" href="/colors/pink-2.jpeg" as="image">
     <link rel="preload" href="/colors/purple.jpeg" as="image">
+    <link rel="preload" href="/colors/purple-2.jpeg" as="image">
     <link rel="preload" href="/colors/red.jpeg" as="image">
-    <link rel="preload" href="/colors/sakurapink.jpeg" as="image">
-    <link rel="preload" href="/colors/skyblue.jpeg" as="image">
+    <link rel="preload" href="/colors/red-2.jpeg" as="image">
+    <link rel="preload" href="/colors/sakura-pink.jpeg" as="image">
+    <link rel="preload" href="/colors/sakura-pink-2.jpeg" as="image">
+    <link rel="preload" href="/colors/sky-blue.jpeg" as="image">
+    <link rel="preload" href="/colors/sky-blue-2.jpeg" as="image">
+    <link rel="preload" href="/colors/white.jpeg" as="image">
+    <link rel="preload" href="/colors/white-2.jpeg" as="image">
     <link rel="preload" href="/colors/yellow.jpeg" as="image">
+    <link rel="preload" href="/colors/yellow-2.jpeg" as="image">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1994,11 +2007,49 @@
 
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
-            'asphalt', 'asphalt2', 'blue', 'blue2', 'deeppink', 'deeppink2', 'lemonyellow', 'lemonyellow2',
-            'lightgreen', 'lightgreen2', 'mintgreen', 'mintgreen2', 'newpink', 'newpink2', 'olivegreen', 'olivegreen2',
-            'orange', 'orange2', 'pallette', 'purple', 'purpl2', 'red', 'red2', 'sakurapink', 'sakurapink2',
-            'skyblue', 'skyblue2', 'yellow', 'yellow2'
+            'black', 'black-2', 'chestnut-brown-marble', 'chestnut-brown-marble-2',
+            'light-green', 'light-green-2', 'mint-green', 'mint-green-2',
+            'new-pink', 'new-pink-2', 'olive-green', 'olive-green-2',
+            'peach', 'peach-2', 'pink', 'pink-2', 'purple', 'purple-2',
+            'red', 'red-2', 'sakura-pink', 'sakura-pink-2',
+            'sky-blue', 'sky-blue-2', 'white', 'white-2', 'yellow', 'yellow-2'
         ];
+
+        // Human-readable color names
+        const colorLabels = {
+            'black': 'Schwarz',
+            'black-2': 'Schwarz 2',
+            'chestnut-brown-marble': 'Kastanienbraun Marmor',
+            'chestnut-brown-marble-2': 'Kastanienbraun Marmor 2',
+            'light-green': 'Hellgrün',
+            'light-green-2': 'Hellgrün 2',
+            'mint-green': 'Minzgrün',
+            'mint-green-2': 'Minzgrün 2',
+            'new-pink': 'Neu Pink',
+            'new-pink-2': 'Neu Pink 2',
+            'olive-green': 'Olivgrün',
+            'olive-green-2': 'Olivgrün 2',
+            'peach': 'Pfirsich',
+            'peach-2': 'Pfirsich 2',
+            'pink': 'Pink',
+            'pink-2': 'Pink 2',
+            'purple': 'Lila',
+            'purple-2': 'Lila 2',
+            'red': 'Rot',
+            'red-2': 'Rot 2',
+            'sakura-pink': 'Sakura Pink',
+            'sakura-pink-2': 'Sakura Pink 2',
+            'sky-blue': 'Himmelblau',
+            'sky-blue-2': 'Himmelblau 2',
+            'white': 'Weiß',
+            'white-2': 'Weiß 2',
+            'yellow': 'Gelb',
+            'yellow-2': 'Gelb 2'
+        };
+
+        function getColorLabel(colorId) {
+            return colorLabels[colorId] || colorId;
+        }
 
         function openCustomizeModal(productId) {
             currentCustomizeProductId = productId;
@@ -2094,7 +2145,7 @@
 
                     const colorName = document.createElement('span');
                     colorName.className = 'color-name';
-                    colorName.textContent = color.charAt(0).toUpperCase() + color.slice(1);
+                    colorName.textContent = getColorLabel(color);
 
                     btn.appendChild(img);
                     btn.appendChild(colorName);
