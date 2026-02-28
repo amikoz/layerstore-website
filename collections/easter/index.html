@@ -8,33 +8,19 @@
 
     <!-- Preload all color images for faster loading -->
     <link rel="preload" href="/colors/black.jpeg" as="image">
-    <link rel="preload" href="/colors/black-2.jpeg" as="image">
     <link rel="preload" href="/colors/chestnut-brown-marble.jpeg" as="image">
-    <link rel="preload" href="/colors/chestnut-brown-marble-2.jpeg" as="image">
     <link rel="preload" href="/colors/light-green.jpeg" as="image">
-    <link rel="preload" href="/colors/light-green-2.jpeg" as="image">
     <link rel="preload" href="/colors/mint-green.jpeg" as="image">
-    <link rel="preload" href="/colors/mint-green-2.jpeg" as="image">
     <link rel="preload" href="/colors/new-pink.jpeg" as="image">
-    <link rel="preload" href="/colors/new-pink-2.jpeg" as="image">
     <link rel="preload" href="/colors/olive-green.jpeg" as="image">
-    <link rel="preload" href="/colors/olive-green-2.jpeg" as="image">
     <link rel="preload" href="/colors/peach.jpeg" as="image">
-    <link rel="preload" href="/colors/peach-2.jpeg" as="image">
     <link rel="preload" href="/colors/pink.jpeg" as="image">
-    <link rel="preload" href="/colors/pink-2.jpeg" as="image">
     <link rel="preload" href="/colors/purple.jpeg" as="image">
-    <link rel="preload" href="/colors/purple-2.jpeg" as="image">
     <link rel="preload" href="/colors/red.jpeg" as="image">
-    <link rel="preload" href="/colors/red-2.jpeg" as="image">
     <link rel="preload" href="/colors/sakura-pink.jpeg" as="image">
-    <link rel="preload" href="/colors/sakura-pink-2.jpeg" as="image">
     <link rel="preload" href="/colors/sky-blue.jpeg" as="image">
-    <link rel="preload" href="/colors/sky-blue-2.jpeg" as="image">
     <link rel="preload" href="/colors/white.jpeg" as="image">
-    <link rel="preload" href="/colors/white-2.jpeg" as="image">
     <link rel="preload" href="/colors/yellow.jpeg" as="image">
-    <link rel="preload" href="/colors/yellow-2.jpeg" as="image">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2007,44 +1993,27 @@
 
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
-            'black', 'black-2', 'chestnut-brown-marble', 'chestnut-brown-marble-2',
-            'light-green', 'light-green-2', 'mint-green', 'mint-green-2',
-            'new-pink', 'new-pink-2', 'olive-green', 'olive-green-2',
-            'peach', 'peach-2', 'pink', 'pink-2', 'purple', 'purple-2',
-            'red', 'red-2', 'sakura-pink', 'sakura-pink-2',
-            'sky-blue', 'sky-blue-2', 'white', 'white-2', 'yellow', 'yellow-2'
+            'black', 'chestnut-brown-marble', 'light-green', 'mint-green',
+            'new-pink', 'olive-green', 'peach', 'pink', 'purple',
+            'red', 'sakura-pink', 'sky-blue', 'white', 'yellow'
         ];
 
         // Human-readable color names
         const colorLabels = {
             'black': 'Schwarz',
-            'black-2': 'Schwarz 2',
             'chestnut-brown-marble': 'Kastanienbraun Marmor',
-            'chestnut-brown-marble-2': 'Kastanienbraun Marmor 2',
             'light-green': 'Hellgrün',
-            'light-green-2': 'Hellgrün 2',
             'mint-green': 'Minzgrün',
-            'mint-green-2': 'Minzgrün 2',
             'new-pink': 'Neu Pink',
-            'new-pink-2': 'Neu Pink 2',
             'olive-green': 'Olivgrün',
-            'olive-green-2': 'Olivgrün 2',
             'peach': 'Pfirsich',
-            'peach-2': 'Pfirsich 2',
             'pink': 'Pink',
-            'pink-2': 'Pink 2',
             'purple': 'Lila',
-            'purple-2': 'Lila 2',
             'red': 'Rot',
-            'red-2': 'Rot 2',
             'sakura-pink': 'Sakura Pink',
-            'sakura-pink-2': 'Sakura Pink 2',
             'sky-blue': 'Himmelblau',
-            'sky-blue-2': 'Himmelblau 2',
             'white': 'Weiß',
-            'white-2': 'Weiß 2',
-            'yellow': 'Gelb',
-            'yellow-2': 'Gelb 2'
+            'yellow': 'Gelb'
         };
 
         function getColorLabel(colorId) {
