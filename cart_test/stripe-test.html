@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LayerStore - Kasse</title>
-    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --bg-primary: #FAF9F0;
@@ -170,6 +169,11 @@
             background: #4a45c2;
         }
 
+        .btn-stripe:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .btn-secondary {
             background: var(--accent);
             color: white;
@@ -256,6 +260,24 @@
             border-radius: 4px;
             font-family: monospace;
         }
+
+        .api-config {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .api-config input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -269,15 +291,29 @@
 
         <div id="payment-section" style="display: none;">
             <div class="section">
-                <h2>💳 Zahlungsmethode</h2>
+                <h2>💳 Zahlung</h2>
 
-                <div class="form-group">
-                    <label>Stripe Payment Link (empfohlen)</label>
-                    <input type="text" id="payment-link" placeholder="https://buy.stripe.com/...">
+                <div class="api-config">
+                    <strong>🔧 API Konfiguration</strong>
+                    <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+                        Gib die URL zu deinem IONOS API ein:
+                    </p>
+                    <input
+                        type="text"
+                        id="api-url"
+                        placeholder="https://layerstore.com/api"
+                        value="https://layerstore.com/api"
+                        onchange="saveApiUrl()"
+                    >
                 </div>
 
-                <button class="btn-stripe" onclick="openPaymentLink()">
-                    <span id="link-text">⚡ Zur Kasse (Stripe)</span>
+                <div class="form-group">
+                    <label>E-Mail (optional)</label>
+                    <input type="email" id="customer-email" placeholder="deine@email.de">
+                </div>
+
+                <button class="btn-stripe" id="checkout-btn" onclick="startCheckout()">
+                    <span id="checkout-text">⚡ Jetzt bezahlen</span>
                 </button>
 
                 <div class="test-cards">
@@ -285,22 +321,19 @@
                 </div>
 
                 <div id="payment-status" class="status info" style="margin-top: 1rem;">
-                    ℹ️ Erstelle einen Payment Link im Stripe Dashboard und füge ihn oben ein
+                    ℹ️ Klicke auf "Jetzt bezahlen" um zur Stripe Kasse zu gelangen
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Stripe Publishable Key
-        const STRIPE_PK = 'pk_test_51T58Qz1dTRGWAlnkXRKUK4Ke6BIARuDPxDIlqXvBngMZfnDEhCrDAd4hB3AzmcWEo57HvaFXjJFlotbdFgELFKin008sEC0VhN';
+        // ==================== CONFIG ====================
+        const DEFAULT_API_URL = 'https://layerstore.com/api';
 
-        // Get cart from sessionStorage or localStorage
+        // ==================== STORAGE ====================
         function getCheckoutItems() {
             const sessionItems = sessionStorage.getItem('stripe_checkout_items');
-            const sessionTotal = sessionStorage.getItem('stripe_checkout_total');
-
-            // Fallback to localStorage
             const localCart = localStorage.getItem('layerstore_cart_test') || localStorage.getItem('layerstore_cart');
 
             let items = [];
@@ -308,7 +341,8 @@
 
             if (sessionItems) {
                 items = JSON.parse(sessionItems);
-                total = parseInt(sessionTotal) / 100; // Convert from cents
+                const sessionTotal = sessionStorage.getItem('stripe_checkout_total');
+                total = parseInt(sessionTotal) / 100;
             } else if (localCart) {
                 const cart = JSON.parse(localCart);
                 items = cart.map(item => ({
@@ -326,14 +360,16 @@
             return { items, total };
         }
 
-        function formatPrice(priceStr) {
-            // Format price string like "15,00 €" or 15.00
-            if (typeof priceStr === 'string') {
-                return priceStr;
-            }
-            return priceStr.toFixed(2).replace('.', ',') + ' €';
+        function saveApiUrl() {
+            const url = document.getElementById('api-url').value;
+            localStorage.setItem('stripe_api_url', url);
         }
 
+        function getApiUrl() {
+            return localStorage.getItem('stripe_api_url') || DEFAULT_API_URL;
+        }
+
+        // ==================== RENDER ====================
         function renderCart() {
             const { items, total } = getCheckoutItems();
             const cartContent = document.getElementById('cart-content');
@@ -360,11 +396,13 @@
 
             paymentSection.style.display = 'block';
 
+            // Set saved API URL
+            document.getElementById('api-url').value = getApiUrl();
+
             const itemsHTML = items.map(item => {
                 const priceDisplay = typeof item.price === 'string'
                     ? item.price
                     : item.price.toFixed(2).replace('.', ',') + ' €';
-                const itemTotal = (parseFloat(item.price?.toString().replace(',', '.') || 0) * item.quantity);
 
                 return `
                     <div class="cart-item">
@@ -374,7 +412,6 @@
                         </div>
                         <div class="item-details">
                             <div class="item-price">${priceDisplay}</div>
-                            ${item.quantity > 1 ? `<p class="item-quantity">${(itemTotal * item.quantity).toFixed(2).replace('.', ',')} €</p>` : ''}
                         </div>
                     </div>
                 `;
@@ -395,31 +432,98 @@
             `;
         }
 
-        function openPaymentLink() {
-            const link = document.getElementById('payment-link').value;
+        // ==================== CHECKOUT ====================
+        async function startCheckout() {
+            const { items, total } = getCheckoutItems();
+            const apiUrl = getApiUrl();
             const statusEl = document.getElementById('payment-status');
+            const btnText = document.getElementById('checkout-text');
+            const btn = document.getElementById('checkout-btn');
+            const customerEmail = document.getElementById('customer-email').value;
 
-            if (!link || !link.includes('stripe.com')) {
+            if (items.length === 0) {
                 statusEl.className = 'status error';
-                statusEl.innerHTML = '❌ Bitte gib einen gültigen Stripe Payment Link ein';
+                statusEl.innerHTML = '❌ Warenkorb ist leer';
                 return;
             }
 
-            statusEl.className = 'status success';
-            statusEl.innerHTML = '✅ Weiterleitung zu Stripe...';
+            // Disable button
+            btn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> Wird geladen...';
+            statusEl.className = 'status info';
+            statusEl.innerHTML = '⏳ Verbindung zur Stripe API...';
 
-            setTimeout(() => {
-                window.open(link, '_blank');
-                statusEl.innerHTML = '✅ Stripe Checkout im neuen Tab geöffnet. Schließe die Zahlung ab.';
-            }, 500);
+            try {
+                // Prepare items for API
+                const apiItems = items.map(item => ({
+                    name: item.name,
+                    price: parseFloat(item.price?.toString().replace(',', '.')?.replace('€', '') || 0),
+                    quantity: item.quantity
+                }));
+
+                // Get current URL for redirect
+                const baseUrl = window.location.origin + window.location.pathname;
+
+                // Call IONOS API
+                const response = await fetch(apiUrl + '/create-checkout.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        items: apiItems,
+                        customerEmail: customerEmail || undefined,
+                        successUrl: baseUrl + '?success=true',
+                        cancelUrl: baseUrl + '?canceled=true'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || result.error) {
+                    throw new Error(result.error || 'API Error');
+                }
+
+                if (result.url) {
+                    statusEl.className = 'status success';
+                    statusEl.innerHTML = '✅ Weiterleitung zu Stripe Checkout...';
+                    setTimeout(() => {
+                        window.location.href = result.url;
+                    }, 500);
+                } else {
+                    throw new Error('Keine URL vom API erhalten');
+                }
+
+            } catch (error) {
+                console.error('Checkout error:', error);
+                statusEl.className = 'status error';
+                statusEl.innerHTML = '❌ Fehler: ' + error.message;
+
+                // Check if it's a CORS error
+                if (error.message.includes('fetch') || error.message.includes('network')) {
+                    statusEl.innerHTML = `
+                        ❌ CORS oder Netzwerk-Fehler.<br>
+                        <small>Stelle sicher, dass das API auf IONOS korrekt installiert ist
+                        und CORS für ${window.location.origin} erlaubt.</small>
+                    `;
+                }
+
+                btn.disabled = false;
+                btnText.innerHTML = '⚡ Jetzt bezahlen';
+            }
         }
 
-        // Check for success in URL
+        // ==================== SUCCESS CHECK ====================
         function checkSuccess() {
             const urlParams = new URLSearchParams(window.location.search);
+
             if (urlParams.get('success') === 'true') {
                 document.getElementById('payment-status').className = 'status success';
-                document.getElementById('payment-status').innerHTML = '✅ Zahlung erfolgreich abgeschlossen! Vielen Dank für deine Bestellung.';
+                document.getElementById('payment-status').innerHTML = `
+                    ✅ <strong>Zahlung erfolgreich!</strong><br>
+                    Vielen Dank für deine Bestellung.<br>
+                    <small>Du erhältst in Kürze eine Bestätigung per E-Mail.</small>
+                `;
 
                 // Clear cart
                 localStorage.removeItem('layerstore_cart');
@@ -427,14 +531,21 @@
                 sessionStorage.removeItem('stripe_checkout_items');
                 sessionStorage.removeItem('stripe_checkout_total');
 
-                // Update UI
-                setTimeout(renderCart, 1000);
+                // Update UI after delay
+                setTimeout(renderCart, 2000);
+            }
+
+            if (urlParams.get('canceled') === 'true') {
+                document.getElementById('payment-status').className = 'status info';
+                document.getElementById('payment-status').innerHTML = 'ℹ️ Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.';
             }
         }
 
-        // Init
-        renderCart();
-        checkSuccess();
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCart();
+            checkSuccess();
+        });
     </script>
 </body>
 </html>
