@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LayerStore - Stripe Test</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --bg-primary: #FAF9F0;
+            --text-primary: #1a1a1a;
+            --accent: #232F3D;
+            --success: #28a745;
+            --error: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-info p {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .item-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 2px solid #eee;
+            margin-top: 1rem;
+        }
+
+        .total-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2530;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-stripe {
+            background: #635BFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-stripe:hover {
+            background: #4a45c2;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: var(--success);
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: var(--error);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .code {
+            background: #f4f4f4;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: #eee;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .test-cards {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .test-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .test-card code {
+            font-family: monospace;
+            background: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Stripe Test Checkout</h1>
+        <span class="badge">TEST MODE</span>
+
+        <!-- Test Product -->
+        <div class="section">
+            <h2>📦 Testprodukt</h2>
+            <div class="test-item">
+                <div class="item-info">
+                    <h3>3D Gedruckte Dekoration</h3>
+                    <p>Testprodukt für Stripe Integration</p>
+                </div>
+                <div class="item-price">29,90 €</div>
+            </div>
+            <div class="total">
+                <span class="total-label">Gesamt</span>
+                <span class="total-amount">29,90 €</span>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('payment-link')">Stripe Payment Link</button>
+            <button class="tab" onclick="showTab('checkout')">Stripe Checkout</button>
+        </div>
+
+        <!-- Stripe Payment Link Tab (Simplest for GitHub Pages) -->
+        <div id="tab-payment-link" class="tab-content active">
+            <div class="section">
+                <h2>🔗 Stripe Payment Link (Empfohlen)</h2>
+                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                    Der einfachste Weg für GitHub Pages. Erstelle einen Payment Link im Stripe Dashboard und füge ihn unten ein.
+                </p>
+
+                <div class="form-group">
+                    <label>Stripe Payment Link</label>
+                    <input type="text" id="payment-link" placeholder="https://buy.stripe.com/..." value="">
+                </div>
+
+                <button class="btn-stripe" onclick="openPaymentLink()">
+                    <span id="link-text">⚡ Zur Kasse</span>
+                </button>
+
+                <div id="link-status" class="status info">
+                    ℹ️ Erstelle einen Payment Link in Stripe Dashboard und füge ihn oben ein
+                </div>
+
+                <div class="code" style="margin-top: 1rem;">
+                    <strong>So erstellst du einen Payment Link:</strong><br><br>
+                    1. Öffne: <a href="https://dashboard.stripe.com/test/payment-links" target="_blank">dashboard.stripe.com/test/payment-links</a><br>
+                    2. Klicke auf "+ Add a payment link"<br>
+                    3. Produkt und Preis eingeben<br>
+                    4. Link kopieren und hier einfügen
+                </div>
+            </div>
+        </div>
+
+        <!-- Stripe Checkout Tab -->
+        <div id="tab-checkout" class="tab-content">
+            <div class="section">
+                <h2>💳 Stripe Checkout (Backend benötigt)</h2>
+                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                    ⚠️ Diese Funktion benötigt einen PHP-Server (funktioniert nicht auf GitHub Pages).
+                </p>
+
+                <div class="form-group">
+                    <label>Stripe Publishable Key</label>
+                    <input type="text" id="stripe-pk" placeholder="pk_test_..." value="pk_test_51T58Qz1dTRGWAlnkXRKUK4Ke6BIARuDPxDIlqXvBngMZfnDEhCrDAd4hB3AzmcWEo57HvaFXjJFlotbdFgELFKin008sEC0VhN">
+                </div>
+
+                <button class="btn-stripe" onclick="startCheckout()">
+                    <span id="checkout-text">⚡ Zur Kasse (Stripe Checkout)</span>
+                </button>
+
+                <div id="checkout-status" class="status info">
+                    ℹ️ Diese Funktion benötigt PHP Backend (nicht auf GitHub Pages)
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Cards Info -->
+        <div class="section">
+            <h2>🧪 Testkarten (Stripe Test Mode)</h2>
+            <div class="test-cards">
+                <div class="test-card">
+                    <span>Erfolgreiche Zahlung</span>
+                    <code>4242 4242 4242 4242</code>
+                </div>
+                <div class="test-card">
+                    <span>Zahlung abgelehnt</span>
+                    <code>4000 0000 0000 0002</code>
+                </div>
+                <div class="test-card">
+                    <span>3D Secure erforderlich</span>
+                    <code>4000 0025 0000 3155</code>
+                </div>
+                <div class="test-card">
+                    <span>Ablaufdatum: Beliebig in der Zukunft</span>
+                    <code>MM / YY</code>
+                </div>
+                <div class="test-card">
+                    <span>CVC: Beliebige 3 Ziffern</span>
+                    <code>123</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="section">
+            <h2>ℹ️ GitHub Pages Info</h2>
+            <p style="font-size: 0.9rem; color: #666;">
+                GitHub Pages unterstützt keine PHP-Dateien. Für vollständige Stripe-Integration:<br><br>
+                <strong>Optionen:</strong><br>
+                1. <strong>Payment Link</strong> (einfach) - Stripe gehosteter Checkout<br>
+                2. <strong>Vercel/Netlify</strong> - Mit Serverless Functions<br>
+                3. <strong>Hybrid</strong> - GitHub Pages + Externer PHP-Server
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Stripe Publishable Key
+        const STRIPE_PK = 'pk_test_51T58Qz1dTRGWAlnkXRKUK4Ke6BIARuDPxDIlqXvBngMZfnDEhCrDAd4hB3AzmcWEo57HvaFXjJFlotbdFgELFKin008sEC0VhN';
+        let stripe = Stripe(STRIPE_PK);
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // Payment Link (Simplest for GitHub Pages)
+        function openPaymentLink() {
+            const link = document.getElementById('payment-link').value;
+            const statusEl = document.getElementById('link-status');
+
+            if (!link || !link.includes('stripe.com')) {
+                statusEl.className = 'status error';
+                statusEl.innerHTML = '❌ Bitte gib einen gültigen Stripe Payment Link ein';
+                return;
+            }
+
+            statusEl.className = 'status success';
+            statusEl.innerHTML = '✅ Weiterleitung zu Stripe...';
+
+            setTimeout(() => {
+                window.open(link, '_blank');
+                statusEl.innerHTML = '✅ Stripe Checkout im neuen Tab geöffnet';
+            }, 500);
+        }
+
+        // Stripe Checkout (Benötigt Backend)
+        async function startCheckout() {
+            const pk = document.getElementById('stripe-pk').value;
+            const statusEl = document.getElementById('checkout-status');
+            const btnText = document.getElementById('checkout-text');
+
+            if (!pk || pk === 'pk_test_') {
+                statusEl.className = 'status error';
+                statusEl.innerHTML = '❌ Bitte gib einen gültigen Stripe Publishable Key ein';
+                return;
+            }
+
+            // Auf GitHub Pages wird das nicht funktionieren ohne Backend
+            statusEl.className = 'status error';
+            statusEl.innerHTML = '❌ Diese Funktion benötigt PHP Backend. Benutze "Payment Link" Tab für GitHub Pages.';
+        }
+
+        // Check for success in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            document.getElementById('link-status').className = 'status success';
+            document.getElementById('link-status').innerHTML = '✅ Zahlung erfolgreich abgeschlossen!';
+        }
+    </script>
+</body>
+</html>
