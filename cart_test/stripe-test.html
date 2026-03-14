@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LayerStore - Stripe Test</title>
+    <title>LayerStore - Kasse</title>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
@@ -28,7 +28,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem;
+            padding: 2rem 1rem;
         }
 
         .container {
@@ -50,7 +50,7 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .section {
@@ -64,33 +64,40 @@
         .section h2 {
             font-size: 1.1rem;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            color: var(--accent);
         }
 
-        .test-item {
+        .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem;
             background: var(--bg-primary);
             border-radius: 8px;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .item-info h3 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin-bottom: 0.25rem;
         }
 
         .item-info p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #666;
         }
 
+        .item-details {
+            text-align: right;
+        }
+
+        .item-quantity {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
         .item-price {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--accent);
         }
@@ -105,12 +112,12 @@
         }
 
         .total-label {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
         }
 
         .total-amount {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--accent);
         }
@@ -150,22 +157,6 @@
             transition: all 0.2s;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1a2530;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
         .btn-stripe {
             background: #635BFF;
             color: white;
@@ -177,6 +168,28 @@
 
         .btn-stripe:hover {
             background: #4a45c2;
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+            margin-top: 0.75rem;
+        }
+
+        .btn-secondary:hover {
+            background: #1a2530;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            margin-top: 1rem;
+        }
+
+        .btn-back:hover {
+            background: var(--accent);
+            color: white;
         }
 
         .status {
@@ -215,205 +228,176 @@
             to { transform: rotate(360deg); }
         }
 
-        .code {
-            background: #f4f4f4;
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            overflow-x: auto;
+        .empty-cart {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #666;
         }
 
-        .tabs {
-            display: flex;
-            gap: 0.5rem;
+        .empty-cart svg {
+            width: 64px;
+            height: 64px;
             margin-bottom: 1rem;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 0.75rem;
-            background: #eee;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .tab.active {
-            background: var(--accent);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+            opacity: 0.5;
         }
 
         .test-cards {
-            display: grid;
-            gap: 0.5rem;
-        }
-
-        .test-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 6px;
             font-size: 0.85rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
         }
 
-        .test-card code {
-            font-family: monospace;
+        .test-cards code {
             background: white;
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
+            font-family: monospace;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛒 Stripe Test Checkout</h1>
+        <h1>💳 Kasse</h1>
         <span class="badge">TEST MODE</span>
 
-        <!-- Test Product -->
-        <div class="section">
-            <h2>📦 Testprodukt</h2>
-            <div class="test-item">
-                <div class="item-info">
-                    <h3>3D Gedruckte Dekoration</h3>
-                    <p>Testprodukt für Stripe Integration</p>
-                </div>
-                <div class="item-price">29,90 €</div>
-            </div>
-            <div class="total">
-                <span class="total-label">Gesamt</span>
-                <span class="total-amount">29,90 €</span>
-            </div>
+        <div id="cart-content">
+            <!-- Cart items will be rendered here -->
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('payment-link')">Stripe Payment Link</button>
-            <button class="tab" onclick="showTab('checkout')">Stripe Checkout</button>
-        </div>
-
-        <!-- Stripe Payment Link Tab (Simplest for GitHub Pages) -->
-        <div id="tab-payment-link" class="tab-content active">
+        <div id="payment-section" style="display: none;">
             <div class="section">
-                <h2>🔗 Stripe Payment Link (Empfohlen)</h2>
-                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
-                    Der einfachste Weg für GitHub Pages. Erstelle einen Payment Link im Stripe Dashboard und füge ihn unten ein.
-                </p>
+                <h2>💳 Zahlungsmethode</h2>
 
                 <div class="form-group">
-                    <label>Stripe Payment Link</label>
-                    <input type="text" id="payment-link" placeholder="https://buy.stripe.com/..." value="">
+                    <label>Stripe Payment Link (empfohlen)</label>
+                    <input type="text" id="payment-link" placeholder="https://buy.stripe.com/...">
                 </div>
 
                 <button class="btn-stripe" onclick="openPaymentLink()">
-                    <span id="link-text">⚡ Zur Kasse</span>
+                    <span id="link-text">⚡ Zur Kasse (Stripe)</span>
                 </button>
 
-                <div id="link-status" class="status info">
-                    ℹ️ Erstelle einen Payment Link in Stripe Dashboard und füge ihn oben ein
+                <div class="test-cards">
+                    <strong>🧪 Testkarte:</strong> <code>4242 4242 4242 4242</code> | Ablauf: beliebig | CVC: 123
                 </div>
 
-                <div class="code" style="margin-top: 1rem;">
-                    <strong>So erstellst du einen Payment Link:</strong><br><br>
-                    1. Öffne: <a href="https://dashboard.stripe.com/test/payment-links" target="_blank">dashboard.stripe.com/test/payment-links</a><br>
-                    2. Klicke auf "+ Add a payment link"<br>
-                    3. Produkt und Preis eingeben<br>
-                    4. Link kopieren und hier einfügen
+                <div id="payment-status" class="status info" style="margin-top: 1rem;">
+                    ℹ️ Erstelle einen Payment Link im Stripe Dashboard und füge ihn oben ein
                 </div>
             </div>
-        </div>
-
-        <!-- Stripe Checkout Tab -->
-        <div id="tab-checkout" class="tab-content">
-            <div class="section">
-                <h2>💳 Stripe Checkout (Backend benötigt)</h2>
-                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
-                    ⚠️ Diese Funktion benötigt einen PHP-Server (funktioniert nicht auf GitHub Pages).
-                </p>
-
-                <div class="form-group">
-                    <label>Stripe Publishable Key</label>
-                    <input type="text" id="stripe-pk" placeholder="pk_test_..." value="pk_test_51T58Qz1dTRGWAlnkXRKUK4Ke6BIARuDPxDIlqXvBngMZfnDEhCrDAd4hB3AzmcWEo57HvaFXjJFlotbdFgELFKin008sEC0VhN">
-                </div>
-
-                <button class="btn-stripe" onclick="startCheckout()">
-                    <span id="checkout-text">⚡ Zur Kasse (Stripe Checkout)</span>
-                </button>
-
-                <div id="checkout-status" class="status info">
-                    ℹ️ Diese Funktion benötigt PHP Backend (nicht auf GitHub Pages)
-                </div>
-            </div>
-        </div>
-
-        <!-- Test Cards Info -->
-        <div class="section">
-            <h2>🧪 Testkarten (Stripe Test Mode)</h2>
-            <div class="test-cards">
-                <div class="test-card">
-                    <span>Erfolgreiche Zahlung</span>
-                    <code>4242 4242 4242 4242</code>
-                </div>
-                <div class="test-card">
-                    <span>Zahlung abgelehnt</span>
-                    <code>4000 0000 0000 0002</code>
-                </div>
-                <div class="test-card">
-                    <span>3D Secure erforderlich</span>
-                    <code>4000 0025 0000 3155</code>
-                </div>
-                <div class="test-card">
-                    <span>Ablaufdatum: Beliebig in der Zukunft</span>
-                    <code>MM / YY</code>
-                </div>
-                <div class="test-card">
-                    <span>CVC: Beliebige 3 Ziffern</span>
-                    <code>123</code>
-                </div>
-            </div>
-        </div>
-
-        <!-- Info Box -->
-        <div class="section">
-            <h2>ℹ️ GitHub Pages Info</h2>
-            <p style="font-size: 0.9rem; color: #666;">
-                GitHub Pages unterstützt keine PHP-Dateien. Für vollständige Stripe-Integration:<br><br>
-                <strong>Optionen:</strong><br>
-                1. <strong>Payment Link</strong> (einfach) - Stripe gehosteter Checkout<br>
-                2. <strong>Vercel/Netlify</strong> - Mit Serverless Functions<br>
-                3. <strong>Hybrid</strong> - GitHub Pages + Externer PHP-Server
-            </p>
         </div>
     </div>
 
     <script>
         // Stripe Publishable Key
         const STRIPE_PK = 'pk_test_51T58Qz1dTRGWAlnkXRKUK4Ke6BIARuDPxDIlqXvBngMZfnDEhCrDAd4hB3AzmcWEo57HvaFXjJFlotbdFgELFKin008sEC0VhN';
-        let stripe = Stripe(STRIPE_PK);
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active');
+        // Get cart from sessionStorage or localStorage
+        function getCheckoutItems() {
+            const sessionItems = sessionStorage.getItem('stripe_checkout_items');
+            const sessionTotal = sessionStorage.getItem('stripe_checkout_total');
+
+            // Fallback to localStorage
+            const localCart = localStorage.getItem('layerstore_cart_test') || localStorage.getItem('layerstore_cart');
+
+            let items = [];
+            let total = 0;
+
+            if (sessionItems) {
+                items = JSON.parse(sessionItems);
+                total = parseInt(sessionTotal) / 100; // Convert from cents
+            } else if (localCart) {
+                const cart = JSON.parse(localCart);
+                items = cart.map(item => ({
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                }));
+                total = cart.reduce((sum, item) => {
+                    if (!item.price || item.option === 'individuell') return sum;
+                    const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                    return sum + (priceNum * item.quantity);
+                }, 0);
+            }
+
+            return { items, total };
         }
 
-        // Payment Link (Simplest for GitHub Pages)
+        function formatPrice(priceStr) {
+            // Format price string like "15,00 €" or 15.00
+            if (typeof priceStr === 'string') {
+                return priceStr;
+            }
+            return priceStr.toFixed(2).replace('.', ',') + ' €';
+        }
+
+        function renderCart() {
+            const { items, total } = getCheckoutItems();
+            const cartContent = document.getElementById('cart-content');
+            const paymentSection = document.getElementById('payment-section');
+
+            if (items.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="section empty-cart">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <h3>Warenkorb ist leer</h3>
+                        <p>Füge Produkte hinzu, bevor du zur Kasse gehst.</p>
+                        <button class="btn-back" onclick="window.location.href='/collections/easter/'">
+                            🛍️ Zur Kollektion
+                        </button>
+                    </div>
+                `;
+                paymentSection.style.display = 'none';
+                return;
+            }
+
+            paymentSection.style.display = 'block';
+
+            const itemsHTML = items.map(item => {
+                const priceDisplay = typeof item.price === 'string'
+                    ? item.price
+                    : item.price.toFixed(2).replace('.', ',') + ' €';
+                const itemTotal = (parseFloat(item.price?.toString().replace(',', '.') || 0) * item.quantity);
+
+                return `
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h3>${item.name}</h3>
+                            <p class="item-quantity">Anzahl: ${item.quantity}</p>
+                        </div>
+                        <div class="item-details">
+                            <div class="item-price">${priceDisplay}</div>
+                            ${item.quantity > 1 ? `<p class="item-quantity">${(itemTotal * item.quantity).toFixed(2).replace('.', ',')} €</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            cartContent.innerHTML = `
+                <div class="section">
+                    <h2>📦 Deine Bestellung</h2>
+                    ${itemsHTML}
+                    <div class="total">
+                        <span class="total-label">Gesamt</span>
+                        <span class="total-amount">${total.toFixed(2).replace('.', ',')} €</span>
+                    </div>
+                    <button class="btn-back" onclick="window.location.href='/cart_test/'">
+                        ← Zurück zum Warenkorb
+                    </button>
+                </div>
+            `;
+        }
+
         function openPaymentLink() {
             const link = document.getElementById('payment-link').value;
-            const statusEl = document.getElementById('link-status');
+            const statusEl = document.getElementById('payment-status');
 
             if (!link || !link.includes('stripe.com')) {
                 statusEl.className = 'status error';
@@ -426,33 +410,31 @@
 
             setTimeout(() => {
                 window.open(link, '_blank');
-                statusEl.innerHTML = '✅ Stripe Checkout im neuen Tab geöffnet';
+                statusEl.innerHTML = '✅ Stripe Checkout im neuen Tab geöffnet. Schließe die Zahlung ab.';
             }, 500);
         }
 
-        // Stripe Checkout (Benötigt Backend)
-        async function startCheckout() {
-            const pk = document.getElementById('stripe-pk').value;
-            const statusEl = document.getElementById('checkout-status');
-            const btnText = document.getElementById('checkout-text');
-
-            if (!pk || pk === 'pk_test_') {
-                statusEl.className = 'status error';
-                statusEl.innerHTML = '❌ Bitte gib einen gültigen Stripe Publishable Key ein';
-                return;
-            }
-
-            // Auf GitHub Pages wird das nicht funktionieren ohne Backend
-            statusEl.className = 'status error';
-            statusEl.innerHTML = '❌ Diese Funktion benötigt PHP Backend. Benutze "Payment Link" Tab für GitHub Pages.';
-        }
-
         // Check for success in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('success') === 'true') {
-            document.getElementById('link-status').className = 'status success';
-            document.getElementById('link-status').innerHTML = '✅ Zahlung erfolgreich abgeschlossen!';
+        function checkSuccess() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                document.getElementById('payment-status').className = 'status success';
+                document.getElementById('payment-status').innerHTML = '✅ Zahlung erfolgreich abgeschlossen! Vielen Dank für deine Bestellung.';
+
+                // Clear cart
+                localStorage.removeItem('layerstore_cart');
+                localStorage.removeItem('layerstore_cart_test');
+                sessionStorage.removeItem('stripe_checkout_items');
+                sessionStorage.removeItem('stripe_checkout_total');
+
+                // Update UI
+                setTimeout(renderCart, 1000);
+            }
         }
+
+        // Init
+        renderCart();
+        checkSuccess();
     </script>
 </body>
 </html>

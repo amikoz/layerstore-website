@@ -562,6 +562,18 @@
             color: var(--accent);
         }
 
+        .stripe-checkout-btn {
+            background: #635BFF;
+            border-color: #635BFF;
+            margin-top: 1rem;
+        }
+
+        .stripe-checkout-btn:hover {
+            background: #4a45c2;
+            border-color: #4a45c2;
+            color: white;
+        }
+
         /* Continue Shopping */
         .continue-shopping {
             margin-top: 2rem;
@@ -1023,7 +1035,6 @@
             }
         }
     </style>
-</head>
     <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
@@ -1364,6 +1375,9 @@
                         <div id="promoCodeMessage" class="promo-code-message"></div>
                     </div>
 
+                    <button class="checkout-btn stripe-checkout-btn" onclick="stripeCheckout()">
+                        💳 Jetzt bezahlen (Stripe)
+                    </button>
                     <button class="checkout-btn" onclick="checkout()">Anfrage senden</button>
                 </div>
             `;
@@ -1500,6 +1514,33 @@
                 });
             }
         });
+
+        // Stripe Checkout - redirect to stripe test page with cart items
+        function stripeCheckout() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Ihr Warenkorb ist leer.');
+                return;
+            }
+
+            // Calculate total
+            const total = cart.reduce((sum, item) => {
+                if (!item.price || item.option === 'individuell') return sum;
+                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                return sum + (priceNum * item.quantity);
+            }, 0);
+
+            // Store cart total in sessionStorage for stripe page
+            sessionStorage.setItem('stripe_checkout_total', (total * 100).toString()); // in cents
+            sessionStorage.setItem('stripe_checkout_items', JSON.stringify(cart.map(item => ({
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            }))));
+
+            // Redirect to stripe test page
+            window.location.href = '/cart_test/stripe-test.html';
+        }
 
         // Checkout
         function checkout() {
