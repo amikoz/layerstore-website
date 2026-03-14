@@ -1228,9 +1228,10 @@
             return cart ? JSON.parse(cart) : [];
         }
 
-        // Save cart to localStorage
+        // Save cart to localStorage (both cart and cart_test)
         function saveCart(cart) {
             localStorage.setItem('layerstore_cart', JSON.stringify(cart));
+            localStorage.setItem('layerstore_cart_test', JSON.stringify(cart));
             updateCartCount();
         }
 

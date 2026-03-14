@@ -1877,7 +1877,9 @@
         }
 
         function saveCart(cart) {
+            // Save to both cart and cart_test
             localStorage.setItem('layerstore_cart', JSON.stringify(cart));
+            localStorage.setItem('layerstore_cart_test', JSON.stringify(cart));
             updateCartCount();
         }
 
