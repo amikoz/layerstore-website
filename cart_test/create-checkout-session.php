@@ -10,15 +10,23 @@
 
 header('Content-Type: application/json');
 
-// CORS - allow requests from GitHub Pages and layerstore.eu
+// CORS - allow requests from all origins for IONOS hosting
 $allowedOrigins = [
     'https://layerstore.eu',
     'https://www.layerstore.eu',
     'https://layerstore.com',
     'https://amikoz.github.io',
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://localhost:8000',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000'
 ];
+
+// Allow all for development (remove in production if needed)
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+if ($origin === '*' || in_array($origin, $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . ($origin === '*' ? '*' : $origin));
+}
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowedOrigins)) {

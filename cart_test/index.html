@@ -1519,6 +1519,12 @@
             }
         });
 
+        // ==================== CONFIG ====================
+        // API URL - IONOS Server (oder lokaler Server zum Testen)
+        const STRIPE_API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8000'  // Lokaler PHP Server
+            : 'https://layerstore.eu'; // IONOS Produktion
+
         // Stripe Checkout - direct API call to create-checkout-session.php
         async function stripeCheckout() {
             const cart = getCart();
@@ -1581,8 +1587,11 @@
                 const successUrl = baseUrl + 'index.html?stripe_success=true';
                 const cancelUrl = baseUrl + 'index.html?stripe_canceled=true';
 
-                // Call local API
-                const response = await fetch('/cart_test/create-checkout-session.php', {
+                console.log('🔵 API URL:', STRIPE_API_URL);
+                console.log('🔵 Items:', apiItems);
+
+                // Call IONOS API
+                const response = await fetch(`${STRIPE_API_URL}/cart_test/create-checkout-session.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1594,7 +1603,10 @@
                     })
                 });
 
+                console.log('🔵 Response status:', response.status);
+
                 const result = await response.json();
+                console.log('🔵 Response:', result);
 
                 if (!response.ok || result.error) {
                     throw new Error(result.error || 'API Fehler');
@@ -1608,10 +1620,18 @@
                 }
 
             } catch (error) {
-                console.error('Stripe Checkout error:', error);
+                console.error('❌ Stripe Checkout error:', error);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
-                showToast('Fehler', 'Verbindung fehlgeschlagen. Bitte versuchen Sie es später erneut.', 'error');
+
+                // Show detailed error
+                let errorMsg = 'Verbindung fehlgeschlagen.';
+                if (error.message.includes('fetch')) {
+                    errorMsg += ' API nicht erreichbar unter: ' + STRIPE_API_URL;
+                } else {
+                    errorMsg += ' ' + error.message;
+                }
+                showToast('Fehler', errorMsg, 'error');
             }
         }
 
