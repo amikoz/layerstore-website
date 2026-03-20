@@ -1520,12 +1520,12 @@
         });
 
         // ==================== CONFIG ====================
-        // API URL - IONOS Server (oder lokaler Server zum Testen)
-        const STRIPE_API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:8000'  // Lokaler PHP Server
-            : 'https://layerstore.eu'; // IONOS Produktion
+        // Stripe Payment Link - im Stripe Dashboard erstellen
+        // Format: https://buy.stripe.com/...
+        // Oder: https://checkout.stripe.com/...
+        const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/...'; // TODO: Hier deinen Link einfügen
 
-        // Stripe Checkout - direct API call to create-checkout-session.php
+        // Stripe Checkout - verwendet Payment Link (kein Backend nötig)
         async function stripeCheckout() {
             const cart = getCart();
             if (cart.length === 0) {
@@ -1533,106 +1533,73 @@
                 return;
             }
 
-            // Prepare items for API
-            const apiItems = [];
+            // Calculate total
             let total = 0;
-
             for (const item of cart) {
                 if (!item.price || item.option === 'individuell') continue;
                 const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
                 total += priceNum * item.quantity;
-
-                apiItems.push({
-                    name: item.name,
-                    price: priceNum,
-                    quantity: item.quantity
-                });
             }
 
-            if (apiItems.length === 0) {
+            if (total <= 0) {
                 showToast('Fehler', 'Keine zahlungspflichtigen Artikel im Warenkorb.', 'error');
                 return;
             }
 
-            // Show loading state
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Wird geladen...';
+            // Show info about checkout
+            showToast('Zahlung vorbereiten', 'Sie werden zu Stripe weitergeleitet...', 'info');
 
-            // Add spinner style if not exists
-            if (!document.getElementById('stripe-spinner-style')) {
-                const style = document.createElement('style');
-                style.id = 'stripe-spinner-style';
-                style.textContent = `
-                    .spinner {
-                        display: inline-block;
-                        width: 16px;
-                        height: 16px;
-                        border: 2px solid rgba(255,255,255,0.3);
-                        border-radius: 50%;
-                        border-top-color: white;
-                        animation: spin 0.8s linear infinite;
-                    }
-                    @keyframes spin {
-                        to { transform: rotate(360deg); }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
+            // Speichere Cart für später (nach Redirect)
+            sessionStorage.setItem('stripe_return_cart', JSON.stringify(cart));
+            sessionStorage.setItem('stripe_return_total', total.toFixed(2));
 
-            try {
-                // Get current page URL for redirect
-                const baseUrl = window.location.origin + '/cart_test/';
-                const successUrl = baseUrl + 'index.html?stripe_success=true';
-                const cancelUrl = baseUrl + 'index.html?stripe_canceled=true';
+            // Redirect zu Stripe Payment Link
+            // Hinweis: Der Betrag muss im Dashboard mit dem Link übereinstimmen
+            // Für variable Beträge muss ein Backend verwendet werden
 
-                console.log('🔵 API URL:', STRIPE_API_URL);
-                console.log('🔵 Items:', apiItems);
-
-                // Call IONOS API
-                const response = await fetch(`${STRIPE_API_URL}/cart_test/create-checkout-session.php`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        items: apiItems,
-                        successUrl: successUrl,
-                        cancelUrl: cancelUrl
-                    })
-                });
-
-                console.log('🔵 Response status:', response.status);
-
-                const result = await response.json();
-                console.log('🔵 Response:', result);
-
-                if (!response.ok || result.error) {
-                    throw new Error(result.error || 'API Fehler');
-                }
-
-                if (result.url) {
-                    // Redirect to Stripe Checkout
-                    window.location.href = result.url;
+            setTimeout(() => {
+                if (STRIPE_PAYMENT_LINK.includes('...')) {
+                    // Kein Link konfiguriert - zeige Alternative
+                    showStripeFallback(total);
                 } else {
-                    throw new Error('Keine URL vom API erhalten');
+                    window.location.href = STRIPE_PAYMENT_LINK;
                 }
+            }, 500);
+        }
 
-            } catch (error) {
-                console.error('❌ Stripe Checkout error:', error);
-                btn.disabled = false;
-                btn.innerHTML = originalText;
+        // Fallback: Zeige Info wenn kein Payment Link konfiguriert
+        function showStripeFallback(total) {
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
 
-                // Show detailed error
-                let errorMsg = 'Verbindung fehlgeschlagen.';
-                if (error.message.includes('fetch')) {
-                    errorMsg += ' API nicht erreichbar unter: ' + STRIPE_API_URL;
-                } else {
-                    errorMsg += ' ' + error.message;
-                }
-                showToast('Fehler', errorMsg, 'error');
-            }
+            // Zeige Info im Modal
+            const checkoutForm = document.getElementById('checkoutForm');
+            checkoutForm.innerHTML = `
+                <div style="text-align: center; padding: 1rem;">
+                    <h3 style="color: var(--accent); margin-bottom: 1rem;">💳 Zahlung vorbereiten</h3>
+                    <p style="margin-bottom: 1rem;">Bitte verwenden Sie eine der folgenden Optionen:</p>
+
+                    <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>Zu zahlender Betrag:</strong><br>
+                        <span style="font-size: 1.5rem; color: var(--accent);">${total.toFixed(2)} €</span>
+                    </div>
+
+                    <div style="text-align: left; font-size: 0.9rem; color: #666;">
+                        <p style="margin-bottom: 0.5rem;"><strong>Option 1:</strong> Klicken Sie unten auf "Über WhatsApp bestellen" und wir senden Ihnen einen sicheren Zahlungslink.</p>
+                        <p style="margin-bottom: 0.5rem;"><strong>Option 2:</strong> Überweisen Sie den Betrag direkt (IBAN erhalten Sie per E-Mail).</p>
+                    </div>
+
+                    <button class="btn-email" onclick="resetCheckoutForm()" style="margin-top: 1.5rem;">
+                        Zurück zum Warenkorb
+                    </button>
+                </div>
+            `;
+        }
+
+        // Reset checkout form
+        function resetCheckoutForm() {
+            location.reload();
         }
 
         // Check for Stripe redirect status on page load
