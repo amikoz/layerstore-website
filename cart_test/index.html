@@ -195,6 +195,10 @@
             color: #ef4444;
         }
 
+        .toast.info .toast-title {
+            color: #3b82f6;
+        }
+
         /* Main Content */
         .container {
             max-width: 1200px;
@@ -1515,31 +1519,127 @@
             }
         });
 
-        // Stripe Checkout - redirect to stripe test page with cart items
-        function stripeCheckout() {
+        // Stripe Checkout - direct API call to create-checkout-session.php
+        async function stripeCheckout() {
             const cart = getCart();
             if (cart.length === 0) {
-                alert('Ihr Warenkorb ist leer.');
+                showToast('Fehler', 'Ihr Warenkorb ist leer.', 'error');
                 return;
             }
 
-            // Calculate total
-            const total = cart.reduce((sum, item) => {
-                if (!item.price || item.option === 'individuell') return sum;
+            // Prepare items for API
+            const apiItems = [];
+            let total = 0;
+
+            for (const item of cart) {
+                if (!item.price || item.option === 'individuell') continue;
                 const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
-                return sum + (priceNum * item.quantity);
-            }, 0);
+                total += priceNum * item.quantity;
 
-            // Store cart total in sessionStorage for stripe page
-            sessionStorage.setItem('stripe_checkout_total', (total * 100).toString()); // in cents
-            sessionStorage.setItem('stripe_checkout_items', JSON.stringify(cart.map(item => ({
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity
-            }))));
+                apiItems.push({
+                    name: item.name,
+                    price: priceNum,
+                    quantity: item.quantity
+                });
+            }
 
-            // Redirect to stripe test page
-            window.location.href = '/cart_test/stripe-test.html';
+            if (apiItems.length === 0) {
+                showToast('Fehler', 'Keine zahlungspflichtigen Artikel im Warenkorb.', 'error');
+                return;
+            }
+
+            // Show loading state
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Wird geladen...';
+
+            // Add spinner style if not exists
+            if (!document.getElementById('stripe-spinner-style')) {
+                const style = document.createElement('style');
+                style.id = 'stripe-spinner-style';
+                style.textContent = `
+                    .spinner {
+                        display: inline-block;
+                        width: 16px;
+                        height: 16px;
+                        border: 2px solid rgba(255,255,255,0.3);
+                        border-radius: 50%;
+                        border-top-color: white;
+                        animation: spin 0.8s linear infinite;
+                    }
+                    @keyframes spin {
+                        to { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            try {
+                // Get current page URL for redirect
+                const baseUrl = window.location.origin + '/cart_test/';
+                const successUrl = baseUrl + 'index.html?stripe_success=true';
+                const cancelUrl = baseUrl + 'index.html?stripe_canceled=true';
+
+                // Call local API
+                const response = await fetch('/cart_test/create-checkout-session.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        items: apiItems,
+                        successUrl: successUrl,
+                        cancelUrl: cancelUrl
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || result.error) {
+                    throw new Error(result.error || 'API Fehler');
+                }
+
+                if (result.url) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = result.url;
+                } else {
+                    throw new Error('Keine URL vom API erhalten');
+                }
+
+            } catch (error) {
+                console.error('Stripe Checkout error:', error);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                showToast('Fehler', 'Verbindung fehlgeschlagen. Bitte versuchen Sie es später erneut.', 'error');
+            }
+        }
+
+        // Check for Stripe redirect status on page load
+        function checkStripeStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.get('stripe_success') === 'true') {
+                // Payment successful - clear cart
+                localStorage.removeItem('layerstore_cart');
+                localStorage.removeItem('layerstore_cart_test');
+                setAppliedPromoCode(null);
+                updateCartCount();
+
+                showToast('Zahlung erfolgreich! ✅', 'Vielen Dank für Ihre Bestellung! Sie erhalten eine Bestätigung per E-Mail.', 'success');
+
+                // Clean URL
+                window.history.replaceState({}, document.title, '/cart_test/');
+
+                // Re-render cart (will be empty)
+                setTimeout(renderCart, 1500);
+            }
+
+            if (urlParams.get('stripe_canceled') === 'true') {
+                showToast('Zahlung abgebrochen', 'Sie können es jederzeit erneut versuchen.', 'info');
+                // Clean URL
+                window.history.replaceState({}, document.title, '/cart_test/');
+            }
         }
 
         // Checkout
@@ -1743,6 +1843,7 @@
             loadPromoCodes();
             updateCartCount();
             renderCart();
+            checkStripeStatus();
 
             // Checkout modal event listeners
             const modal = document.getElementById('checkoutModal');
