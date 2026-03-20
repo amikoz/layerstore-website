@@ -3,22 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warenkorb | LayerStore</title>
-    <link rel="preload" href="/ls-logo-beige.svg" as="image">
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>LayerStore - Cart Test</title>
     <style>
         :root {
             --bg-primary: #FAF9F0;
-            --bg-secondary: #F5F3EB;
             --text-primary: #1a1a1a;
-            --text-secondary: #666666;
             --accent: #232F3D;
-            --accent-light: #4A5A6A;
-            --border: #e7e5e4;
-            --danger: #dc2626;
+            --success: #28a745;
+            --error: #dc3545;
         }
 
         * {
@@ -28,1898 +20,635 @@
         }
 
         body {
-            font-family: 'Quicksand', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
             min-height: 100vh;
-        }
-
-        /* Header */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 1.2rem 1.5rem;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            background: #232E3D;
-            z-index: 1000;
+            padding: 2rem;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .logo img {
-            height: 24px;
-            width: auto;
-            padding: 6px 0;
-            transition: transform 0.2s ease;
-        }
-
-        .logo:hover img {
-            transform: scale(1.05);
-        }
-
-        nav {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 0.8rem;
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        nav a:hover {
-            color: white;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 0;
-            height: 1.5px;
-            background: white;
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        /* Cart Icon */
-        .cart-icon {
-            position: relative;
-            cursor: pointer;
-            padding: 0.3rem 0.5rem;
-            transition: transform 0.2s ease;
-        }
-
-        .cart-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: #F0ECDA;
-            transition: fill 0.3s ease;
-        }
-
-        .cart-icon:hover svg {
-            fill: white;
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background: var(--accent);
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 600;
-            min-width: 16px;
-            height: 16px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .cart-count.visible {
-            opacity: 1;
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border-left: 4px solid var(--accent);
-            border-radius: 8px;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            z-index: 3000;
-            transform: translateX(400px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            max-width: 400px;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            border-left-color: #10b981;
-        }
-
-        .toast.error {
-            border-left-color: #ef4444;
-        }
-
-        .toast-title {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 400;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .toast-message {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        .toast.success .toast-title {
-            color: #10b981;
-        }
-
-        .toast.error .toast-title {
-            color: #ef4444;
-        }
-
-        .toast.info .toast-title {
-            color: #3b82f6;
-        }
-
-        /* Main Content */
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 8rem 2rem 4rem;
+            max-width: 600px;
+            width: 100%;
         }
 
         h1 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 400;
-            margin-bottom: 2rem;
-            letter-spacing: -0.02em;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
             color: var(--accent);
         }
 
-        /* Empty Cart */
-        .empty-cart {
-            text-align: center;
-            padding: 6rem 2rem;
+        .badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .section {
             background: white;
             border-radius: 12px;
-            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .empty-cart svg {
-            width: 120px;
-            height: 120px;
-            fill: var(--border);
-            margin-bottom: 2rem;
-        }
-
-        .empty-cart h2 {
-            font-size: 1.8rem;
-            color: var(--text-secondary);
+        .section h2 {
+            font-size: 1.1rem;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .empty-cart p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-info p {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .item-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 2px solid #eee;
+            margin-top: 1rem;
+        }
+
+        .total-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
-            display: inline-block;
-            padding: 1rem 2.5rem;
             background: var(--accent);
             color: white;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            border: 2px solid var(--accent);
-            border-radius: 4px;
         }
 
         .btn-primary:hover {
-            background: transparent;
-            color: var(--accent);
+            background: #1a2530;
+            transform: translateY(-1px);
         }
 
-        /* Cart Items */
-        .cart-items {
-            display: grid;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .cart-item {
-            display: grid;
-            grid-template-columns: 120px 1fr auto;
-            gap: 2rem;
-            padding: 0.5rem 1rem;
-            background: white;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            align-items: center;
-        }
-
-        .cart-item-image {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 8px;
-            background: var(--bg-secondary);
-        }
-
-        .cart-item-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .cart-item-name {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.4rem;
-            color: var(--accent);
-        }
-
-        .cart-item-color {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .cart-item-options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .cart-item-size {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .cart-item-size-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-style: italic;
-            display: block;
-            margin-top: 0.25rem;
-        }
-
-        .cart-item-marble {
-            font-size: 0.85rem;
-            color: #92400e;
-            font-weight: 500;
-        }
-        }
-
-        .cart-item-price {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .cart-item-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 1rem;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .quantity-btn {
-            width: 32px;
-            height: 32px;
-            border: 1px solid var(--border);
-            background: white;
-            color: var(--text-primary);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .quantity-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .quantity-value {
-            width: 50px;
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .remove-btn {
-            padding: 0.5rem 1rem;
-            background: transparent;
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-
-        .remove-btn:hover {
-            background: var(--danger);
+        .btn-stripe {
+            background: #635BFF;
             color: white;
         }
 
-        /* Cart Summary */
-        .cart-summary {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            padding: 0.5rem 1rem;
-            max-width: 400px;
-            margin-left: auto;
+        .btn-stripe:hover {
+            background: #4a45c2;
+            transform: translateY(-1px);
         }
 
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
+        .payment-option {
             margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .summary-row.total {
-            border-top: 2px solid var(--border);
-            padding-top: 1rem;
-            margin-top: 1rem;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .summary-row.discount {
-            color: #22c55e;
-            font-weight: 500;
-        }
-
-        /* Promo Code Section */
-        .promo-code-section {
-            margin: 1.5rem 0;
             padding: 1rem;
-            background: var(--bg-secondary);
+            border: 1px solid #eee;
             border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .promo-code-label {
-            font-size: 0.9rem;
-            font-weight: 500;
+        .payment-option:hover {
+            border-color: #ccc;
+            background: #f9f9f9;
+        }
+
+        .payment-option.selected {
+            border-color: var(--accent);
+            background: #f0f5ff;
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 0.5rem;
-            color: var(--text-primary);
         }
 
-        .promo-code-input-group {
+        .payment-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .payment-logo {
             display: flex;
             gap: 0.5rem;
         }
 
-        .promo-code-input {
+        .payment-logo img {
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .payment-description {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .payment-methods-container {
+            margin-top: 1rem;
+        }
+
+        .payment-link-info {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .qr-code {
+            max-width: 200px;
+            margin-bottom: 0.5rem;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: auto;
+        }
+
+        .qr-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: var(--success);
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: var(--error);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .code {
+            background: #f4f4f4;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .payment-links-list {
+            margin-top: 1rem;
+        }
+
+        .payment-link-item {
+            padding: 1rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-link-item:hover {
+            border-color: #ccc;
+            background: #f9f9f9;
+        }
+
+        .payment-link-info {
+            flex: 1;
+        }
+
+        .payment-link-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-link-price {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .payment-link-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            width: auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab {
             flex: 1;
             padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-        }
-
-        .promo-code-input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .promo-code-input.invalid {
-            border-color: var(--danger);
-        }
-
-        .promo-code-input.valid {
-            border-color: #22c55e;
-        }
-
-        .promo-code-apply-btn {
-            padding: 0.75rem 1.25rem;
-            background: var(--accent);
-            color: white;
+            background: #eee;
             border: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .promo-code-apply-btn:hover {
-            background: var(--accent-light);
-        }
-
-        .promo-code-input-group {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .promo-code-applied {
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 0.75rem;
-            padding: 0.6rem 0.75rem;
-            background: #dcfce7;
-            border: 1px solid #86efac;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-
-        .promo-code-applied.visible {
-            display: flex;
-        }
-
-        .promo-code-applied-text {
-            color: #166534;
-            font-weight: 500;
-        }
-
-        .promo-code-applied-remove {
-            background: none;
-            border: none;
-            color: #166534;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: 600;
-            padding: 0 0.3rem;
-            line-height: 1;
-            transition: color 0.2s ease;
-        }
-
-        .promo-code-applied-remove:hover {
-            color: #dc2626;
-        }
-
-        .promo-code-message {
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-            display: none;
-        }
-
-        .promo-code-message.success {
-            display: block;
-            color: #22c55e;
-            background: #dcfce7;
-        }
-
-        .promo-code-message.error {
-            display: block;
-            color: var(--danger);
-            background: #fecaca;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: white;
-            border: 2px solid var(--accent);
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 2rem;
-        }
-
-        .checkout-btn:hover {
-            background: transparent;
-            color: var(--accent);
-        }
-
-        .stripe-checkout-btn {
-            background: #635BFF;
-            border-color: #635BFF;
-            margin-top: 1rem;
-        }
-
-        .stripe-checkout-btn:hover {
-            background: #4a45c2;
-            border-color: #4a45c2;
-            color: white;
-        }
-
-        /* Continue Shopping */
-        .continue-shopping {
-            margin-top: 2rem;
-        }
-
-        .continue-shopping a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .continue-shopping a:hover {
-            color: var(--accent);
-        }
-
-        /* Checkout Modal */
-        .checkout-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .checkout-modal.active {
-            display: flex;
-        }
-
-        .checkout-modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 0.5rem 1rem;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            position: relative;
-        }
-
-        .checkout-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .checkout-close:hover {
-            background: var(--accent);
-            color: white;
-            transform: rotate(90deg);
-            border-color: var(--accent);
-        }
-
-        .checkout-modal h2 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent);
-        }
-
-        .checkout-modal p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        .tab.active {
+            background: var(--accent);
+            color: white;
         }
 
-        .form-group input.error {
-            border-color: var(--danger);
-        }
-
-        .error-message {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
+        .tab-content {
             display: none;
         }
 
-        .error-message.visible {
+        .tab-content.active {
             display: block;
         }
 
-        .checkout-submit-btn {
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: white;
-            border: 2px solid var(--accent);
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .checkout-submit-btn:hover {
-            background: transparent;
-            color: var(--accent);
-        }
-
-        .checkout-submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .checkout-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .privacy-consent {
-            margin-top: 1.5rem;
-        }
-
-        .privacy-consent label {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            line-height: 1.4;
-        }
-
-        .privacy-consent input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            min-width: 18px;
-            margin-top: 2px;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-
-        .privacy-consent a {
-            color: var(--accent);
-            text-decoration: underline;
-        }
-
-
-        .btn-whatsapp {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .btn-whatsapp:hover {
-            background: #128C7E;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-        }
-
-        .btn-email {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: white;
-            border: 2px solid var(--accent);
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .btn-email:hover {
-            background: transparent;
-            color: var(--accent);
-        }
-
-        .btn-whatsapp:disabled,
-        .btn-email:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .btn-whatsapp:disabled:hover,
-        .btn-email:disabled:hover {
-            background: #25D366;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn-email:disabled:hover {
-            background: white;
-            color: var(--accent);
-            border-color: var(--accent);
-        }
-
-        .btn-call {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background: #22c55e;
-            color: white;
-            border: 2px solid #22c55e;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .checkout-choice-text {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .checkout-choice-text strong {
-            color: var(--accent);
-        }
-
-        /* Footer */
-        footer {
-            padding: 4rem 4rem;
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        .test-cards {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 3rem;
+            gap: 0.5rem;
         }
 
-        .footer-section h4 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-            color: var(--accent);
-        }
-
-        .footer-section p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            font-weight: 300;
-        }
-
-        .footer-section a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: var(--accent);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header {
-                padding: 0.65rem 0.75rem;
-            }
-
-            .logo img {
-                height: 22px;
-                padding: 5px 0;
-            }
-
-            nav {
-                gap: 0.75rem;
-            }
-
-            nav a {
-                font-size: 0.75rem;
-            }
-
-            .container {
-                padding: 2rem 1rem;
-            }
-
-            .cart-item {
-                grid-template-columns: 80px 1fr;
-                gap: 1rem;
-            }
-
-            .cart-item-image {
-                width: 80px;
-                height: 80px;
-                grid-row: span 2;
-            }
-
-            .cart-item-actions {
-                grid-column: span 2;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-            }
-
-            .cart-summary {
-                max-width: 100%;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-
-        /* Cookie Banner */
-        .cookie-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #232E3D;
-            border-top: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            z-index: 9999;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-
-        .cookie-banner.show {
-            display: block;
-        }
-
-        .cookie-content {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .cookie-title {
-            font-size: 1rem;
-            color: white;
-            margin-bottom: 0.75rem;
-        }
-
-        .cookie-text {
-            font-size: 0.85rem;
-            color: #ccc;
-            margin-bottom: 0.5rem;
-            line-height: 1.5;
-        }
-
-        .cookie-note {
-            font-size: 0.8rem;
-            color: #2ecc71;
-            margin-bottom: 1rem;
-        }
-
-        .cookie-btn {
-            padding: 0.7rem 2rem;
-            border: none;
+        .test-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
             border-radius: 6px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--accent);
-            color: white;
+            font-size: 0.85rem;
         }
 
-        .cookie-btn:hover {
-            background: var(--accent-light);
-        }
-
-        @media (max-width: 768px) {
-            .cookie-banner {
-                padding: 1.25rem 1.5rem;
-            }
+        .test-card code {
+            font-family: monospace;
+            background: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
         }
     </style>
-    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <a href="/" class="logo">
-            <img src="/ls-logo-beige.svg" alt="LayerStore Logo" width="60" height="24" loading="eager" decoding="sync" fetchpriority="high">
-        </a>
-        <nav>
-            <a href="/">Startseite</a>
-            <a href="/collections/easter">Kollektion</a>
-            <div class="cart-icon" id="cartIcon" title="Warenkorb">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                </svg>
-                <span class="cart-count" id="cartCount">0</span>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Main Content -->
     <div class="container">
-        <h1>Ihr Warenkorb</h1>
+        <h1>🛒 LayerStore Cart Test</h1>
+        <span class="badge">TEST MODE</span>
 
-        <div id="cartContent">
-            <!-- Cart items will be rendered here -->
-        </div>
-
-        <div class="continue-shopping">
-            <a href="/collections/easter">
-                ← Weiter einkaufen
-            </a>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LayerStore</h4>
-                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
-                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+        <!-- Test Product -->
+        <div class="section">
+            <h2>📦 Testprodukt</h2>
+            <div class="test-item">
+                <div class="item-info">
+                    <h3>3D Gedruckte Dekoration</h3>
+                    <p>Testprodukt für Stripe Integration</p>
+                </div>
+                <div class="item-price">29,90 €</div>
             </div>
-
-            <div class="footer-section">
-                <h4>Entdecken</h4>
-                <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">🐰 Ostern</a>
-                <a href="/cart">Warenkorb</a>
-            </div>
-
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <a href="/datenschutz">🔒 Datenschutz</a>
-                <a href="/impressum">ℹ️ Impressum</a>
-                <a href="/contact">📧 Kontakt</a>
+            <div class="total">
+                <span class="total-label">Gesamt</span>
+                <span class="total-amount">29,90 €</span>
             </div>
         </div>
 
-        <div class="footer-bottom">
-            Mit Präzision gedruckt in Deutschland
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('payment-links')">Payment Links</button>
+            <button class="tab" onclick="showTab('checkout')">Stripe Checkout</button>
         </div>
-    </footer>
 
-    <!-- Checkout Modal -->
-    <div class="checkout-modal" id="checkoutModal">
-        <div class="checkout-modal-content">
-            <button class="checkout-close" id="closeCheckout">×</button>
-            <h2>Anfrage senden</h2>
-            <p>Bitte geben Sie Ihre Kontaktdaten ein. Wir werden uns schnellstmöglich bei Ihnen melden.</p>
+        <!-- Payment Links Tab -->
+        <div id="tab-payment-links" class="tab-content active">
+            <div class="section">
+                <h2>💸 Stripe Payment Links</h2>
+                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                    Schnelle und einfache Zahlungsabwicklung mit vorkonfigurierten Zahlungslinks.
+                </p>
 
-            <div id="checkoutForm">
-                <div class="form-group">
-                    <label for="customerName">Name (optional)</label>
-                    <input
-                        type="text"
-                        id="customerName"
-                        name="name"
-                        placeholder="Ihr Name"
-                    >
+                <!-- Payment Links List -->
+                <div class="payment-links-list">
+                    <div class="payment-link-item">
+                        <div class="payment-link-info">
+                            <div class="payment-link-title">3D Gedruckte Dekoration</div>
+                            <div class="payment-link-price">29,90 € - Einmalzahlung</div>
+                        </div>
+                        <div class="payment-link-actions">
+                            <a href="https://buy.stripe.com/test_example_link" target="_blank" class="btn-stripe btn-sm">
+                                Bezahlen
+                            </a>
+                            <button class="btn-primary btn-sm" onclick="showQrCode('3D Dekoration')">
+                                QR Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="payment-link-item">
+                        <div class="payment-link-info">
+                            <div class="payment-link-title">3D Print Abo</div>
+                            <div class="payment-link-price">19,90 € - Monatliches Abo</div>
+                        </div>
+                        <div class="payment-link-actions">
+                            <a href="https://buy.stripe.com/test_subscription_link" target="_blank" class="btn-stripe btn-sm">
+                                Abonnieren
+                            </a>
+                            <button class="btn-primary btn-sm" onclick="showQrCode('3D Print Abo')">
+                                QR Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="payment-link-item">
+                        <div class="payment-link-info">
+                            <div class="payment-link-title">Spende</div>
+                            <div class="payment-link-price">Beliebiger Betrag</div>
+                        </div>
+                        <div class="payment-link-actions">
+                            <a href="https://buy.stripe.com/test_donation_link" target="_blank" class="btn-stripe btn-sm">
+                                Spenden
+                            </a>
+                            <button class="btn-primary btn-sm" onclick="showQrCode('Spende')">
+                                QR Code
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="checkout-choice-text">
-                    Wählen Sie Ihre bevorzugte Kontaktmöglichkeit:<br>
-                    <strong>Wir melden uns schnellstmöglich bei Ihnen!</strong>
+                <!-- QR Code Display -->
+                <div id="qr-container" class="qr-container" style="display: none;">
+                    <div class="qr-code">
+                        <img id="qr-image" src="" alt="QR Code">
+                    </div>
+                    <div id="qr-label" class="qr-label">
+                        Scanne diesen QR-Code mit deinem Smartphone
+                    </div>
                 </div>
 
-                <div class="privacy-consent">
-                    <label>
-                        <input type="checkbox" id="privacyConsent">
-                        <span>Ich stimme der Verarbeitung meiner Daten gemäß der <a href="/datenschutz" target="_blank">Datenschutzerklärung</a> zu. *</span>
-                    </label>
+                <div id="payment-links-status" class="status info" style="margin-top: 1rem;">
+                    ℹ️ Klicke auf "Bezahlen" um einen Stripe Payment Link zu testen
                 </div>
 
-                <div class="checkout-buttons">
-                    <button class="btn-whatsapp" id="whatsappBtn" disabled>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                        Über WhatsApp bestellen
-                    </button>
-
-                    <button class="btn-email" id="emailBtn" disabled>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                        </svg>
-                        Über E-Mail bestellen
-                    </button>
+                <div class="payment-link-info" style="margin-top: 1rem;">
+                    <strong>Wie funktionieren Payment Links?</strong>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                        Stripe Payment Links ermöglichen es, Zahlungsseiten im Voraus zu erstellen und zu teilen.
+                        Diese Links können auf verschiedene Arten genutzt werden:
+                    </p>
+                    <ul style="font-size: 0.85rem; margin-top: 0.5rem; margin-left: 1.5rem;">
+                        <li>Als direkten Link in E-Mails oder sozialen Medien</li>
+                        <li>Als QR-Code für kontaktlose Zahlungen</li>
+                        <li>Eingebettet als Kaufbutton auf deiner Website</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <div class="toast-title" id="toastTitle"></div>
-        <div class="toast-message" id="toastMessage"></div>
-    </div>
+        <!-- Stripe Checkout Tab -->
+        <div id="tab-checkout" class="tab-content">
+            <div class="section">
+                <h2>💳 Stripe Checkout</h2>
+                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                    Programmgesteuerte Zahlungsabwicklung mit Stripe Checkout.
+                </p>
 
-    <script>
-        // Product data
-        const products = {
-            osterkarotte: {
-                name: 'Osterkarotte',
-                price: '13,00 €',
-                images: ['/collections/easter/images/carrot1.jpeg']
-            },
-            hasenkorb: {
-                name: 'Hasenkorb',
-                price: '13,00 €',
-                images: ['/collections/easter/images/bunnybasketbeige.jpeg']
-            },
-            osterei: {
-                name: 'Osterei mit Beinen',
-                price: '2,00 €',
-                images: ['/collections/easter/images/legseggkinder.jpeg']
-            },
-            gestricktesei: {
-                name: 'Gestricktes Ei',
-                price: '9,00 €',
-                images: ['/collections/easter/images/knittedeggmintgreen.jpeg']
-            },
-            kinderhalter: {
-                name: 'Hasen-Kinderhalter',
-                price: '4,00 €',
-                images: ['/collections/easter/images/bunnykinderholder.jpeg']
-            },
-            hasemmitkorb: {
-                name: 'Hase mit Korb',
-                price: '5,00 €',
-                images: ['/collections/easter/images/bunnywithbasket.jpeg']
-            },
-            kinderrahmen: {
-                name: 'Hasen-Kinderrahmen',
-                price: '2,00 €',
-                images: ['/collections/easter/images/kinderrahmen.jpg']
-            },
-            hasedekochoco: {
-                name: 'Hase Deko 15cm',
-                price: '12,00 €',
-                images: ['/collections/easter/images/fuzzybunnydekochoco1.jpeg']
-            },
-            hasedekowhite: {
-                name: 'Hase Deko 11cm',
-                price: '8,00 €',
-                images: ['/collections/easter/images/fuzzybunnydekowhite.jpeg']
-            },
-            skandibig: {
-                name: 'Osterhase "Skandi Linien" 12,5cm',
-                price: '10,00 €',
-                images: ['/collections/easter/images/OsterhaseSkandiBig.jpeg']
-            },
-            skandismall: {
-                name: 'Osterhase "Skandi Linien" 11cm',
-                price: '8,00 €',
-                images: ['/collections/easter/images/OsterhaseSkandi.jpeg']
-            }
-        };
+                <button class="btn-stripe" onclick="redirectToStripeCheckout()">
+                    <span id="checkout-text">⚡ Zur Kasse mit Stripe Checkout</span>
+                </button>
 
-        const colorNames = {
-            beige: 'Beige',
-            pink: 'Pink',
-            purple: 'Purple',
-            red: 'Red',
-            orange: 'Orange',
-            yellow: 'Yellow',
-            lemonyellow: 'Lemon Yellow',
-            lightgreen: 'Light Green',
-            mintgreen: 'Mint Green',
-            olivegreen: 'Olive Green',
-            skyblue: 'Sky Blue',
-            blue: 'Blue',
-            deeppink: 'Deep Pink',
-            newpink: 'New Pink',
-            standard: 'Standard',
-            custom: 'Custom'
-        };
-
-        // Get cart from localStorage
-        function getCart() {
-            const cart = localStorage.getItem('layerstore_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        // Save cart to localStorage (both cart and cart_test)
-        function saveCart(cart) {
-            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
-            localStorage.setItem('layerstore_cart_test', JSON.stringify(cart));
-            updateCartCount();
-        }
-
-        // Update cart count in header
-        function updateCartCount() {
-            const cart = getCart();
-            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const cartCount = document.getElementById('cartCount');
-            cartCount.textContent = totalCount;
-
-            if (totalCount > 0) {
-                cartCount.classList.add('visible');
-            } else {
-                cartCount.classList.remove('visible');
-            }
-        }
-
-        // Get image path for cart item
-        function getImagePath(item) {
-            if (item.image) {
-                return item.image.startsWith('http') || item.image.startsWith('/')
-                    ? item.image
-                    : `/collections/easter/images/${item.image}`;
-            }
-            const product = products[item.id];
-            if (product && product.images && product.images[0]) {
-                return `/collections/easter/images/${product.images[0]}`;
-            }
-            return '/collections/easter/images/placeholder.jpg';
-        }
-
-        // Render cart
-        function renderCart() {
-            const cart = getCart();
-            const cartContent = document.getElementById('cartContent');
-
-            if (cart.length === 0) {
-                cartContent.innerHTML = `
-                    <div class="empty-cart">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                        </svg>
-                        <h2>Ihr Warenkorb ist leer</h2>
-                        <p>Haben Sie keine Lust mehr? Schauen Sie sich unsere Oster-Kollektion an!</p>
-                        <a href="/collections/easter" class="btn-primary">Zur Kollektion</a>
-                    </div>
-                `;
-                return;
-            }
-
-            let itemsHTML = cart.map((item, index) => {
-                const imagePath = getImagePath(item);
-                const colorText = item.color && item.color !== 'standard' ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
-                const marbleText = item.isMarble ? `<span class="cart-item-marble">✨ Marmor (+20%)</span>` : '';
-                const sizeText = item.option && item.option !== 'as-photo' ? `<span class="cart-item-size">Größe: Nach Absprache</span>` : '';
-                const sizeDescText = item.sizeDescription ? `<span class="cart-item-size-desc">${item.sizeDescription}</span>` : '';
-                const optionsText = (colorText || marbleText || sizeText || sizeDescText) ? `<div class="cart-item-options">${colorText}${marbleText}${sizeText}${sizeDescText}</div>` : '';
-                const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
-
-                return `
-                    <div class="cart-item" data-index="${index}">
-                        <img src="${imagePath}" alt="${item.name}" class="cart-item-image">
-                        <div class="cart-item-details">
-                            <div class="cart-item-name">${item.name}</div>
-                            ${optionsText}
-                            <div class="cart-item-price">${priceText}</div>
-                        </div>
-                        <div class="cart-item-actions">
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">−</button>
-                                <span class="quantity-value">${item.quantity}</span>
-                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
-                            </div>
-                            <button class="remove-btn" onclick="removeItem(${index})">Entfernen</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-            // Calculate total price in EUR
-            const total = cart.reduce((sum, item) => {
-                if (!item.price || item.option === 'individuell') return sum;
-                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
-                return sum + (priceNum * item.quantity);
-            }, 0);
-
-            // Get discount from applied promo code
-            const discount = calculateDiscount();
-            const finalTotal = total - discount;
-
-            const summaryHTML = `
-                <div class="cart-summary">
-                    <div class="summary-row">
-                        <span>Zwischensumme:</span>
-                        <span>${total.toFixed(2)} €</span>
-                    </div>
-                    ${discount > 0 ? `
-                    <div class="summary-row discount">
-                        <span>Rabatt (Promo-Code):</span>
-                        <span>-${discount.toFixed(2)} €</span>
-                    </div>
-                    ` : ''}
-                    <div class="summary-row">
-                        <span>Anzahl Artikel:</span>
-                        <span>${totalItems}</span>
-                    </div>
-                    <div class="summary-row total">
-                        <span>Gesamt:</span>
-                        <span>${finalTotal.toFixed(2)} €</span>
-                    </div>
-
-                    <div class="promo-code-section">
-                        <div class="promo-code-label">Promo-Code eingeben:</div>
-                        <div class="promo-code-input-group">
-                            <input
-                                type="text"
-                                id="promoCodeInput"
-                                class="promo-code-input"
-                                placeholder="Ihr Code"
-                                maxlength="20"
-                            >
-                            <button class="promo-code-apply-btn" id="promoApplyBtn" onclick="applyPromoCode()">Anwenden</button>
-                        </div>
-                        <div id="promoCodeApplied" class="promo-code-applied${getAppliedPromoCode() ? ' visible' : ''}">
-                            <span class="promo-code-applied-text">${getAppliedPromoCode() ? 'Promo-Code: ' + getAppliedPromoCode() : ''}</span>
-                            <button class="promo-code-applied-remove" onclick="removePromoCode()" title="Promo-Code entfernen">×</button>
-                        </div>
-                        <div id="promoCodeMessage" class="promo-code-message"></div>
-                    </div>
-
-                    <button class="checkout-btn stripe-checkout-btn" onclick="stripeCheckout()">
-                        💳 Jetzt bezahlen (Stripe)
-                    </button>
-                    <button class="checkout-btn" onclick="checkout()">Anfrage senden</button>
+                <div id="checkout-status" class="status info">
+                    ℹ️ Klicke auf "Zur Kasse" um Stripe Checkout zu testen
                 </div>
-            `;
 
-            cartContent.innerHTML = `
-                <div class="cart-items">${itemsHTML}</div>
-                ${summaryHTML}
-            `;
-        }
-
-        // Update quantity
-        function updateQuantity(index, change) {
-            const cart = getCart();
-            const item = cart[index];
-
-            item.quantity += change;
-
-            if (item.quantity <= 0) {
-                cart.splice(index, 1);
-            }
-
-            saveCart(cart);
-            renderCart();
-        }
-
-        // Remove item
-        function removeItem(index) {
-            const cart = getCart();
-            cart.splice(index, 1);
-            saveCart(cart);
-            renderCart();
-        }
-
-        // Promo Code Management
-        let PROMO_CODES = {};
-
-        // Load promo codes from localStorage
-        function loadPromoCodes() {
-            const stored = localStorage.getItem('layerstore_promo_codes');
-            if (stored) {
-                try {
-                    PROMO_CODES = JSON.parse(stored);
-                } catch (e) {
-                    // Default fallback
-                    PROMO_CODES = {
-                        'TM26MG': { discount: 0.1, description: 'Troedelmarkt Metro Godorf 01.03.2026' }
-                    };
-                }
-            } else {
-                // Default fallback
-                PROMO_CODES = {
-                    'TM26MG': { discount: 0.1, description: 'Troedelmarkt Metro Godorf 01.03.2026' }
-                };
-            }
-        }
-
-        function getAppliedPromoCode() {
-            return localStorage.getItem('layerstore_promo_code') || null;
-        }
-
-        function setAppliedPromoCode(code) {
-            if (code) {
-                localStorage.setItem('layerstore_promo_code', code);
-            } else {
-                localStorage.removeItem('layerstore_promo_code');
-            }
-        }
-
-        function calculateDiscount() {
-            const promoCode = getAppliedPromoCode();
-            if (!promoCode || !PROMO_CODES[promoCode]) {
-                return 0;
-            }
-
-            const cart = getCart();
-            const total = cart.reduce((sum, item) => {
-                if (!item.price || item.option === 'individuell') return sum;
-                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
-                return sum + (priceNum * item.quantity);
-            }, 0);
-
-            const discountPercent = PROMO_CODES[promoCode].discount;
-            return total * discountPercent;
-        }
-
-        function applyPromoCode() {
-            const input = document.getElementById('promoCodeInput');
-            const messageDiv = document.getElementById('promoCodeMessage');
-            const code = input.value.trim().toUpperCase();
-
-            if (!code) {
-                messageDiv.textContent = 'Bitte geben Sie einen Promo-Code ein.';
-                messageDiv.className = 'promo-code-message error';
-                messageDiv.style.display = 'block';
-                input.classList.add('invalid');
-                return;
-            }
-
-            if (PROMO_CODES[code]) {
-                setAppliedPromoCode(code);
-                input.classList.remove('invalid');
-                input.value = '';
-                messageDiv.style.display = 'none';
-
-                // Re-render cart to update prices and show promo code
-                renderCart();
-            } else {
-                messageDiv.textContent = '✗ Ungültiger Promo-Code';
-                messageDiv.className = 'promo-code-message error';
-                messageDiv.style.display = 'block';
-                input.classList.add('invalid');
-                input.classList.remove('valid');
-                setAppliedPromoCode(null);
-            }
-        }
-
-        function removePromoCode() {
-            // Clear promo code
-            setAppliedPromoCode(null);
-
-            // Re-render cart to update prices and hide promo code
-            renderCart();
-        }
-
-        // Allow Enter key to apply promo code
-        document.addEventListener('DOMContentLoaded', () => {
-            const promoInput = document.getElementById('promoCodeInput');
-            if (promoInput) {
-                promoInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        applyPromoCode();
-                    }
-                });
-            }
-        });
-
-        // ==================== CONFIG ====================
-        // Stripe Payment Link - im Stripe Dashboard erstellen
-        // Format: https://buy.stripe.com/...
-        // Oder: https://checkout.stripe.com/...
-        const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/...'; // TODO: Hier deinen Link einfügen
-
-        // Stripe Checkout - verwendet Payment Link (kein Backend nötig)
-        async function stripeCheckout() {
-            const cart = getCart();
-            if (cart.length === 0) {
-                showToast('Fehler', 'Ihr Warenkorb ist leer.', 'error');
-                return;
-            }
-
-            // Calculate total
-            let total = 0;
-            for (const item of cart) {
-                if (!item.price || item.option === 'individuell') continue;
-                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
-                total += priceNum * item.quantity;
-            }
-
-            if (total <= 0) {
-                showToast('Fehler', 'Keine zahlungspflichtigen Artikel im Warenkorb.', 'error');
-                return;
-            }
-
-            // Show info about checkout
-            showToast('Zahlung vorbereiten', 'Sie werden zu Stripe weitergeleitet...', 'info');
-
-            // Speichere Cart für später (nach Redirect)
-            sessionStorage.setItem('stripe_return_cart', JSON.stringify(cart));
-            sessionStorage.setItem('stripe_return_total', total.toFixed(2));
-
-            // Redirect zu Stripe Payment Link
-            // Hinweis: Der Betrag muss im Dashboard mit dem Link übereinstimmen
-            // Für variable Beträge muss ein Backend verwendet werden
-
-            setTimeout(() => {
-                if (STRIPE_PAYMENT_LINK.includes('...')) {
-                    // Kein Link konfiguriert - zeige Alternative
-                    showStripeFallback(total);
-                } else {
-                    window.location.href = STRIPE_PAYMENT_LINK;
-                }
-            }, 500);
-        }
-
-        // Fallback: Zeige Info wenn kein Payment Link konfiguriert
-        function showStripeFallback(total) {
-            const modal = document.getElementById('checkoutModal');
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            // Zeige Info im Modal
-            const checkoutForm = document.getElementById('checkoutForm');
-            checkoutForm.innerHTML = `
-                <div style="text-align: center; padding: 1rem;">
-                    <h3 style="color: var(--accent); margin-bottom: 1rem;">💳 Zahlung vorbereiten</h3>
-                    <p style="margin-bottom: 1rem;">Bitte verwenden Sie eine der folgenden Optionen:</p>
-
-                    <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                        <strong>Zu zahlender Betrag:</strong><br>
-                        <span style="font-size: 1.5rem; color: var(--accent);">${total.toFixed(2)} €</span>
-                    </div>
-
-                    <div style="text-align: left; font-size: 0.9rem; color: #666;">
-                        <p style="margin-bottom: 0.5rem;"><strong>Option 1:</strong> Klicken Sie unten auf "Über WhatsApp bestellen" und wir senden Ihnen einen sicheren Zahlungslink.</p>
-                        <p style="margin-bottom: 0.5rem;"><strong>Option 2:</strong> Überweisen Sie den Betrag direkt (IBAN erhalten Sie per E-Mail).</p>
-                    </div>
-
-                    <button class="btn-email" onclick="resetCheckoutForm()" style="margin-top: 1.5rem;">
-                        Zurück zum Warenkorb
-                    </button>
+                <div class="payment-link-info" style="margin-top: 1rem;">
+                    <strong>Hinweis:</strong> Diese Funktion erfordert eine serverseitige Integration mit der Stripe API,
+                    um Checkout Sessions zu erstellen. Verwende alternativ Payment Links für eine einfache Integration ohne Backend.
                 </div>
-            `;
-        }
+            </div>
+        </div>
 
-        // Reset checkout form
-        function resetCheckoutForm() {
-            location.reload();
-        }
-
-        // Check for Stripe redirect status on page load
-        function checkStripeStatus() {
-            const urlParams = new URLSearchParams(window.location.search);
-
-            if (urlParams.get('stripe_success') === 'true') {
-                // Payment successful - clear cart
-                localStorage.removeItem('layerstore_cart');
-                localStorage.removeItem('layerstore_cart_test');
-                setAppliedPromoCode(null);
-                updateCartCount();
-
-                showToast('Zahlung erfolgreich! ✅', 'Vielen Dank für Ihre Bestellung! Sie erhalten eine Bestätigung per E-Mail.', 'success');
-
-                // Clean URL
-                window.history.replaceState({}, document.title, '/cart_test/');
-
-                // Re-render cart (will be empty)
-                setTimeout(renderCart, 1500);
-            }
-
-            if (urlParams.get('stripe_canceled') === 'true') {
-                showToast('Zahlung abgebrochen', 'Sie können es jederzeit erneut versuchen.', 'info');
-                // Clean URL
-                window.history.replaceState({}, document.title, '/cart_test/');
-            }
-        }
-
-        // Checkout
-        function checkout() {
-            const cart = getCart();
-            if (cart.length === 0) {
-                alert('Ihr Warenkorb ist leer.');
-                return;
-            }
-
-            // Open checkout modal
-            const modal = document.getElementById('checkoutModal');
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            // Focus on email input
-            setTimeout(() => {
-                document.getElementById('customerEmail').focus();
-            }, 100);
-        }
-
-        // Close checkout modal
-        function closeCheckoutModal() {
-            const modal = document.getElementById('checkoutModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // Show toast notification
-        function showToast(title, message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastTitle = document.getElementById('toastTitle');
-            const toastMessage = document.getElementById('toastMessage');
-
-            toastTitle.textContent = title;
-            toastMessage.textContent = message;
-            toast.className = `toast ${type}`;
-
-            // Show toast
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 100);
-
-            // Hide after 3 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-
-            // Log for debugging
-            console.log(`[${type.toUpperCase()}] ${title}: ${message}`);
-        }
-
-        // Prepare order details
-        function prepareOrderDetails() {
-            const cart = getCart();
-
-            let orderDetails = '=== BESTELLTE ARTIKEL ===\n\n';
-
-            let totalItems = 0;
-            cart.forEach(item => {
-                let itemDetails = `${item.quantity}x ${item.name}`;
-
-                // Add color if not standard
-                if (item.color && item.color !== 'standard') {
-                    const colorName = colorNames[item.color] || item.color;
-                    const marbleNote = item.isMarble ? ' (Marmor +20%)' : '';
-                    itemDetails += `\n   Farbe: ${colorName}${marbleNote}`;
-                }
-
-                // Add size option if not as-photo
-                if (item.option && item.option !== 'as-photo') {
-                    itemDetails += `\n   Größe: Nach Absprache`;
-                }
-
-                // Add size description if provided
-                if (item.sizeDescription) {
-                    itemDetails += `\n   (${item.sizeDescription})`;
-                }
-
-                // Show price as null if size is custom
-                const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
-                itemDetails += ` - ${priceText}`;
-                orderDetails += itemDetails + '\n';
-                totalItems += item.quantity;
-            });
-
-            orderDetails += `\n=== ZUSAMMENFASSUNG ===\n`;
-            orderDetails += `Gesamt: ${totalItems} Artikel\n`;
-
-            // Add promo code info if applied
-            const promoCode = getAppliedPromoCode();
-            if (promoCode && PROMO_CODES[promoCode]) {
-                const discount = calculateDiscount();
-                orderDetails += `Promo-Code: ${promoCode}\n`;
-                orderDetails += `Rabatt: -${discount.toFixed(2)} €\n`;
-            }
-
-            orderDetails += `Datum: ${new Date().toLocaleDateString('de-DE')}\n`;
-            orderDetails += `Zeit: ${new Date().toLocaleTimeString('de-DE')}\n`;
-
-            return orderDetails;
-        }
-
-        // Order via WhatsApp
-        function orderViaWhatsApp() {
-            // Check privacy consent
-            const privacyConsent = document.getElementById('privacyConsent');
-            if (!privacyConsent.checked) {
-                showToast('Fehler', 'Bitte stimmen Sie der Datenschutzerklärung zu.');
-                return;
-            }
-
-            const nameInput = document.getElementById('customerName');
-            const name = nameInput.value.trim();
-
-            const orderDetails = prepareOrderDetails();
-
-            // ============================================================
-            // WhatsApp Nummer hier ändern (Format: 49 + Nummer ohne +0)
-            // Beispiel: 0176 456 789 000 → 4917645678900
-            // ============================================================
-            const whatsappNumber = '4915259821293';
-
-            // Build message
-            let message = '🎨 *Neue Bestellung von LayerStore*\n\n';
-
-            if (name) {
-                message += `👤 *Name:* ${name}\n`;
-            }
-
-            message += '\n' + orderDetails;
-
-            // Encode message for URL
-            const encodedMessage = encodeURIComponent(message);
-
-            // Open WhatsApp
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-            window.open(whatsappUrl, '_blank');
-
-            // Close modal and clear cart
-            closeCheckoutModal();
-            localStorage.removeItem('layerstore_cart');
-            setAppliedPromoCode(null);  // Clear promo code
-            updateCartCount();
-            renderCart();
-            nameInput.value = '';
-
-            // Show success message
-            showToast('WhatsApp geöffnet! 🎉', 'Vielen Dank! Senden Sie die Nachricht einfach ab.', 'success');
-        }
-
-        // Order via Email
-        function orderViaEmail() {
-            // Check privacy consent
-            const privacyConsent = document.getElementById('privacyConsent');
-            if (!privacyConsent.checked) {
-                showToast('Fehler', 'Bitte stimmen Sie der Datenschutzerklärung zu.');
-                return;
-            }
-
-            const nameInput = document.getElementById('customerName');
-            const name = nameInput.value.trim();
-
-            const orderDetails = prepareOrderDetails();
-
-            // Email recipient
-            const recipientEmail = 'info@layerstore.eu';
-
-            // Build email subject and body
-            const subject = encodeURIComponent('Neue Bestellung von LayerStore');
-
-            let emailBody = 'Neue Bestellung von LayerStore\n\n';
-
-            if (name) {
-                emailBody += `Name: ${name}\n`;
-            }
-
-            emailBody += '\n' + orderDetails;
-
-            // Encode body
-            const encodedBody = encodeURIComponent(emailBody);
-
-            // Open email client
-            const mailtoUrl = `mailto:${recipientEmail}?subject=${subject}&body=${encodedBody}`;
-            window.location.href = mailtoUrl;
-
-            // Close modal and clear cart
-            closeCheckoutModal();
-            localStorage.removeItem('layerstore_cart');
-            setAppliedPromoCode(null);  // Clear promo code
-            updateCartCount();
-            renderCart();
-            nameInput.value = '';
-
-            // Show success message
-            showToast('E-Mail geöffnet! ✉️', 'Vielen Dank! Senden Sie die E-Mail einfach ab.', 'success');
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadPromoCodes();
-            updateCartCount();
-            renderCart();
-            checkStripeStatus();
-
-            // Checkout modal event listeners
-            const modal = document.getElementById('checkoutModal');
-            const closeBtn = document.getElementById('closeCheckout');
-            const whatsappBtn = document.getElementById('whatsappBtn');
-            const emailBtn = document.getElementById('emailBtn');
-            const privacyConsent = document.getElementById('privacyConsent');
-
-            // Close modal on X button
-            closeBtn.addEventListener('click', closeCheckoutModal);
-
-            // Close modal on background click
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeCheckoutModal();
-                }
-            });
-
-            // Close modal on Escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('active')) {
-                    closeCheckoutModal();
-                }
-            });
-
-            // WhatsApp button
-            whatsappBtn.addEventListener('click', orderViaWhatsApp);
-
-            // Email button
-            emailBtn.addEventListener('click', orderViaEmail);
-
-            // Privacy consent toggle
-            privacyConsent.addEventListener('change', function() {
-                whatsappBtn.disabled = !this.checked;
-                emailBtn.disabled = !this.checked;
-            });
-        });
-    </script>
-
-    <!-- Cookie Banner -->
-    <div class="cookie-banner" id="cookieBanner">
-        <div class="cookie-content">
-            <p class="cookie-title">
-                <strong>Cookies & LocalStorage</strong>
+        <!-- Payment Links Implementation Guide -->
+        <div class="section">
+            <h2>🔧 Payment Links Implementierung</h2>
+            <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">
+                So erstellst du Stripe Payment Links und integrierst sie in deine Webseite:
             </p>
-            <p class="cookie-text">
-                Wir verwenden nur erforderliche Cookies für den Warenkorb.
+
+            <ol style="font-size: 0.85rem; margin-left: 1.5rem;">
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>Payment Link erstellen:</strong> Im Stripe Dashboard unter
+                    <a href="https://dashboard.stripe.com/payment-links" target="_blank">Payment Links</a> auf "Neu" klicken.
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>Produkt oder Spende konfigurieren:</strong> Entweder ein bestehendes Produkt auswählen, ein neues anlegen oder "Kunden wählt Betrag" auswählen.
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>Link teilen:</strong> Nach der Erstellung kannst du den Link kopieren, einen QR-Code generieren oder einen Kauf-Button für deine Website erstellen.
+                </li>
+            </ol>
+
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                <strong>QR Code generieren:</strong> Wähle einen existierenden Link aus und klicke auf "QR Code".
             </p>
-            <p class="cookie-note">
-                Keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gerät.
+
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                <strong>Button für Website erstellen:</strong> Wähle einen Link aus und klicke auf "Buy Button". Kopiere den Code und füge ihn in deine Website ein.
             </p>
-            <button id="cookieAcceptBtn" class="cookie-btn">OK</button>
+
+            <div class="code" style="margin-top: 0.5rem;">
+&lt;!-- Einfacher Link zu einem Payment Link --&gt;<br>
+&lt;a href="https://buy.stripe.com/test_example_link"&gt;Jetzt kaufen&lt;/a&gt;<br><br>
+
+&lt;!-- Eingebetteter Buy Button --&gt;<br>
+&lt;stripe-buy-button<br>
+  buy-button-id="buy_btn_YOUR_BUTTON_ID"<br>
+  publishable-key="pk_test_123"<br>&gt;<br>
+&lt;/stripe-buy-button&gt;<br><br>
+
+&lt;script async src="https://js.stripe.com/v3/buy-button.js"&gt;&lt;/script&gt;
+            </div>
+        </div>
+
+        <!-- Test Cards Info -->
+        <div class="section">
+            <h2>🧪 Testkarten für Payment Links</h2>
+            <div class="test-cards">
+                <div class="test-card">
+                    <span>Erfolgreiche Zahlung</span>
+                    <code>4242 4242 4242 4242</code>
+                </div>
+                <div class="test-card">
+                    <span>Zahlung abgelehnt</span>
+                    <code>4000 0000 0000 0002</code>
+                </div>
+                <div class="test-card">
+                    <span>3D Secure erforderlich</span>
+                    <code>4000 0025 0000 3155</code>
+                </div>
+                <div class="test-card">
+                    <span>Ablaufdatum: Beliebig in der Zukunft</span>
+                    <code>MM / YY</code>
+                </div>
+                <div class="test-card">
+                    <span>CVC: Beliebige 3 Ziffern</span>
+                    <code>123</code>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Cookie Consent
-        const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
+        // Sample QR codes for demo purposes
+        const qrCodes = {
+            '3D Dekoration': 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://buy.stripe.com/test_example_link',
+            '3D Print Abo': 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://buy.stripe.com/test_subscription_link',
+            'Spende': 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://buy.stripe.com/test_donation_link'
+        };
 
-        function checkCookieConsent() {
-            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted';
+        // Show QR Code
+        function showQrCode(productName) {
+            const qrContainer = document.getElementById('qr-container');
+            const qrImage = document.getElementById('qr-image');
+            const qrLabel = document.getElementById('qr-label');
+            const statusEl = document.getElementById('payment-links-status');
+
+            qrImage.src = qrCodes[productName];
+            qrLabel.textContent = `Scanne diesen QR-Code für: ${productName}`;
+            qrContainer.style.display = 'flex';
+            statusEl.className = 'status success';
+            statusEl.textContent = `✅ QR Code für "${productName}" wird angezeigt`;
         }
 
-        function setCookieConsent() {
-            localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
-            hideCookieBanner();
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
         }
 
-        function hideCookieBanner() {
-            const banner = document.getElementById('cookieBanner');
-            if (banner) {
-                banner.classList.remove('show');
-            }
+        // Redirect to Stripe Checkout
+        function redirectToStripeCheckout() {
+            const statusEl = document.getElementById('checkout-status');
+            const btnText = document.getElementById('checkout-text');
+
+            statusEl.className = 'status info';
+            statusEl.textContent = '⏳ Wird weitergeleitet...';
+            btnText.innerHTML = '<span class="spinner"></span> Laden...';
+
+            // Simulate redirect (in production, this would call your backend)
+            setTimeout(() => {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Backend nicht konfiguriert. Verwende Payment Links für eine einfache Integration.';
+                btnText.textContent = '⚡ Zur Kasse mit Stripe Checkout';
+            }, 1500);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!checkCookieConsent()) {
+        // Track payment link clicks
+        document.querySelectorAll('.payment-link-item a').forEach(link => {
+            link.addEventListener('click', function() {
+                const statusEl = document.getElementById('payment-links-status');
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ Wird zu Stripe weitergeleitet...';
+
+                // Reset after 3 seconds
                 setTimeout(() => {
-                    const banner = document.getElementById('cookieBanner');
-                    if (banner) {
-                        banner.classList.add('show');
-                    }
-                }, 500);
-            }
-
-            const acceptBtn = document.getElementById('cookieAcceptBtn');
-            if (acceptBtn) {
-                acceptBtn.addEventListener('click', setCookieConsent);
-            }
+                    statusEl.className = 'status info';
+                    statusEl.textContent = 'ℹ️ Klicke auf "Bezahlen" um einen Stripe Payment Link zu testen';
+                }, 3000);
+            });
         });
     </script>
 </body>
