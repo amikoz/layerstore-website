@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LayerStore - Kasse</title>
+    <title>LayerStore - Stripe Test</title>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --bg-primary: #FAF9F0;
@@ -27,7 +28,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem 1rem;
+            padding: 2rem;
         }
 
         .container {
@@ -49,7 +50,7 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .section {
@@ -63,40 +64,33 @@
         .section h2 {
             font-size: 1.1rem;
             margin-bottom: 1rem;
-            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .cart-item {
+        .test-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem;
             background: var(--bg-primary);
             border-radius: 8px;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .item-info h3 {
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-bottom: 0.25rem;
         }
 
         .item-info p {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #666;
         }
 
-        .item-details {
-            text-align: right;
-        }
-
-        .item-quantity {
-            font-size: 0.85rem;
-            color: #888;
-        }
-
         .item-price {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--accent);
         }
@@ -111,12 +105,12 @@
         }
 
         .total-label {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
         }
 
         .total-amount {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--accent);
         }
@@ -156,6 +150,22 @@
             transition: all 0.2s;
         }
 
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2530;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-stripe {
             background: #635BFF;
             color: white;
@@ -167,33 +177,6 @@
 
         .btn-stripe:hover {
             background: #4a45c2;
-        }
-
-        .btn-stripe:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: var(--accent);
-            color: white;
-            margin-top: 0.75rem;
-        }
-
-        .btn-secondary:hover {
-            background: #1a2530;
-        }
-
-        .btn-back {
-            background: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            margin-top: 1rem;
-        }
-
-        .btn-back:hover {
-            background: var(--accent);
-            color: white;
         }
 
         .status {
@@ -232,320 +215,383 @@
             to { transform: rotate(360deg); }
         }
 
-        .empty-cart {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #666;
+        .code {
+            background: #f4f4f4;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            overflow-x: auto;
         }
 
-        .empty-cart svg {
-            width: 64px;
-            height: 64px;
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
             margin-bottom: 1rem;
-            opacity: 0.5;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: #eee;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .test-cards {
-            font-size: 0.85rem;
-            color: #666;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .test-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
             background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-
-        .test-cards code {
-            background: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-
-        .api-config {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            border-radius: 6px;
             font-size: 0.85rem;
         }
 
-        .api-config input {
-            width: 100%;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .test-card code {
             font-family: monospace;
+            background: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>💳 Kasse</h1>
+        <h1>🛒 Stripe Test Checkout</h1>
         <span class="badge">TEST MODE</span>
 
-        <div id="cart-content">
-            <!-- Cart items will be rendered here -->
+        <!-- Test Product -->
+        <div class="section">
+            <h2>📦 Testprodukt</h2>
+            <div class="test-item">
+                <div class="item-info">
+                    <h3>3D Gedruckte Dekoration</h3>
+                    <p>Testprodukt für Stripe Integration</p>
+                </div>
+                <div class="item-price">29,90 €</div>
+            </div>
+            <div class="total">
+                <span class="total-label">Gesamt</span>
+                <span class="total-amount">29,90 €</span>
+            </div>
         </div>
 
-        <div id="payment-section" style="display: none;">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('checkout')">Stripe Checkout</button>
+            <button class="tab" onclick="showTab('payment-element')">Payment Element</button>
+        </div>
+
+        <!-- Stripe Checkout Tab -->
+        <div id="tab-checkout" class="tab-content active">
             <div class="section">
-                <h2>💳 Zahlung</h2>
+                <h2>💳 Stripe Checkout (Weiterleitung)</h2>
+                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                    Der Benutzer wird zur gehosteten Stripe-Checkout-Seite weitergeleitet.
+                </p>
 
-                <div class="api-config">
-                    <strong>🔧 API Konfiguration</strong>
-                    <p style="margin-top: 0.5rem; font-size: 0.8rem;">
-                        Gib die URL zu deinem IONOS API ein:
-                    </p>
-                    <input
-                        type="text"
-                        id="api-url"
-                        placeholder="https://layerstore.com/api"
-                        value="https://layerstore.com/api"
-                        onchange="saveApiUrl()"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label>E-Mail (optional)</label>
-                    <input type="email" id="customer-email" placeholder="deine@email.de">
-                </div>
-
-                <button class="btn-stripe" id="checkout-btn" onclick="startCheckout()">
-                    <span id="checkout-text">⚡ Jetzt bezahlen</span>
+                <button class="btn-stripe" onclick="startCheckout()">
+                    <span id="checkout-text">⚡ Zur Kasse (Stripe Checkout)</span>
                 </button>
 
-                <div class="test-cards">
-                    <strong>🧪 Testkarte:</strong> <code>4242 4242 4242 4242</code> | Ablauf: beliebig | CVC: 123
+                <div id="checkout-status" class="status info">
+                    ℹ️ Klicke auf "Zur Kasse" um Stripe Checkout zu testen
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Element Tab -->
+        <div id="tab-payment-element" class="tab-content">
+            <div class="section">
+                <h2>💳 Payment Element (Eingebettet)</h2>
+                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
+                    Das Zahlungsformular wird direkt auf dieser Seite angezeigt.
+                </p>
+
+                <div id="payment-element-container">
+                    <!-- Stripe Payment Element wird hier eingefügt -->
                 </div>
 
-                <div id="payment-status" class="status info" style="margin-top: 1rem;">
-                    ℹ️ Klicke auf "Jetzt bezahlen" um zur Stripe Kasse zu gelangen
+                <button id="submit-payment" class="btn-primary" onclick="submitPayment()" style="margin-top: 1rem;" disabled>
+                    Jetzt bezahlen
+                </button>
+
+                <div id="payment-status" class="status info">
+                    ℹ️ Klicke auf "Jetzt bezahlen" um das Payment Element zu testen
                 </div>
+            </div>
+        </div>
+
+        <!-- Test Cards Info -->
+        <div class="section">
+            <h2>🧪 Testkarten (Stripe Test Mode)</h2>
+            <div class="test-cards">
+                <div class="test-card">
+                    <span>Erfolgreiche Zahlung</span>
+                    <code>4242 4242 4242 4242</code>
+                </div>
+                <div class="test-card">
+                    <span>Zahlung abgelehnt</span>
+                    <code>4000 0000 0000 0002</code>
+                </div>
+                <div class="test-card">
+                    <span>3D Secure erforderlich</span>
+                    <code>4000 0025 0000 3155</code>
+                </div>
+                <div class="test-card">
+                    <span>Ablaufdatum: Beliebig in der Zukunft</span>
+                    <code>MM / YY</code>
+                </div>
+                <div class="test-card">
+                    <span>CVC: Beliebige 3 Ziffern</span>
+                    <code>123</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Server Setup Info -->
+        <div class="section">
+            <h2>🔧 Server Setup</h2>
+            <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Benötigte PHP-Dateien für Stripe Integration:</p>
+            <div class="code">
+create-checkout-session.php:<br><br>
+&lt;?php<br>
+require 'vendor/autoload.php';<br>
+\Stripe\Stripe::setApiKey('sk_test_123');<br><br>
+header('Content-Type: application/json');<br><br>
+try {<br>
+&nbsp;&nbsp;$checkout_session = \Stripe\Checkout\Session::create([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'line_items' => [[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'price_data' => [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'currency' => 'eur',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'product_data' => ['name' => '3D Gedruckte Dekoration'],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'unit_amount' => 2990,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'quantity' => 1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'mode' => 'payment',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'success_url' => 'http://' . $_SERVER['HTTP_HOST'] . '/layerstore website/cart/stripe-test.html?success=true',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'cancel_url' => 'http://' . $_SERVER['HTTP_HOST'] . '/layerstore website/cart/stripe-test.html?canceled=true',<br>
+&nbsp;&nbsp;]);<br><br>
+&nbsp;&nbsp;echo json_encode(['url' => $checkout_session->url]);<br>
+} catch (Exception $e) {<br>
+&nbsp;&nbsp;echo json_encode(['error' => $e->getMessage()]);<br>
+}<br>
+?&gt;
+            </div>
+            <p style="margin: 0.5rem 0; font-size: 0.9rem;">Für Payment Element:</p>
+            <div class="code">
+create-payment-intent.php:<br><br>
+&lt;?php<br>
+require 'vendor/autoload.php';<br>
+\Stripe\Stripe::setApiKey('sk_test_123');<br><br>
+header('Content-Type: application/json');<br><br>
+$jsonStr = file_get_contents('php://input');<br>
+$jsonObj = json_decode($jsonStr);<br><br>
+try {<br>
+&nbsp;&nbsp;$paymentIntent = \Stripe\PaymentIntent::create([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'amount' => $jsonObj->amount,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'currency' => $jsonObj->currency,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'automatic_payment_methods' => ['enabled' => true],<br>
+&nbsp;&nbsp;]);<br><br>
+&nbsp;&nbsp;echo json_encode(['clientSecret' => $paymentIntent->client_secret]);<br>
+} catch (Exception $e) {<br>
+&nbsp;&nbsp;echo json_encode(['error' => $e->getMessage()]);<br>
+}<br>
+?&gt;
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== CONFIG ====================
-        const DEFAULT_API_URL = 'https://layerstore.eu/api';
+        // Initialize Stripe with your publishable key
+        const stripe = Stripe('pk_test_123');
+        let elements;
+        let paymentElement;
 
-        // ==================== STORAGE ====================
-        function getCheckoutItems() {
-            const sessionItems = sessionStorage.getItem('stripe_checkout_items');
-            const localCart = localStorage.getItem('layerstore_cart_test') || localStorage.getItem('layerstore_cart');
-
-            let items = [];
-            let total = 0;
-
-            if (sessionItems) {
-                items = JSON.parse(sessionItems);
-                const sessionTotal = sessionStorage.getItem('stripe_checkout_total');
-                total = parseInt(sessionTotal) / 100;
-            } else if (localCart) {
-                const cart = JSON.parse(localCart);
-                items = cart.map(item => ({
-                    name: item.name,
-                    price: item.price,
-                    quantity: item.quantity
-                }));
-                total = cart.reduce((sum, item) => {
-                    if (!item.price || item.option === 'individuell') return sum;
-                    const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
-                    return sum + (priceNum * item.quantity);
-                }, 0);
+        // Check URL parameters for success/cancel messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const checkoutStatus = document.getElementById('checkout-status');
+            
+            if (urlParams.get('success') === 'true') {
+                checkoutStatus.className = 'status success';
+                checkoutStatus.innerHTML = '✅ Zahlung erfolgreich abgeschlossen!';
+            } else if (urlParams.get('canceled') === 'true') {
+                checkoutStatus.className = 'status error';
+                checkoutStatus.innerHTML = '❌ Zahlung abgebrochen';
             }
+        });
 
-            return { items, total };
-        }
-
-        function saveApiUrl() {
-            const url = document.getElementById('api-url').value;
-            localStorage.setItem('stripe_api_url', url);
-        }
-
-        function getApiUrl() {
-            return localStorage.getItem('stripe_api_url') || DEFAULT_API_URL;
-        }
-
-        // ==================== RENDER ====================
-        function renderCart() {
-            const { items, total } = getCheckoutItems();
-            const cartContent = document.getElementById('cart-content');
-            const paymentSection = document.getElementById('payment-section');
-
-            if (items.length === 0) {
-                cartContent.innerHTML = `
-                    <div class="section empty-cart">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"/>
-                            <circle cx="20" cy="21" r="1"/>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                        </svg>
-                        <h3>Warenkorb ist leer</h3>
-                        <p>Füge Produkte hinzu, bevor du zur Kasse gehst.</p>
-                        <button class="btn-back" onclick="window.location.href='/collections/easter/'">
-                            🛍️ Zur Kollektion
-                        </button>
-                    </div>
-                `;
-                paymentSection.style.display = 'none';
-                return;
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+            
+            // Initialize payment element if switching to that tab
+            if (tabName === 'payment-element') {
+                initPaymentElement();
             }
-
-            paymentSection.style.display = 'block';
-
-            // Set saved API URL
-            document.getElementById('api-url').value = getApiUrl();
-
-            const itemsHTML = items.map(item => {
-                const priceDisplay = typeof item.price === 'string'
-                    ? item.price
-                    : item.price.toFixed(2).replace('.', ',') + ' €';
-
-                return `
-                    <div class="cart-item">
-                        <div class="item-info">
-                            <h3>${item.name}</h3>
-                            <p class="item-quantity">Anzahl: ${item.quantity}</p>
-                        </div>
-                        <div class="item-details">
-                            <div class="item-price">${priceDisplay}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            cartContent.innerHTML = `
-                <div class="section">
-                    <h2>📦 Deine Bestellung</h2>
-                    ${itemsHTML}
-                    <div class="total">
-                        <span class="total-label">Gesamt</span>
-                        <span class="total-amount">${total.toFixed(2).replace('.', ',')} €</span>
-                    </div>
-                    <button class="btn-back" onclick="window.location.href='/cart_test/'">
-                        ← Zurück zum Warenkorb
-                    </button>
-                </div>
-            `;
         }
 
-        // ==================== CHECKOUT ====================
+        // Stripe Checkout (Weiterleitung)
         async function startCheckout() {
-            const { items, total } = getCheckoutItems();
-            const apiUrl = getApiUrl();
-            const statusEl = document.getElementById('payment-status');
+            const statusEl = document.getElementById('checkout-status');
             const btnText = document.getElementById('checkout-text');
-            const btn = document.getElementById('checkout-btn');
-            const customerEmail = document.getElementById('customer-email').value;
-
-            if (items.length === 0) {
-                statusEl.className = 'status error';
-                statusEl.innerHTML = '❌ Warenkorb ist leer';
-                return;
-            }
-
-            // Disable button
-            btn.disabled = true;
-            btnText.innerHTML = '<span class="spinner"></span> Wird geladen...';
-            statusEl.className = 'status info';
-            statusEl.innerHTML = '⏳ Verbindung zur Stripe API...';
 
             try {
-                // Prepare items for API
-                const apiItems = items.map(item => ({
-                    name: item.name,
-                    price: parseFloat(item.price?.toString().replace(',', '.')?.replace('€', '') || 0),
-                    quantity: item.quantity
-                }));
+                btnText.innerHTML = '<span class="spinner"></span> Wird geladen...';
 
-                // Get current URL for redirect
-                const baseUrl = window.location.origin + window.location.pathname;
-
-                // Call IONOS API
-                const response = await fetch(apiUrl + '/create-checkout.php', {
+                const response = await fetch('create-checkout-session.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        items: apiItems,
-                        customerEmail: customerEmail || undefined,
-                        successUrl: baseUrl + '?success=true',
-                        cancelUrl: baseUrl + '?canceled=true'
+                        amount: 2990,
+                        currency: 'eur',
+                        productName: '3D Gedruckte Dekoration'
                     })
                 });
 
-                const result = await response.json();
+                const session = await response.json();
 
-                if (!response.ok || result.error) {
-                    throw new Error(result.error || 'API Error');
+                if (session.error) {
+                    throw new Error(session.error);
                 }
 
-                if (result.url) {
-                    statusEl.className = 'status success';
-                    statusEl.innerHTML = '✅ Weiterleitung zu Stripe Checkout...';
-                    setTimeout(() => {
-                        window.location.href = result.url;
-                    }, 500);
-                } else {
-                    throw new Error('Keine URL vom API erhalten');
-                }
-
+                window.location.href = session.url;
             } catch (error) {
-                console.error('Checkout error:', error);
                 statusEl.className = 'status error';
                 statusEl.innerHTML = '❌ Fehler: ' + error.message;
+                btnText.innerHTML = '⚡ Zur Kasse (Stripe Checkout)';
+            }
+        }
 
-                // Check if it's a CORS error
-                if (error.message.includes('fetch') || error.message.includes('network')) {
-                    statusEl.innerHTML = `
-                        ❌ CORS oder Netzwerk-Fehler.<br>
-                        <small>Stelle sicher, dass das API auf IONOS korrekt installiert ist
-                        und CORS für ${window.location.origin} erlaubt.</small>
-                    `;
+        // Payment Element (Eingebettet)
+        async function initPaymentElement() {
+            const statusEl = document.getElementById('payment-status');
+            const submitBtn = document.getElementById('submit-payment');
+            const container = document.getElementById('payment-element-container');
+            
+            try {
+                statusEl.className = 'status info';
+                statusEl.innerHTML = '<span class="spinner"></span> Payment Element wird geladen...';
+                container.innerHTML = '';
+                
+                // Create Payment Intent on server
+                const response = await fetch('create-payment-intent.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: 2990,
+                        currency: 'eur'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
                 }
-
-                btn.disabled = false;
-                btnText.innerHTML = '⚡ Jetzt bezahlen';
+                
+                // Create Payment Element
+                elements = stripe.elements({
+                    clientSecret: data.clientSecret,
+                    appearance: {
+                        theme: 'stripe',
+                        variables: {
+                            colorPrimary: '#232F3D',
+                        }
+                    }
+                });
+                
+                paymentElement = elements.create('payment');
+                paymentElement.mount('#payment-element-container');
+                
+                // Enable submit button when Payment Element is ready
+                paymentElement.on('ready', () => {
+                    submitBtn.disabled = false;
+                    statusEl.className = 'status info';
+                    statusEl.innerHTML = 'ℹ️ Bitte fülle das Formular aus und klicke auf "Jetzt bezahlen"';
+                });
+                
+                paymentElement.on('change', (event) => {
+                    submitBtn.disabled = event.empty;
+                    if (event.error) {
+                        statusEl.className = 'status error';
+                        statusEl.innerHTML = event.error.message;
+                    }
+                });
+                
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.innerHTML = '❌ Fehler: ' + error.message;
             }
         }
-
-        // ==================== SUCCESS CHECK ====================
-        function checkSuccess() {
-            const urlParams = new URLSearchParams(window.location.search);
-
-            if (urlParams.get('success') === 'true') {
-                document.getElementById('payment-status').className = 'status success';
-                document.getElementById('payment-status').innerHTML = `
-                    ✅ <strong>Zahlung erfolgreich!</strong><br>
-                    Vielen Dank für deine Bestellung.<br>
-                    <small>Du erhältst in Kürze eine Bestätigung per E-Mail.</small>
-                `;
-
-                // Clear cart
-                localStorage.removeItem('layerstore_cart');
-                localStorage.removeItem('layerstore_cart_test');
-                sessionStorage.removeItem('stripe_checkout_items');
-                sessionStorage.removeItem('stripe_checkout_total');
-
-                // Update UI after delay
-                setTimeout(renderCart, 2000);
+        
+        // Submit Payment with Payment Element
+        async function submitPayment() {
+            const statusEl = document.getElementById('payment-status');
+            const submitBtn = document.getElementById('submit-payment');
+            
+            if (!stripe || !elements) {
+                statusEl.className = 'status error';
+                statusEl.innerHTML = '❌ Stripe wurde nicht initialisiert';
+                return;
             }
-
-            if (urlParams.get('canceled') === 'true') {
-                document.getElementById('payment-status').className = 'status info';
-                document.getElementById('payment-status').innerHTML = 'ℹ️ Zahlung abgebrochen. Du kannst es jederzeit erneut versuchen.';
+            
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span> Verarbeitung...';
+            statusEl.className = 'status info';
+            statusEl.innerHTML = 'Zahlung wird verarbeitet...';
+            
+            try {
+                // Confirm payment
+                const result = await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: window.location.href + '?payment=success'
+                    },
+                    redirect: 'if_required'
+                });
+                
+                if (result.error) {
+                    throw result.error;
+                } else {
+                    statusEl.className = 'status success';
+                    statusEl.innerHTML = '✅ Zahlung erfolgreich abgeschlossen!';
+                    submitBtn.innerHTML = 'Bezahlt ✓';
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.innerHTML = '❌ Fehler: ' + error.message;
+                submitBtn.innerHTML = 'Jetzt bezahlen';
+                submitBtn.disabled = false;
             }
         }
-
-        // ==================== INIT ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCart();
-            checkSuccess();
-        });
     </script>
 </body>
 </html>
