@@ -65,8 +65,8 @@ $host = $_SERVER['HTTP_HOST'];
 $baseUrl = $protocol . '://' . $host;
 
 // Default URLs
-$defaultSuccessUrl = $baseUrl . '/cart_test/stripe-test.html?success=true';
-$defaultCancelUrl = $baseUrl . '/cart_test/stripe-test.html?canceled=true';
+$defaultSuccessUrl = $baseUrl . '/cart_test/?session_id={CHECKOUT_SESSION_ID}';
+$defaultCancelUrl = $baseUrl . '/cart_test/?canceled=true';
 
 // ========================================================
 
@@ -79,42 +79,51 @@ if (!$input) {
     exit;
 }
 
-// Check items
-$items = $input['items'] ?? [];
-if (empty($items)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'No items provided']);
-    exit;
-}
-
-// Build line_items for Stripe
-$lineItems = [];
+// Accept line_items directly (Stripe format) or items array
+$lineItems = $input['line_items'] ?? [];
 $totalAmount = 0;
 
-foreach ($items as $item) {
-    $price = floatval($item['price'] ?? 0);
-    $quantity = intval($item['quantity'] ?? 1);
-    $amountInCents = round($price * 100);
+// If line_items is empty, try items array (legacy format)
+if (empty($lineItems)) {
+    $items = $input['items'] ?? [];
+    if (empty($items)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'No items provided']);
+        exit;
+    }
+    // Convert items to line_items format
+    foreach ($items as $item) {
+        $price = floatval($item['price'] ?? 0);
+        $quantity = intval($item['quantity'] ?? 1);
+        $amountInCents = round($price * 100);
 
-    $lineItems[] = [
-        'price_data' => [
-            'currency' => 'eur',
-            'product_data' => [
-                'name' => $item['name'] ?? 'Produkt',
-                'description' => $item['description'] ?? '',
-                'images' => $item['images'] ?? [],
+        $lineItems[] = [
+            'price_data' => [
+                'currency' => 'eur',
+                'product_data' => [
+                    'name' => $item['name'] ?? 'Produkt',
+                    'description' => $item['description'] ?? '',
+                    'images' => $item['images'] ?? [],
+                ],
+                'unit_amount' => $amountInCents,
             ],
-            'unit_amount' => $amountInCents,
-        ],
-        'quantity' => $quantity,
-    ];
+            'quantity' => $quantity,
+        ];
 
-    $totalAmount += $amountInCents * $quantity;
+        $totalAmount += $amountInCents * $quantity;
+    }
+} else {
+    // Calculate total from provided line_items
+    foreach ($lineItems as $item) {
+        $amount = intval($item['price_data']['unit_amount'] ?? 0);
+        $quantity = intval($item['quantity'] ?? 1);
+        $totalAmount += $amount * $quantity;
+    }
 }
 
-// Success/Cancel URLs
-$successUrl = $input['successUrl'] ?? $defaultSuccessUrl;
-$cancelUrl = $input['cancelUrl'] ?? $defaultCancelUrl;
+// Success/Cancel URLs (support both naming conventions)
+$successUrl = $input['success_url'] ?? $input['successUrl'] ?? $defaultSuccessUrl;
+$cancelUrl = $input['cancel_url'] ?? $input['cancelUrl'] ?? $defaultCancelUrl;
 
 // Customer email (optional)
 $customerEmail = $input['customerEmail'] ?? null;
