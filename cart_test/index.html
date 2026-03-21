@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LayerStore - Cart Test</title>
+    <title>LayerStore - Cart</title>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --bg-primary: #FAF9F0;
@@ -11,6 +12,7 @@
             --accent: #232F3D;
             --success: #28a745;
             --error: #dc3545;
+            --stripe-purple: #635BFF;
         }
 
         * {
@@ -27,7 +29,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem;
+            padding: 2rem 1rem;
         }
 
         .container {
@@ -68,7 +70,7 @@
             gap: 0.5rem;
         }
 
-        .test-item {
+        .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -129,110 +131,20 @@
             gap: 0.5rem;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1a2530;
-            transform: translateY(-1px);
-        }
-
         .btn-stripe {
-            background: #635BFF;
+            background: var(--stripe-purple);
             color: white;
         }
 
-        .btn-stripe:hover {
+        .btn-stripe:hover:not(:disabled) {
             background: #4a45c2;
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
         }
 
-        .payment-option {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .payment-option:hover {
-            border-color: #ccc;
-            background: #f9f9f9;
-        }
-
-        .payment-option.selected {
-            border-color: var(--accent);
-            background: #f0f5ff;
-        }
-
-        .payment-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-
-        .payment-title {
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .payment-logo {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .payment-logo img {
-            height: 24px;
-            object-fit: contain;
-        }
-
-        .payment-description {
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .payment-methods-container {
-            margin-top: 1rem;
-        }
-
-        .payment-link-info {
-            background: #f5f5f5;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .qr-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 1rem;
-            background: white;
-            padding: 1rem;
-            border-radius: 8px;
-        }
-
-        .qr-code {
-            max-width: 200px;
-            margin-bottom: 0.5rem;
-        }
-
-        .qr-code img {
-            width: 100%;
-            height: auto;
-        }
-
-        .qr-label {
-            font-size: 0.8rem;
-            color: #666;
-            text-align: center;
+        .btn-stripe:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .status {
@@ -271,79 +183,45 @@
             to { transform: rotate(360deg); }
         }
 
-        .code {
-            background: #f4f4f4;
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            overflow-x: auto;
-        }
-
-        .payment-links-list {
-            margin-top: 1rem;
-        }
-
-        .payment-link-item {
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
             padding: 1rem;
-            border: 1px solid #eee;
             border-radius: 8px;
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            margin: 1rem 0;
         }
 
-        .payment-link-item:hover {
-            border-color: #ccc;
-            background: #f9f9f9;
-        }
-
-        .payment-link-info {
-            flex: 1;
-        }
-
-        .payment-link-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .payment-link-price {
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .payment-link-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            width: auto;
-        }
+        .code-block .keyword { color: #569cd6; }
+        .code-block .string { color: #ce9178; }
+        .code-block .comment { color: #6a9955; }
+        .code-block .function { color: #dcdcaa; }
 
         .tabs {
             display: flex;
             gap: 0.5rem;
             margin-bottom: 1rem;
+            border-bottom: 2px solid #eee;
         }
 
         .tab {
             flex: 1;
             padding: 0.75rem;
-            background: #eee;
+            background: transparent;
             border: none;
-            border-radius: 8px;
+            border-radius: 8px 8px 0 0;
             cursor: pointer;
             font-size: 0.9rem;
+            color: #666;
         }
 
         .tab.active {
-            background: var(--accent);
-            color: white;
+            background: white;
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: -2px;
         }
 
         .tab-content {
@@ -354,302 +232,507 @@
             display: block;
         }
 
-        .test-cards {
-            display: grid;
+        .api-config {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .api-config label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .api-config input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .payment-methods {
+            display: flex;
             gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .payment-method {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-method:hover {
+            border-color: var(--stripe-purple);
+            background: #f0f5ff;
+        }
+
+        .payment-method.selected {
+            border-color: var(--stripe-purple);
+            background: #e8f0fe;
+        }
+
+        .checkout-options {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .checkout-option {
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkout-option:hover {
+            border-color: var(--stripe-purple);
+        }
+
+        .checkout-option.selected {
+            border-color: var(--stripe-purple);
+            background: #f0f5ff;
+        }
+
+        .checkout-option h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .checkout-option p {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .test-cards {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
         }
 
         .test-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 6px;
+            padding: 0.5rem;
             font-size: 0.85rem;
         }
 
         .test-card code {
-            font-family: monospace;
             background: white;
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* Success Page Styles */
+        .success-page {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .success-page h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-details {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: left;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛒 LayerStore Cart Test</h1>
-        <span class="badge">TEST MODE</span>
+        <h1>🛒 LayerStore Cart</h1>
+        <span class="badge">Stripe Checkout Integration</span>
 
-        <!-- Test Product -->
-        <div class="section">
-            <h2>📦 Testprodukt</h2>
-            <div class="test-item">
-                <div class="item-info">
-                    <h3>3D Gedruckte Dekoration</h3>
-                    <p>Testprodukt für Stripe Integration</p>
-                </div>
-                <div class="item-price">29,90 €</div>
+        <!-- Success Page (hidden by default) -->
+        <div id="success-page" class="success-page section" style="display: none;">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
             </div>
-            <div class="total">
-                <span class="total-label">Gesamt</span>
-                <span class="total-amount">29,90 €</span>
-            </div>
+            <h2>Zahlung erfolgreich!</h2>
+            <p>Vielen Dank für Ihre Bestellung.</p>
+            <div class="order-details" id="order-details"></div>
+            <button class="btn-stripe" onclick="continueShopping()">
+                🛍️ Weiter einkaufen
+            </button>
         </div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('payment-links')">Payment Links</button>
-            <button class="tab" onclick="showTab('checkout')">Stripe Checkout</button>
-        </div>
-
-        <!-- Payment Links Tab -->
-        <div id="tab-payment-links" class="tab-content active">
+        <!-- Cart Page -->
+        <div id="cart-page">
+            <!-- Cart Items -->
             <div class="section">
-                <h2>💸 Stripe Payment Links</h2>
-                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
-                    Schnelle und einfache Zahlungsabwicklung mit vorkonfigurierten Zahlungslinks.
-                </p>
+                <h2>📦 Ihr Warenkorb</h2>
+                <div id="cart-items"></div>
+                <div class="total">
+                    <span class="total-label">Gesamt</span>
+                    <span class="total-amount" id="total-amount">0,00 €</span>
+                </div>
+            </div>
 
-                <!-- Payment Links List -->
-                <div class="payment-links-list">
-                    <div class="payment-link-item">
-                        <div class="payment-link-info">
-                            <div class="payment-link-title">3D Gedruckte Dekoration</div>
-                            <div class="payment-link-price">29,90 € - Einmalzahlung</div>
+            <!-- Checkout Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('checkout')">Stripe Checkout</button>
+                <button class="tab" onclick="showTab('backend')">Backend Code</button>
+                <button class="tab" onclick="showTab('test')">Testkarten</button>
+            </div>
+
+            <!-- Stripe Checkout Tab -->
+            <div id="tab-checkout" class="tab-content active">
+                <div class="section">
+                    <h2>💳 Kasse</h2>
+
+                    <!-- API Configuration -->
+                    <div class="api-config">
+                        <label>🔧 Backend API URL</label>
+                        <input
+                            type="text"
+                            id="api-url"
+                            placeholder="https://your-server.com/api/create-checkout-session"
+                            value="https://layerstore.eu/api/create-checkout-session.php"
+                        >
+                        <p style="font-size: 0.8rem; margin-top: 0.5rem; color: #666;">
+                            Dein Server, der die Stripe Checkout Session erstellt
+                        </p>
+                    </div>
+
+                    <!-- Customer Email -->
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">E-Mail (optional)</label>
+                        <input
+                            type="email"
+                            id="customer-email"
+                            placeholder="deine@email.de"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;"
+                        >
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <button class="btn-stripe" id="checkout-btn" onclick="startCheckout()">
+                        <span id="checkout-text">⚡ Jetzt bezahlen mit Stripe</span>
+                    </button>
+
+                    <!-- Payment Methods -->
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            💳 Karte
                         </div>
-                        <div class="payment-link-actions">
-                            <a href="https://buy.stripe.com/test_example_link" target="_blank" class="btn-stripe btn-sm">
-                                Bezahlen
-                            </a>
-                            <button class="btn-primary btn-sm" onclick="showQrCode('3D Dekoration')">
-                                QR Code
-                            </button>
+                        <div class="payment-method">
+                            🏦 Sofort
+                        </div>
+                        <div class="payment-method">
+                            🅿️ PayPal
+                        </div>
+                        <div class="payment-method">
+                            🇪🇺 SEPA
                         </div>
                     </div>
 
-                    <div class="payment-link-item">
-                        <div class="payment-link-info">
-                            <div class="payment-link-title">3D Print Abo</div>
-                            <div class="payment-link-price">19,90 € - Monatliches Abo</div>
-                        </div>
-                        <div class="payment-link-actions">
-                            <a href="https://buy.stripe.com/test_subscription_link" target="_blank" class="btn-stripe btn-sm">
-                                Abonnieren
-                            </a>
-                            <button class="btn-primary btn-sm" onclick="showQrCode('3D Print Abo')">
-                                QR Code
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="payment-link-item">
-                        <div class="payment-link-info">
-                            <div class="payment-link-title">Spende</div>
-                            <div class="payment-link-price">Beliebiger Betrag</div>
-                        </div>
-                        <div class="payment-link-actions">
-                            <a href="https://buy.stripe.com/test_donation_link" target="_blank" class="btn-stripe btn-sm">
-                                Spenden
-                            </a>
-                            <button class="btn-primary btn-sm" onclick="showQrCode('Spende')">
-                                QR Code
-                            </button>
-                        </div>
+                    <!-- Status -->
+                    <div id="checkout-status" class="status info">
+                        ℹ️ Klicke auf "Jetzt bezahlen" um zur Stripe Kasse zu gelangen
                     </div>
                 </div>
+            </div>
 
-                <!-- QR Code Display -->
-                <div id="qr-container" class="qr-container" style="display: none;">
-                    <div class="qr-code">
-                        <img id="qr-image" src="" alt="QR Code">
-                    </div>
-                    <div id="qr-label" class="qr-label">
-                        Scanne diesen QR-Code mit deinem Smartphone
-                    </div>
-                </div>
-
-                <div id="payment-links-status" class="status info" style="margin-top: 1rem;">
-                    ℹ️ Klicke auf "Bezahlen" um einen Stripe Payment Link zu testen
-                </div>
-
-                <div class="payment-link-info" style="margin-top: 1rem;">
-                    <strong>Wie funktionieren Payment Links?</strong>
-                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
-                        Stripe Payment Links ermöglichen es, Zahlungsseiten im Voraus zu erstellen und zu teilen.
-                        Diese Links können auf verschiedene Arten genutzt werden:
+            <!-- Backend Code Tab -->
+            <div id="tab-backend" class="tab-content">
+                <div class="section">
+                    <h2>🔧 Backend Implementierung</h2>
+                    <p style="margin-bottom: 1rem; color: #666;">
+                        Dein Server muss eine Checkout Session erstellen. Hier ist der benötigte PHP-Code:
                     </p>
-                    <ul style="font-size: 0.85rem; margin-top: 0.5rem; margin-left: 1.5rem;">
-                        <li>Als direkten Link in E-Mails oder sozialen Medien</li>
-                        <li>Als QR-Code für kontaktlose Zahlungen</li>
-                        <li>Eingebettet als Kaufbutton auf deiner Website</li>
-                    </ul>
+
+                    <div class="code-block"><span class="keyword">&lt;?php</span>
+<span class="comment">// create-checkout-session.php</span>
+
+<span class="keyword">require_once</span> <span class="string">'vendor/autoload.php'</span>;
+
+<span class="comment">// Stripe Secret Key</span>
+<span class="variable">$stripe</span> = <span class="keyword">new</span> \Stripe\StripeClient(<span class="string">'sk_test_...'</span>);
+
+<span class="comment">// Empfangene Daten</span>
+<span class="variable">$input</span> = json_decode(file_get_contents(<span class="string">'php://input'</span>), <span class="keyword">true</span>);
+
+<span class="comment">// Checkout Session erstellen</span>
+<span class="variable">$session</span> = <span class="variable">$stripe</span>->checkout->sessions->create([
+    <span class="string">'line_items'</span> => <span class="variable">$input</span>[<span class="string">'line_items'</span>],
+    <span class="string">'mode'</span> => <span class="string">'payment'</span>,
+    <span class="string">'success_url'</span> => <span class="variable">$input</span>[<span class="string">'success_url'</span>],
+    <span class="string">'cancel_url'</span> => <span class="variable">$input</span>[<span class="string">'cancel_url'</span>],
+    <span class="string">'customer_email'</span> => <span class="variable">$input</span>[<span class="string">'customer_email'</span>] ?? <span class="keyword">null</span>,
+    <span class="string">'locale'</span> => <span class="string">'de'</span>,
+]);
+
+<span class="keyword">echo</span> json_encode([<span class="string">'url'</span> => <span class="variable">$session</span>->url]);
+</div>
+
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 1rem;">
+                        <strong>Installation:</strong><br>
+                        <code>composer require stripe/stripe-php</code>
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <!-- Stripe Checkout Tab -->
-        <div id="tab-checkout" class="tab-content">
-            <div class="section">
-                <h2>💳 Stripe Checkout</h2>
-                <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">
-                    Programmgesteuerte Zahlungsabwicklung mit Stripe Checkout.
-                </p>
-
-                <button class="btn-stripe" onclick="redirectToStripeCheckout()">
-                    <span id="checkout-text">⚡ Zur Kasse mit Stripe Checkout</span>
-                </button>
-
-                <div id="checkout-status" class="status info">
-                    ℹ️ Klicke auf "Zur Kasse" um Stripe Checkout zu testen
-                </div>
-
-                <div class="payment-link-info" style="margin-top: 1rem;">
-                    <strong>Hinweis:</strong> Diese Funktion erfordert eine serverseitige Integration mit der Stripe API,
-                    um Checkout Sessions zu erstellen. Verwende alternativ Payment Links für eine einfache Integration ohne Backend.
-                </div>
-            </div>
-        </div>
-
-        <!-- Payment Links Implementation Guide -->
-        <div class="section">
-            <h2>🔧 Payment Links Implementierung</h2>
-            <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">
-                So erstellst du Stripe Payment Links und integrierst sie in deine Webseite:
-            </p>
-
-            <ol style="font-size: 0.85rem; margin-left: 1.5rem;">
-                <li style="margin-bottom: 0.5rem;">
-                    <strong>Payment Link erstellen:</strong> Im Stripe Dashboard unter
-                    <a href="https://dashboard.stripe.com/payment-links" target="_blank">Payment Links</a> auf "Neu" klicken.
-                </li>
-                <li style="margin-bottom: 0.5rem;">
-                    <strong>Produkt oder Spende konfigurieren:</strong> Entweder ein bestehendes Produkt auswählen, ein neues anlegen oder "Kunden wählt Betrag" auswählen.
-                </li>
-                <li style="margin-bottom: 0.5rem;">
-                    <strong>Link teilen:</strong> Nach der Erstellung kannst du den Link kopieren, einen QR-Code generieren oder einen Kauf-Button für deine Website erstellen.
-                </li>
-            </ol>
-
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
-                <strong>QR Code generieren:</strong> Wähle einen existierenden Link aus und klicke auf "QR Code".
-            </p>
-
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
-                <strong>Button für Website erstellen:</strong> Wähle einen Link aus und klicke auf "Buy Button". Kopiere den Code und füge ihn in deine Website ein.
-            </p>
-
-            <div class="code" style="margin-top: 0.5rem;">
-&lt;!-- Einfacher Link zu einem Payment Link --&gt;<br>
-&lt;a href="https://buy.stripe.com/test_example_link"&gt;Jetzt kaufen&lt;/a&gt;<br><br>
-
-&lt;!-- Eingebetteter Buy Button --&gt;<br>
-&lt;stripe-buy-button<br>
-  buy-button-id="buy_btn_YOUR_BUTTON_ID"<br>
-  publishable-key="pk_test_123"<br>&gt;<br>
-&lt;/stripe-buy-button&gt;<br><br>
-
-&lt;script async src="https://js.stripe.com/v3/buy-button.js"&gt;&lt;/script&gt;
-            </div>
-        </div>
-
-        <!-- Test Cards Info -->
-        <div class="section">
-            <h2>🧪 Testkarten für Payment Links</h2>
-            <div class="test-cards">
-                <div class="test-card">
-                    <span>Erfolgreiche Zahlung</span>
-                    <code>4242 4242 4242 4242</code>
-                </div>
-                <div class="test-card">
-                    <span>Zahlung abgelehnt</span>
-                    <code>4000 0000 0000 0002</code>
-                </div>
-                <div class="test-card">
-                    <span>3D Secure erforderlich</span>
-                    <code>4000 0025 0000 3155</code>
-                </div>
-                <div class="test-card">
-                    <span>Ablaufdatum: Beliebig in der Zukunft</span>
-                    <code>MM / YY</code>
-                </div>
-                <div class="test-card">
-                    <span>CVC: Beliebige 3 Ziffern</span>
-                    <code>123</code>
+            <!-- Test Cards Tab -->
+            <div id="tab-test" class="tab-content">
+                <div class="section">
+                    <h2>🧪 Testkarten</h2>
+                    <div class="test-cards">
+                        <div class="test-card">
+                            <span>✅ Erfolgreiche Zahlung</span>
+                            <code>4242 4242 4242 4242</code>
+                        </div>
+                        <div class="test-card">
+                            <span>❌ Karte abgelehnt</span>
+                            <code>4000 0000 0000 0002</code>
+                        </div>
+                        <div class="test-card">
+                            <span>🔐 3D Secure erforderlich</span>
+                            <code>4000 0025 0000 3155</code>
+                        </div>
+                        <div class="test-card">
+                            <span>⏳ Ausstehend (Verzögerung)</span>
+                            <code>4000 0000 0000 0077</code>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 1rem;">
+                        <strong>Ablaufdatum:</strong> Beliebig in der Zukunft<br>
+                        <strong>CVC:</strong> Beliebige 3 Ziffern
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Sample QR codes for demo purposes
-        const qrCodes = {
-            '3D Dekoration': 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://buy.stripe.com/test_example_link',
-            '3D Print Abo': 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://buy.stripe.com/test_subscription_link',
-            'Spende': 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://buy.stripe.com/test_donation_link'
-        };
+        // ==================== SAMPLE CART DATA ====================
+        const sampleCart = [
+            {
+                name: '3D Gedruckte Dekoration',
+                description: 'Handgefertigter 3D-Druck',
+                price: 29.90,
+                quantity: 1
+            },
+            {
+                name: 'Osterhase Skandi',
+                description: 'Deko-Hase 12cm',
+                price: 10.00,
+                quantity: 2
+            }
+        ];
 
-        // Show QR Code
-        function showQrCode(productName) {
-            const qrContainer = document.getElementById('qr-container');
-            const qrImage = document.getElementById('qr-image');
-            const qrLabel = document.getElementById('qr-label');
-            const statusEl = document.getElementById('payment-links-status');
+        // ==================== CONFIG ====================
+        let API_URL = localStorage.getItem('stripe_api_url') || 'https://layerstore.eu/api/create-checkout-session.php';
 
-            qrImage.src = qrCodes[productName];
-            qrLabel.textContent = `Scanne diesen QR-Code für: ${productName}`;
-            qrContainer.style.display = 'flex';
-            statusEl.className = 'status success';
-            statusEl.textContent = `✅ QR Code für "${productName}" wird angezeigt`;
-        }
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCart();
+            checkPaymentStatus();
 
-        // Tab switching
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+            // Load saved API URL
+            document.getElementById('api-url').value = API_URL;
 
-            // Show selected tab
-            document.getElementById('tab-' + tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Redirect to Stripe Checkout
-        function redirectToStripeCheckout() {
-            const statusEl = document.getElementById('checkout-status');
-            const btnText = document.getElementById('checkout-text');
-
-            statusEl.className = 'status info';
-            statusEl.textContent = '⏳ Wird weitergeleitet...';
-            btnText.innerHTML = '<span class="spinner"></span> Laden...';
-
-            // Simulate redirect (in production, this would call your backend)
-            setTimeout(() => {
-                statusEl.className = 'status error';
-                statusEl.textContent = '❌ Backend nicht konfiguriert. Verwende Payment Links für eine einfache Integration.';
-                btnText.textContent = '⚡ Zur Kasse mit Stripe Checkout';
-            }, 1500);
-        }
-
-        // Track payment link clicks
-        document.querySelectorAll('.payment-link-item a').forEach(link => {
-            link.addEventListener('click', function() {
-                const statusEl = document.getElementById('payment-links-status');
-                statusEl.className = 'status success';
-                statusEl.textContent = '✅ Wird zu Stripe weitergeleitet...';
-
-                // Reset after 3 seconds
-                setTimeout(() => {
-                    statusEl.className = 'status info';
-                    statusEl.textContent = 'ℹ️ Klicke auf "Bezahlen" um einen Stripe Payment Link zu testen';
-                }, 3000);
+            // Save API URL on change
+            document.getElementById('api-url').addEventListener('change', (e) => {
+                API_URL = e.target.value;
+                localStorage.setItem('stripe_api_url', API_URL);
             });
         });
+
+        // ==================== RENDER CART ====================
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('total-amount');
+
+            let total = 0;
+
+            container.innerHTML = sampleCart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                return `
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h3>${item.name}</h3>
+                            <p>${item.description}</p>
+                        </div>
+                        <div class="item-price">${item.price.toFixed(2).replace('.', ',')} € × ${item.quantity}</div>
+                    </div>
+                `;
+            }).join('');
+
+            totalEl.textContent = total.toFixed(2).replace('.', ',') + ' €';
+        }
+
+        // ==================== TABS ====================
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // ==================== CHECKOUT ====================
+        async function startCheckout() {
+            const btn = document.getElementById('checkout-btn');
+            const btnText = document.getElementById('checkout-text');
+            const statusEl = document.getElementById('checkout-status');
+            const email = document.getElementById('customer-email').value;
+
+            // Disable button
+            btn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> Wird geladen...';
+            statusEl.className = 'status info';
+            statusEl.textContent = '⏳ Verbindung zum Server...';
+
+            // Prepare line items for Stripe
+            const lineItems = sampleCart.map(item => ({
+                price_data: {
+                    currency: 'eur',
+                    product_data: {
+                        name: item.name,
+                        description: item.description
+                    },
+                    unit_amount: Math.round(item.price * 100) // in cents
+                },
+                quantity: item.quantity
+            }));
+
+            // Get URLs
+            const baseUrl = window.location.origin + window.location.pathname;
+            const successUrl = baseUrl + '?session_id={CHECKOUT_SESSION_ID}';
+            const cancelUrl = baseUrl + '?canceled=true';
+
+            try {
+                console.log('🔵 API URL:', API_URL);
+                console.log('🔵 Line Items:', lineItems);
+
+                // Call backend API
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        line_items: lineItems,
+                        mode: 'payment',
+                        success_url: successUrl,
+                        cancel_url: cancelUrl,
+                        customer_email: email || null
+                    })
+                });
+
+                const data = await response.json();
+                console.log('🔵 Response:', data);
+
+                if (!response.ok || data.error) {
+                    throw new Error(data.error || 'API Fehler');
+                }
+
+                if (data.url) {
+                    // Redirect to Stripe Checkout
+                    statusEl.className = 'status success';
+                    statusEl.textContent = '✅ Weiterleitung zu Stripe...';
+                    window.location.href = data.url;
+                } else {
+                    throw new Error('Keine URL erhalten');
+                }
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                btn.disabled = false;
+                btnText.innerHTML = '⚡ Jetzt bezahlen mit Stripe';
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ ' + error.message;
+
+                if (error.message.includes('fetch')) {
+                    statusEl.innerHTML = '❌ Server nicht erreichbar. <br><small>Prüfe die API URL oder stelle sicher, dass der Backend-Code installiert ist.</small>';
+                }
+            }
+        }
+
+        // ==================== CHECK PAYMENT STATUS ====================
+        async function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            const canceled = urlParams.get('canceled');
+
+            if (canceled === 'true') {
+                document.getElementById('checkout-status').className = 'status info';
+                document.getElementById('checkout-status').textContent = 'ℹ️ Zahlung abgebrochen. Versuchen Sie es erneut.';
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                return;
+            }
+
+            if (sessionId) {
+                // Show success page
+                document.getElementById('cart-page').style.display = 'none';
+                document.getElementById('success-page').style.display = 'block';
+
+                // Fetch session details
+                try {
+                    const response = await fetch(`/api/get-session.php?session_id=${sessionId}`);
+                    const session = await response.json();
+
+                    document.getElementById('order-details').innerHTML = `
+                        <strong>Bestellnummer:</strong> ${sessionId}<br>
+                        <strong>Betrag:</strong> ${(session.amount_total / 100).toFixed(2).replace('.', ',')} €<br>
+                        <strong>E-Mail:</strong> ${session.customer_details?.email || 'N/A'}<br>
+                        <strong>Zahlungsstatus:</strong> ${session.payment_status === 'paid' ? '✅ Bezahlt' : session.payment_status}
+                    `;
+                } catch (e) {
+                    document.getElementById('order-details').innerHTML = `
+                        <strong>Session ID:</strong> ${sessionId}<br>
+                        <strong>Bestellung erfolgreich!</strong>
+                    `;
+                }
+
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        // ==================== CONTINUE SHOPPING ====================
+        function continueShopping() {
+            document.getElementById('success-page').style.display = 'none';
+            document.getElementById('cart-page').style.display = 'block';
+        }
     </script>
 </body>
 </html>
