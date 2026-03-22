@@ -1027,40 +1027,62 @@
             margin-top: 0.25rem;
         }
 
-        /* Abitur special options */
-        .abitur-options {
+        /* Abitur dual color selection */
+        .abitur-dual-color {
             display: none;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .abitur-options.visible {
-            display: grid;
-        }
-
-        .abitur-option-btn {
-            padding: 0.75rem 1rem;
-            background: white;
-            border: 2px solid var(--border);
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
             border-radius: 8px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.9rem;
+        }
+
+        .abitur-dual-color.visible {
+            display: flex;
+        }
+
+        .abitur-color-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .abitur-label {
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-primary);
+        }
+
+        .abitur-color-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .abitur-color-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            overflow: hidden;
         }
 
-        .abitur-option-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+        .abitur-color-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .abitur-option-btn.selected {
+        .abitur-color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .abitur-color-btn.selected {
             border-color: var(--accent);
-            background: var(--accent);
-            color: white;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--accent);
         }
 
         .customize-option-btn:hover {
@@ -1435,10 +1457,16 @@
                         Individuell
                     </button>
                 </div>
-                <!-- Abitur special options -->
-                <div class="abitur-options" id="abiturOptions" style="display: none;">
-                    <button class="abitur-option-btn" onclick="selectAbiturOption('2026', this)">2026</button>
-                    <button class="abitur-option-btn" onclick="selectAbiturOption('abitur', this)">Abitur</button>
+                <!-- Abitur dual color selection -->
+                <div class="abitur-dual-color" id="abiturDualColor" style="display: none;">
+                    <div class="abitur-color-section">
+                        <span class="abitur-label">Farbe für 2026:</span>
+                        <div class="abitur-color-row" id="abitur2026Colors"></div>
+                    </div>
+                    <div class="abitur-color-section">
+                        <span class="abitur-label">Farbe für Abitur:</span>
+                        <div class="abitur-color-row" id="abiturAbiturColors"></div>
+                    </div>
                 </div>
                 <div class="color-options-grid" id="colorGrid">
                 </div>
@@ -1837,7 +1865,8 @@
         let currentCustomizeProductId = null;
         let selectedSizeOption = null; // Track size selection: 'as-photo' or 'custom'
         let selectedColorOption = null; // Track if color option has been selected
-        let selectedAbiturOption = null; // Track Abitur special option
+        let selectedAbitur2026Color = null; // Track color for "2026" in Abitur product
+        let selectedAbiturAbiturColor = null; // Track color for "Abitur" in Abitur product
 
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
@@ -1897,18 +1926,14 @@
             const productsWithAbiturOptions = ['abitur'];
 
             if (productsWithAbiturOptions.includes(productId)) {
-                // Abitur: show size options + special Abitur options
+                // Abitur: show size options + standard color options
                 document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('sizeOptions').style.display = 'flex';
 
-                // Hide standard color options
-                document.getElementById('colorSubtitle').style.display = 'none';
-                document.getElementById('colorOptions').style.display = 'none';
+                // Show standard color section (will load dual colors when Individuell is clicked)
+                document.getElementById('colorSubtitle').style.display = 'block';
+                document.getElementById('colorOptions').style.display = 'flex';
                 document.getElementById('colorGrid').style.display = 'none';
-
-                // Show Abitur special options
-                document.getElementById('abiturOptions').style.display = 'grid';
-                document.getElementById('abiturOptions').classList.add('visible');
             } else if (productsWithOnlyColor.includes(productId)) {
                 // Hide size options for products that only have color selection
                 document.getElementById('sizeSubtitle').style.display = 'none';
@@ -1940,19 +1965,21 @@
                 document.getElementById('colorOptions').style.display = 'flex';
             }
 
-            // Hide color grid initially
+            // Hide color grid and Abitur dual color initially
             document.getElementById('colorGrid').classList.remove('visible');
             document.getElementById('colorGrid').style.display = 'none';
+            document.getElementById('abiturDualColor').style.display = 'none';
+            document.getElementById('abiturDualColor').classList.remove('visible');
 
-            // Reset all button states in both sections
+            // Reset all button states
             const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
             allButtons.forEach(btn => {
                 btn.classList.remove('selected-option', 'selected');
             });
 
-            // Reset Abitur button states
-            const abiturButtons = document.querySelectorAll('.abitur-option-btn');
-            abiturButtons.forEach(btn => {
+            // Reset Abitur color button states
+            const abiturColorBtns = document.querySelectorAll('.abitur-color-btn');
+            abiturColorBtns.forEach(btn => {
                 btn.classList.remove('selected');
             });
 
@@ -1979,7 +2006,8 @@
             currentCustomizeProductId = null;
             selectedSizeOption = null;
             selectedColorOption = null;
-            selectedAbiturOption = null;
+            selectedAbitur2026Color = null;
+            selectedAbiturAbiturColor = null;
 
             // Reset view to initial state
             setTimeout(() => {
@@ -1988,8 +2016,8 @@
                 document.getElementById('sizeOptions').style.display = 'flex';
                 document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('colorGrid').classList.remove('visible');
-                document.getElementById('abiturOptions').style.display = 'none';
-                document.getElementById('abiturOptions').classList.remove('visible');
+                document.getElementById('abiturDualColor').style.display = 'none';
+                document.getElementById('abiturDualColor').classList.remove('visible');
             }, 300);
         }
 
@@ -2049,6 +2077,24 @@
                 } else {
                     addToCartButton.disabled = true;
                 }
+            } else if (currentCustomizeProductId === 'abitur') {
+                // For Abitur: need size selection
+                // If "Individuell" (custom) selected, also need both Abitur colors
+                if (selectedSizeOption && selectedSizeOption !== null) {
+                    if (selectedColorOption === 'custom') {
+                        // Need both 2026 and Abitur colors
+                        if (selectedAbitur2026Color && selectedAbiturAbiturColor) {
+                            addToCartButton.disabled = false;
+                        } else {
+                            addToCartButton.disabled = true;
+                        }
+                    } else {
+                        // "Wie auf dem Foto" selected - only need size
+                        addToCartButton.disabled = false;
+                    }
+                } else {
+                    addToCartButton.disabled = true;
+                }
             } else {
                 // For other products, need BOTH size AND color options selected
                 if (selectedSizeOption !== null && selectedColorOption !== null) {
@@ -2069,17 +2115,74 @@
             selectedColor = color;
         }
 
-        function selectAbiturOption(option, btnElement) {
-            // Remove selected from all Abitur buttons
-            document.querySelectorAll('.abitur-option-btn').forEach(btn => {
+        function loadAbiturDualColorOptions() {
+            const abitur2026Container = document.getElementById('abitur2026Colors');
+            const abiturAbiturContainer = document.getElementById('abiturAbiturColors');
+
+            // Only load if empty
+            if (abitur2026Container.innerHTML.trim() === '') {
+                availableColors.forEach(color => {
+                    // Create button for 2026 colors
+                    const btn2026 = document.createElement('button');
+                    btn2026.className = 'abitur-color-btn';
+                    btn2026.onclick = () => selectAbitur2026Color(color, btn2026);
+                    btn2026.title = getColorLabel(color);
+
+                    const img2026 = document.createElement('img');
+                    img2026.src = `/colors/${color}.jpeg`;
+                    img2026.alt = color;
+
+                    btn2026.appendChild(img2026);
+                    abitur2026Container.appendChild(btn2026);
+
+                    // Create button for Abitur colors
+                    const btnAbitur = document.createElement('button');
+                    btnAbitur.className = 'abitur-color-btn';
+                    btnAbitur.onclick = () => selectAbiturAbiturColor(color, btnAbitur);
+                    btnAbitur.title = getColorLabel(color);
+
+                    const imgAbitur = document.createElement('img');
+                    imgAbitur.src = `/colors/${color}.jpeg`;
+                    imgAbitur.alt = color;
+
+                    btnAbitur.appendChild(imgAbitur);
+                    abiturAbiturContainer.appendChild(btnAbitur);
+                });
+            }
+
+            // Show the dual color selector
+            document.getElementById('abiturDualColor').style.display = 'flex';
+            document.getElementById('abiturDualColor').classList.add('visible');
+        }
+
+        function selectAbitur2026Color(color, btnElement) {
+            // Remove selected from all 2026 color buttons
+            document.querySelectorAll('#abitur2026Colors .abitur-color-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
 
             btnElement.classList.add('selected');
-            selectedAbiturOption = option;
+            selectedAbitur2026Color = color;
 
-            // Enable add to cart button when Abitur option is selected
-            document.getElementById('addToCartButton').disabled = false;
+            // Enable add to cart button if both colors are selected
+            if (selectedAbitur2026Color && selectedAbiturAbiturColor) {
+                document.getElementById('addToCartButton').disabled = false;
+            }
+        }
+
+        function selectAbiturAbiturColor(color, btnElement) {
+            // Remove selected from all Abitur color buttons
+            document.querySelectorAll('#abiturAbiturColors .abitur-color-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            btnElement.classList.add('selected');
+            selectedAbiturAbiturColor = color;
+
+            // Enable add to cart button if both colors are selected
+            if (selectedAbitur2026Color && selectedAbiturAbiturColor) {
+                document.getElementById('addToCartButton').disabled = false;
+            }
         }
 
         function saveCustomizeSelection() {
@@ -2096,15 +2199,16 @@
             const productPrice = (selectedSizeOption === 'custom') ? null : (product ? product.price : null);
             const productImage = product && product.images && product.images[0] ? `/collections/schriftzuege/images/${product.images[0]}` : null;
 
-            // For Abitur: use special Abitur option
-            if (currentCustomizeProductId === 'abitur' && selectedAbiturOption) {
-                // For Abitur, the option is stored in the color field with "abitur:" prefix
-                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, 'abitur:' + selectedAbiturOption, sizeDescription);
+            // For Abitur with dual colors selected
+            if (currentCustomizeProductId === 'abitur' && selectedAbitur2026Color && selectedAbiturAbiturColor) {
+                // Store both colors: "abitur:2026Color|abiturColor"
+                const abiturColorString = `abitur:${selectedAbitur2026Color}|${selectedAbiturAbiturColor}`;
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, abiturColorString, sizeDescription);
             } else if (currentCustomizeProductId === 'farm') {
                 // For Farm: no color option, always pass null for color
                 addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, null, sizeDescription);
             } else if (selectedColor) {
-                // User chose custom color (for Fidget Star)
+                // User chose custom color (for other products)
                 addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, selectedColor, sizeDescription);
             } else {
                 // User chose "Wie auf dem Foto" for color
@@ -2113,7 +2217,8 @@
 
             // Reset selection and close modal
             selectedColor = null;
-            selectedAbiturOption = null;
+            selectedAbitur2026Color = null;
+            selectedAbiturAbiturColor = null;
             closeCustomizeModal();
         }
 
@@ -2176,17 +2281,30 @@
             selectedColorOption = option;
 
             if (option === 'custom') {
-                // Show color grid
-                colorGrid.style.display = 'grid';
-                loadColorOptions();
+                // For Abitur product, show dual color selector
+                if (currentCustomizeProductId === 'abitur') {
+                    loadAbiturDualColorOptions();
+                } else {
+                    // Show standard color grid for other products
+                    colorGrid.style.display = 'grid';
+                    loadColorOptions();
+                }
             } else {
-                // Hide color grid when "Wie auf dem Foto" is selected
+                // Hide color grids when "Wie auf dem Foto" is selected
                 colorGrid.style.display = 'none';
-                // Also clear selected color state
+                document.getElementById('abiturDualColor').style.display = 'none';
+                document.getElementById('abiturDualColor').classList.remove('visible');
+                // Also clear selected color states
                 selectedColor = null;
+                selectedAbitur2026Color = null;
+                selectedAbiturAbiturColor = null;
                 // Reset color button selections
                 const colorBtns = document.querySelectorAll('.color-option-btn');
                 colorBtns.forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                const abiturBtns = document.querySelectorAll('.abitur-color-btn');
+                abiturBtns.forEach(btn => {
                     btn.classList.remove('selected');
                 });
             }
