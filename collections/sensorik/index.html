@@ -1856,6 +1856,7 @@
 
             // Check if this product should only show color options (no size)
             const productsWithOnlyColor = ['legsegg'];
+            const productsWithOnlySize = ['farm'];
 
             if (productsWithOnlyColor.includes(productId)) {
                 // Hide size options for products that only have color selection
@@ -1865,10 +1866,27 @@
 
                 // Automatically set size to 'as-photo' for these products
                 selectedSizeOption = 'as-photo';
+
+                // Show color section
+                document.getElementById('colorSubtitle').style.display = 'block';
+                document.getElementById('colorOptions').style.display = 'flex';
+            } else if (productsWithOnlySize.includes(productId)) {
+                // For Farm: show size options, hide color options
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('sizeOptions').style.display = 'flex';
+
+                // Hide color section
+                document.getElementById('colorSubtitle').style.display = 'none';
+                document.getElementById('colorOptions').style.display = 'none';
+                document.getElementById('colorGrid').style.display = 'none';
             } else {
                 // Show size options for products that have both size and color
                 document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('sizeOptions').style.display = 'flex';
+
+                // Show color section
+                document.getElementById('colorSubtitle').style.display = 'block';
+                document.getElementById('colorOptions').style.display = 'flex';
             }
 
             // Hide color grid initially, show both sections
@@ -2006,9 +2024,11 @@
             const productPrice = product ? product.price : null;
             const productImage = product && product.images && product.images[0] ? `/collections/sensorik/images/${product.images[0]}` : null;
 
-            // Check if user selected a specific color
-            if (selectedColor) {
-                // User chose custom color
+            // For Farm: no color option, always pass null for color
+            if (currentCustomizeProductId === 'farm') {
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, null, sizeDescription);
+            } else if (selectedColor) {
+                // User chose custom color (for Fidget Star)
                 addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, selectedColor, sizeDescription);
             } else {
                 // User chose "Wie auf dem Foto" for color
