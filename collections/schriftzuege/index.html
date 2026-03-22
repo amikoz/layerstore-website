@@ -1342,6 +1342,32 @@
 
         </div>
     </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/schriftzuege">✍️ Schriftzüge</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="/contact">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
             Mit Präzision gedruckt in Deutschland
         </div>
     </footer>
@@ -1401,6 +1427,15 @@
         </div>
     </div>
 
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <h4 class="cookie-title">🍪 Cookie-Zustimmung</h4>
+            <p class="cookie-text">Wir verwenden Cookies für den Warenkorb und eine optimale Benutzererfahrung.</p>
+            <p class="cookie-note">✓ Keine Tracking-Cookies</p>
+            <button class="cookie-btn" id="cookieAcceptBtn">Akzeptieren</button>
+        </div>
+    </div>
     <script>
         // Product data with all images in correct order
         window.products = {
@@ -1430,93 +1465,6 @@
                 images: ['spring1.jpeg', 'spring2.jpeg']
             }
         };    </script>
-
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LayerStore</h4>
-                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
-                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-
-            <div class="footer-section">
-                <h4>Entdecken</h4>
-                <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">🐰 Ostern</a>
-                <a href="/cart">Warenkorb</a>
-            </div>
-
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <a href="/datenschutz">🔒 Datenschutz</a>
-                <a href="/impressum">ℹ️ Impressum</a>
-                <a href="/contact">📧 Kontakt</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            Mit Präzision gedruckt in Deutschland
-        </div>
-    </footer>
-
-    <!-- Customize Modal -->
-    <div class="customize-modal" id="customizeModal">
-        <button class="customize-close" id="closeCustomizeModal">&times;</button>
-        <div class="customize-modal-content">
-            <div class="customize-scrollable-area">
-                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
-                <p class="customize-subtitle">Größe</p>
-                <div class="customize-options" id="sizeOptions">
-                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="size-custom-input" id="sizeCustomInput">
-                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
-                </div>
-                <p class="customize-subtitle color-subtitle">Farbe</p>
-                <div class="customize-options" id="colorOptions">
-                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="color-options-grid" id="colorGrid">
-                    <!-- Colors will be loaded here by JavaScript -->
-                </div>
-            </div>
-            <div class="customize-modal-actions">
-                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Image Gallery Modal -->
-    <div class="image-gallery-modal" id="imageGalleryModal">
-        <button class="gallery-close" id="closeImageGallery">&times;</button>
-        <div class="image-gallery-modal-content">
-            <div class="gallery-image-container">
-                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
-            </div>
-            <div class="gallery-info">
-                <h3 id="galleryProductName">Produktname</h3>
-                <div class="gallery-counter">
-                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">3</span>
-                </div>
-            </div>
-            <button class="gallery-arrow prev" id="galleryPrev">&#10094;</button>
-            <button class="gallery-arrow next" id="galleryNext">&#10095;</button>
-        </div>
-    </div>
 
     <script>
         // Gallery functionality
@@ -2175,22 +2123,6 @@
             }
         });
     </script>
-
-    <!-- Cookie Banner -->
-    <div class="cookie-banner" id="cookieBanner">
-        <div class="cookie-content">
-            <p class="cookie-title">
-                <strong>Cookies & LocalStorage</strong>
-            </p>
-            <p class="cookie-text">
-                Wir verwenden nur erforderliche Cookies für den Warenkorb.
-            </p>
-            <p class="cookie-note">
-                Keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gerät.
-            </p>
-            <button id="cookieAcceptBtn" class="cookie-btn">OK</button>
-        </div>
-    </div>
 
     <script>
         // Cookie Consent

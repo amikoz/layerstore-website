@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensorik | LayerStore</title>
+    <title>Schriftzüge | LayerStore</title>
     <link rel="preload" href="/ls-logo-beige.svg" as="image">
 
     <!-- Preload all color images for faster loading -->
@@ -31,8 +31,8 @@
             --bg-secondary: #F5F3EB;
             --text-primary: #1c1917;
             --text-secondary: #57534e;
-            --accent: #22c55e;
-            --accent-light: #4ade80;
+            --accent: #7c3aed;
+            --accent-light: #a78bfa;
             --border: #e7e5e4;
             --highlight: #78716c;
         }
@@ -179,7 +179,7 @@
         .collection-hero {
             padding: 7rem 2rem 2rem;
             text-align: center;
-            background: linear-gradient(135deg, #bbf7d0 0%, #86efac 50%, #4ade80 100%);
+            background: linear-gradient(135deg, #e9d5ff 0%, #c4b5fd 50%, #a78bfa 100%);
         }
 
         .collection-hero h1 {
@@ -1247,44 +1247,95 @@
 
     <!-- Collection Hero -->
     <section class="collection-hero">
-        <h1>Sensorik</h1>
-        <p>Fidgets und sensorische Spielzeuge für entdeckendes Lernen</p>
+        <h1>Schriftzüge</h1>
+        <p>Handgefertigte Buchstaben und personalisierte Beschriftungen für dein Zuhause</p>
     </section>
 
     <!-- Products Grid -->
     <section id="produkte" class="products-section">
         <div class="products-grid">
 
-            <!-- Product 1: Farm -->
-            <div class="product-card" onclick="openImageGallery('farm', 0)">
+            <!-- Product 1: Abitur -->
+            <div class="product-card" onclick="openImageGallery('abitur', 0)">
                 <div class="product-image-container">
-                    <img src="images/farm1.jpeg" alt="Farm" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/farm2.jpeg" alt="Farm" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/Abitur1.jpeg" alt="Abitur" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/Abitur2.jpeg" alt="Abitur" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
-                    <h3>Farm</h3>
-                    <p>Sensorisches Spielset mit Tieren und Elementen vom Bauernhof.</p>
-                    <div class="product-price">18,00 €</div>
+                    <h3>Abitur</h3>
+                    <p>Glückwunsch zum Abitur - ein besonderer Schriftzug für diesen besonderen Tag.</p>
+                    <div class="product-price">6,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="farm" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="farm" onclick="event.stopPropagation(); openCustomizeModal('farm')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="abitur" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="abitur" onclick="event.stopPropagation(); openCustomizeModal('abitur')">Anpassen</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 2: Fidget Star -->
-            <div class="product-card" onclick="openImageGallery('fidget-star', 0)">
+            <!-- Product 2: Doglover -->
+            <div class="product-card" onclick="openImageGallery('doglover', 0)">
                 <div class="product-image-container">
-                    <img src="images/fidget1.jpeg" alt="Fidget Star" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/fidget2.jpeg" alt="Fidget Star" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/Doglover1.jpeg" alt="Doglover" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/Doglover2.jpeg" alt="Doglover" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
-                    <h3>Fidget Star</h3>
-                    <p>Fidget Star in verschiedenen Farben und Größen für sensorische stimulation.</p>
-                    <div class="product-price">8,00 €</div>
+                    <h3>Doglover</h3>
+                    <p>Für alle Hundeliebhaber - ein süßer Schriftzug mit Pfötchen.</p>
+                    <div class="product-price">6,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="fidget-star" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="fidget-star" onclick="event.stopPropagation(); openCustomizeModal('fidget-star')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="doglover" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="doglover" onclick="event.stopPropagation(); openCustomizeModal('doglover')">Anpassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3: Ostern -->
+            <div class="product-card" onclick="openImageGallery('ostern', 0)">
+                <div class="product-image-container">
+                    <img src="images/easter1.jpeg" alt="Ostern" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/easter2.jpeg" alt="Ostern" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                </div>
+                <div class="product-info">
+                    <h3>Ostern</h3>
+                    <p>Frohe Ostern - ein fröhlicher Schriftzug für das Osterfest.</p>
+                    <div class="product-price">6,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="ostern" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="ostern" onclick="event.stopPropagation(); openCustomizeModal('ostern')">Anpassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 4: Schulkind -->
+            <div class="product-card" onclick="openImageGallery('schulkind', 0)">
+                <div class="product-image-container">
+                    <img src="images/Schulkind1.jpeg" alt="Schulkind" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/Schulkind2.jpeg" alt="Schulkind" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                </div>
+                <div class="product-info">
+                    <h3>Schulkind</h3>
+                    <p>Zum Schulanfang - ein persönlicher Schriftzug für das erste Mal zur Schule.</p>
+                    <div class="product-price">6,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="schulkind" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="schulkind" onclick="event.stopPropagation(); openCustomizeModal('schulkind')">Anpassen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 5: Spring -->
+            <div class="product-card" onclick="openImageGallery('spring', 0)">
+                <div class="product-image-container">
+                    <img src="images/spring1.jpeg" alt="Spring" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/spring2.jpeg" alt="Spring" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                </div>
+                <div class="product-info">
+                    <h3>Spring</h3>
+                    <p>Frühlingserwachen - ein frischer Schriftzug für die schönste Jahreszeit.</p>
+                    <div class="product-price">6,00 €</div>
+                    <div class="product-buttons">
+                        <button class="add-to-cart-btn" data-product="spring" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="spring" onclick="event.stopPropagation(); openCustomizeModal('spring')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1292,7 +1343,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -1305,7 +1355,7 @@
             <div class="footer-section">
                 <h4>Entdecken</h4>
                 <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/collections/sensorik">🧸 Sensorik</a>
                 <a href="/cart">Warenkorb</a>
             </div>
 
@@ -1377,6 +1427,28 @@
         </div>
     </div>
 
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <h4 class="cookie-title">🍪 Cookie-Zustimmung</h4>
+            <p class="cookie-text">Wir verwenden Cookies für den Warenkorb und eine optimale Benutzererfahrung.</p>
+            <p class="cookie-note">✓ Keine Tracking-Cookies</p>
+            <button class="cookie-btn" id="cookieAcceptBtn">Akzeptieren</button>
+        </div>
+    </div>
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <h4 class="cookie-title">🍪 Cookie-Zustimmung</h4>
+            <p class="cookie-text">Wir verwenden Cookies für den Warenkorb und eine optimale Benutzererfahrung.</p>
+            <p class="cookie-note">✓ Keine Tracking-Cookies</p>
+            <button class="cookie-btn" id="cookieAcceptBtn">Akzeptieren</button>
+        </div>
+    </div>
+            <p class="cookie-text">Wir verwenden Cookies für den Warenkorb und eine optimale Benutzererfahrung.</p>
+            <p class="cookie-note">✓ Keine Tracking-Cookies</p>
+            <button class="cookie-btn" id="cookieAcceptBtn">Akzeptieren</button>
+        </div>
+    </div>
     <script>
         // Product data with all images in correct order
         window.products = {
@@ -1392,226 +1464,8 @@
             }
         };    </script>
 
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LayerStore</h4>
-                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
-                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-
-            <div class="footer-section">
-                <h4>Entdecken</h4>
-                <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">🐰 Ostern</a>
-                <a href="/cart">Warenkorb</a>
-            </div>
-
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <a href="/datenschutz">🔒 Datenschutz</a>
-                <a href="/impressum">ℹ️ Impressum</a>
-                <a href="/contact">📧 Kontakt</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            Mit Präzision gedruckt in Deutschland
-        </div>
-    </footer>
-
-    <!-- Customize Modal -->
-    <div class="customize-modal" id="customizeModal">
-        <button class="customize-close" id="closeCustomizeModal">&times;</button>
-        <div class="customize-modal-content">
-            <div class="customize-scrollable-area">
-                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
-                <p class="customize-subtitle">Größe</p>
-                <div class="customize-options" id="sizeOptions">
-                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="size-custom-input" id="sizeCustomInput">
-                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
-                </div>
-                <p class="customize-subtitle color-subtitle">Farbe</p>
-                <div class="customize-options" id="colorOptions">
-                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
-                        Wie auf dem Foto
-                    </button>
-                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
-                        Individuell
-                    </button>
-                </div>
-                <div class="color-options-grid" id="colorGrid">
-                    <!-- Colors will be loaded here by JavaScript -->
-                </div>
-            </div>
-            <div class="customize-modal-actions">
-                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Image Gallery Modal -->
-    <div class="image-gallery-modal" id="imageGalleryModal">
-        <button class="gallery-close" id="closeImageGallery">&times;</button>
-        <div class="image-gallery-modal-content">
-            <div class="gallery-image-container">
-                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
-            </div>
-            <div class="gallery-info">
-                <h3 id="galleryProductName">Produktname</h3>
-                <div class="gallery-counter">
-                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">3</span>
-                </div>
-            </div>
-            <button class="gallery-arrow prev" id="galleryPrev">&#10094;</button>
-            <button class="gallery-arrow next" id="galleryNext">&#10095;</button>
-        </div>
-    </div>
 
     <script>
-        // Gallery functionality
-        const modal = document.getElementById('imageGalleryModal');
-        const galleryImage = document.getElementById('galleryImage');
-        const galleryProductName = document.getElementById('galleryProductName');
-        const galleryCurrentIndex = document.getElementById('galleryCurrentIndex');
-        const galleryTotalImages = document.getElementById('galleryTotalImages');
-
-        let currentProduct = null;
-        let currentImageIndex = 0;
-
-        function openImageGallery(productId, startIndex = 0) {
-            currentProduct = window.products[productId];
-            currentImageIndex = startIndex;
-
-            updateGalleryImage();
-            preloadAdjacentImages();
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeImageGallery() {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            currentProduct = null;
-            currentImageIndex = 0;
-        }
-
-        function updateGalleryImage() {
-            if (!currentProduct) return;
-
-            // Show loading state
-            document.querySelector('.gallery-image-container').classList.add('loading');
-            galleryImage.classList.remove('loaded');
-
-            const imagePath = 'images/' + currentProduct.images[currentImageIndex];
-
-            // Load new image
-            galleryImage.src = imagePath;
-            galleryProductName.textContent = currentProduct.name;
-            galleryCurrentIndex.textContent = currentImageIndex + 1;
-            galleryTotalImages.textContent = currentProduct.images.length;
-        }
-
-        // Add image load event listener
-        galleryImage.addEventListener('load', function() {
-            this.classList.add('loaded');
-            document.querySelector('.gallery-image-container').classList.remove('loading');
-        });
-
-        // Preload next and previous images for instant navigation
-        function preloadAdjacentImages() {
-            if (!currentProduct) return;
-
-            const prevIndex = currentImageIndex - 1;
-            const nextIndex = currentImageIndex + 1;
-
-            const indicesToPreload = [];
-            if (prevIndex >= 0) indicesToPreload.push(prevIndex);
-            if (nextIndex < currentProduct.images.length) indicesToPreload.push(nextIndex);
-
-            indicesToPreload.forEach(index => {
-                const img = new Image();
-                img.src = 'images/' + currentProduct.images[index];
-            });
-        }
-
-        function navigateGallery(direction) {
-            if (!currentProduct) return;
-
-            currentImageIndex += direction;
-
-            if (currentImageIndex < 0) {
-                currentImageIndex = currentProduct.images.length - 1;
-            } else if (currentImageIndex >= currentProduct.images.length) {
-                currentImageIndex = 0;
-            }
-
-            updateGalleryImage();
-            preloadAdjacentImages();
-        }
-
-        // Event listeners
-        document.getElementById('closeImageGallery').addEventListener('click', closeImageGallery);
-        document.getElementById('galleryPrev').addEventListener('click', () => navigateGallery(-1));
-        document.getElementById('galleryNext').addEventListener('click', () => navigateGallery(1));
-
-        // Close on background click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeImageGallery();
-            }
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (!modal.classList.contains('active')) return;
-
-            if (e.key === 'Escape') {
-                closeImageGallery();
-            } else if (e.key === 'ArrowLeft') {
-                navigateGallery(-1);
-            } else if (e.key === 'ArrowRight') {
-                navigateGallery(1);
-            }
-        });
-
-        // Cart functionality
-        function getCart() {
-            const cart = localStorage.getItem('layerstore_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        function saveCart(cart) {
-            // Save to both cart and cart_test
-            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
-            localStorage.setItem('layerstore_cart_test', JSON.stringify(cart));
-            updateCartCount();
-        }
-
-        function addToCart(buttonElement) {
-            const productId = buttonElement.getAttribute('data-product');
-            const product = window.products[productId];
-
-            if (!product) {
-                console.error('Product not found:', productId);
-                return;
-            }
-
-            const cart = getCart();
-
-            // Check if product already exists in cart
-            const existingItem = cart.find(item => item.id === productId);
 
             if (existingItem) {
                 existingItem.quantity += 1;
@@ -2135,25 +1989,6 @@
                 closeCustomizeModal();
             }
         });
-    </script>
-
-    <!-- Cookie Banner -->
-    <div class="cookie-banner" id="cookieBanner">
-        <div class="cookie-content">
-            <p class="cookie-title">
-                <strong>Cookies & LocalStorage</strong>
-            </p>
-            <p class="cookie-text">
-                Wir verwenden nur erforderliche Cookies für den Warenkorb.
-            </p>
-            <p class="cookie-note">
-                Keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gerät.
-            </p>
-            <button id="cookieAcceptBtn" class="cookie-btn">OK</button>
-        </div>
-    </div>
-
-    <script>
         // Cookie Consent
         const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
 
