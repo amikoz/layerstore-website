@@ -1460,27 +1460,25 @@
         }
 
         // Promo Code Management
-        let PROMO_CODES = {};
+        const DEFAULT_PROMO_CODES = {
+            'TM26MG': { discount: 0.1, description: 'Troedelmarkt Metro Godorf 01.03.2026' },
+            'TY26KM': { discount: 0.1, description: 'Thank You card' }
+        };
 
-        // Load promo codes from localStorage
+        let PROMO_CODES = { ...DEFAULT_PROMO_CODES };
+
+        // Load promo codes from localStorage (for future extensibility)
         function loadPromoCodes() {
             const stored = localStorage.getItem('layerstore_promo_codes');
             if (stored) {
                 try {
-                    PROMO_CODES = JSON.parse(stored);
+                    const storedCodes = JSON.parse(stored);
+                    PROMO_CODES = { ...DEFAULT_PROMO_CODES, ...storedCodes };
                 } catch (e) {
-                    // Default fallback
-                    PROMO_CODES = {
-                        'TM26MG': { discount: 0.1, description: 'Troedelmarkt Metro Godorf 01.03.2026' },
-                        'TY26KM': { discount: 0.1, description: 'Thank You card' }
-                    };
+                    PROMO_CODES = { ...DEFAULT_PROMO_CODES };
                 }
             } else {
-                // Default fallback
-                PROMO_CODES = {
-                    'TM26MG': { discount: 0.1, description: 'Troedelmarkt Metro Godorf 01.03.2026' },
-                    'TY26KM': { discount: 0.1, description: 'Thank You card' }
-                };
+                PROMO_CODES = { ...DEFAULT_PROMO_CODES };
             }
         }
 
