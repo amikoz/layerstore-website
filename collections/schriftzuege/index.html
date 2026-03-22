@@ -1655,6 +1655,7 @@
         }
 
         function addToCart(buttonElement) {
+            console.log('addToCart called');
             const productId = buttonElement.getAttribute('data-product');
             const product = window.products[productId];
 
@@ -1902,6 +1903,7 @@
         }
 
         function openCustomizeModal(productId) {
+            console.log('openCustomizeModal called with:', productId);
             currentCustomizeProductId = productId;
             const product = window.products[productId];
 
