@@ -1055,7 +1055,7 @@
             </div>
 
             <!-- Color Options -->
-            <div class="customize-section">
+            <div class="customize-section" id="colorSection">
                 <div class="customize-section-title">Farbe</div>
                 <div class="customize-section-subtitle">Wähle eine Farbe aus</div>
                 <div class="customize-options" id="colorOptions">
@@ -1081,7 +1081,7 @@
             </div>
 
             <!-- Lettering Text -->
-            <div class="customize-section">
+            <div class="customize-section" id="letteringSection">
                 <div class="customize-section-title">Lettering Text</div>
                 <div class="customize-section-subtitle">Gib deinen gewünschten Text ein</div>
                 <div class="customize-custom-input visible">
@@ -1273,6 +1273,28 @@
 
             document.getElementById('addToCartButton').disabled = true;
 
+            // For farm product: only show size options, hide colors
+            if (productId === 'farm') {
+                document.getElementById('sizeSubtitle').style.display = 'none';
+                document.getElementById('sizeOptions').innerHTML = `
+                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">Wie auf dem Foto</button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('individual', this)">Individuell</button>
+                `;
+                document.getElementById('colorSection').style.display = 'none';
+                document.getElementById('letteringSection').style.display = 'none';
+            } else {
+                // Reset to default options for other products
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('sizeOptions').innerHTML = `
+                    <button class="customize-option-btn" onclick="selectSizeOption('small', this)">Klein (15cm)</button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('medium', this)">Mittel (20cm)</button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('large', this)">Groß (25cm)</button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">Wie auf dem Foto</button>
+                `;
+                document.getElementById('colorSection').style.display = 'block';
+                document.getElementById('letteringSection').style.display = 'none';
+            }
+
             const modal = document.getElementById('customizeModal');
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1344,10 +1366,20 @@
             const addToCartButton = document.getElementById('addToCartButton');
             const letteringText = document.getElementById('letteringText').value.trim();
 
-            if (selectedSizeOption && selectedColorOption !== null && letteringText) {
-                addToCartButton.disabled = false;
+            if (currentCustomizeProductId === 'farm') {
+                // For farm, only size selection is required
+                if (selectedSizeOption) {
+                    addToCartButton.disabled = false;
+                } else {
+                    addToCartButton.disabled = true;
+                }
             } else {
-                addToCartButton.disabled = true;
+                // For other products, size, color and lettering text are required
+                if (selectedSizeOption && selectedColorOption !== null && letteringText) {
+                    addToCartButton.disabled = false;
+                } else {
+                    addToCartButton.disabled = true;
+                }
             }
         }
 
@@ -1362,20 +1394,28 @@
         function saveCustomizeSelection() {
             const letteringText = document.getElementById('letteringText').value.trim();
             const sizeCustomText = document.getElementById('sizeCustomText');
-            const sizeDescription = (selectedSizeOption === 'custom' && sizeCustomText.value.trim())
+            const sizeDescription = (selectedSizeOption === 'individual' && sizeCustomText.value.trim())
                 ? sizeCustomText.value.trim()
-                : null;
+                : ((selectedSizeOption === 'custom' && sizeCustomText.value.trim())
+                    ? sizeCustomText.value.trim()
+                    : null);
 
             const sizeOptionToSave = selectedSizeOption || 'as-photo';
             const product = window.products[currentCustomizeProductId];
 
-            const colorDescription = selectedColorName
-                ? selectedColorName
-                : (selectedColorOption ? 'Wie auf dem Foto' : null);
+            let colorDescription = null;
+            let displayName = product.name;
 
-            const displayName = letteringText
-                ? `${product.name} - "${letteringText}"`
-                : product.name;
+            if (currentCustomizeProductId !== 'farm') {
+                // For non-farm products, handle color and lettering
+                colorDescription = selectedColorName
+                    ? selectedColorName
+                    : (selectedColorOption ? 'Wie auf dem Foto' : null);
+
+                displayName = letteringText
+                    ? `${product.name} - "${letteringText}"`
+                    : product.name;
+            }
 
             const cart = getCart();
             const cartItem = {
@@ -1386,7 +1426,7 @@
                 sizeOption: sizeOptionToSave,
                 sizeDescription: sizeDescription,
                 colorOption: colorDescription,
-                letteringText: letteringText,
+                letteringText: letteringText || null,
                 quantity: 1
             };
 
