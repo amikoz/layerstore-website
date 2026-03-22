@@ -1870,6 +1870,10 @@
         let selectedAbitur2026Color = null; // Track color for "2026" in Abitur product
         let selectedAbiturAbiturColor = null; // Track color for "Abitur" in Abitur product
 
+        // Verify critical elements exist
+        if (!customizeModal) console.error('customizeModal element not found!');
+        if (!colorGrid) console.error('colorGrid element not found!');
+
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
             'black', 'light-green', 'mint-green',
