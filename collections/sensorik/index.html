@@ -1877,7 +1877,8 @@
 
             // Get product data
             const product = window.products[currentCustomizeProductId];
-            const productPrice = product ? product.price : null;
+            // Price is null when custom size is selected
+            const productPrice = (selectedSizeOption === 'custom') ? null : (product ? product.price : null);
             const productImage = product && product.images && product.images[0] ? `/collections/sensorik/images/${product.images[0]}` : null;
 
             // For Farm: no color option, always pass null for color

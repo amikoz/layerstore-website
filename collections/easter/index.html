@@ -2290,7 +2290,8 @@
 
             // Get product data
             const product = window.products[currentCustomizeProductId];
-            const productPrice = product ? product.price : null;
+            // Price is null when custom size is selected
+            const productPrice = (selectedSizeOption === 'custom') ? null : (product ? product.price : null);
             const productImage = product && product.images && product.images[0] ? `/collections/easter/images/${product.images[0]}` : null;
 
             // Check if user selected a specific color
