@@ -1909,8 +1909,10 @@
 
         function openCustomizeModal(productId) {
             console.log('openCustomizeModal called with:', productId);
+            console.log('window.products:', window.products);
             currentCustomizeProductId = productId;
             const product = window.products[productId];
+            console.log('Found product:', product);
 
             if (!product) {
                 console.error('Product not found:', productId);
