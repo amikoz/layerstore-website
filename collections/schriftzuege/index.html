@@ -1968,8 +1968,13 @@
             // Hide color grid and Abitur dual color initially
             document.getElementById('colorGrid').classList.remove('visible');
             document.getElementById('colorGrid').style.display = 'none';
-            document.getElementById('abiturDualColor').style.display = 'none';
-            document.getElementById('abiturDualColor').classList.remove('visible');
+
+            // Hide Abitur dual color if it exists
+            const abiturDualColor = document.getElementById('abiturDualColor');
+            if (abiturDualColor) {
+                abiturDualColor.style.display = 'none';
+                abiturDualColor.classList.remove('visible');
+            }
 
             // Reset all button states
             const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
@@ -2016,8 +2021,13 @@
                 document.getElementById('sizeOptions').style.display = 'flex';
                 document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('colorGrid').classList.remove('visible');
-                document.getElementById('abiturDualColor').style.display = 'none';
-                document.getElementById('abiturDualColor').classList.remove('visible');
+
+                // Hide Abitur dual color if it exists
+                const abiturDualColor = document.getElementById('abiturDualColor');
+                if (abiturDualColor) {
+                    abiturDualColor.style.display = 'none';
+                    abiturDualColor.classList.remove('visible');
+                }
             }, 300);
         }
 
@@ -2292,8 +2302,11 @@
             } else {
                 // Hide color grids when "Wie auf dem Foto" is selected
                 colorGrid.style.display = 'none';
-                document.getElementById('abiturDualColor').style.display = 'none';
-                document.getElementById('abiturDualColor').classList.remove('visible');
+                const abiturDualColor = document.getElementById('abiturDualColor');
+                if (abiturDualColor) {
+                    abiturDualColor.style.display = 'none';
+                    abiturDualColor.classList.remove('visible');
+                }
                 // Also clear selected color states
                 selectedColor = null;
                 selectedAbitur2026Color = null;
