@@ -1078,6 +1078,9 @@
                     <button class="color-option-btn" style="background-image: url('/colors/purple.jpeg')" onclick="selectColor('/colors/purple.jpeg', 'Lila', this)"></button>
                     <button class="color-option-btn" style="background-image: url('/colors/chestnut-brown-marble.jpeg')" onclick="selectColor('/colors/chestnut-brown-marble.jpeg', 'Kastanienbraun Marmor', this)"></button>
                 </div>
+                <div class="customize-custom-input" id="colorCustomInput">
+                    <input type="text" id="colorCustomText" placeholder="Gewünschte Farbe...">
+                </div>
             </div>
 
             <!-- Lettering Text -->
@@ -1283,7 +1286,7 @@
                 document.getElementById('colorSection').style.display = 'none';
                 document.getElementById('letteringSection').style.display = 'none';
             } else if (productId === 'fidget-star') {
-                // For fidget-star: show size and color, no lettering
+                // For fidget-star: show size and simplified color, no lettering
                 document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('sizeOptions').innerHTML = `
                     <button class="customize-option-btn" onclick="selectSizeOption('small', this)">Klein</button>
@@ -1292,6 +1295,11 @@
                     <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">Wie auf dem Foto</button>
                 `;
                 document.getElementById('colorSection').style.display = 'block';
+                document.getElementById('colorOptions').innerHTML = `
+                    <button class="customize-option-btn" onclick="selectColorOption(null, this)">Wie auf dem Foto</button>
+                    <button class="customize-option-btn" onclick="selectColorOption('individual', this)">Individuell</button>
+                `;
+                document.getElementById('colorGrid').style.display = 'none';
                 document.getElementById('letteringSection').style.display = 'none';
             } else {
                 // Reset to default options for other products
@@ -1347,8 +1355,18 @@
             selectedColorOption = color;
             selectedColorName = null;
 
+            // Hide color grid
             document.getElementById('colorGrid').classList.remove('visible');
             document.getElementById('colorGrid').style.display = 'none';
+
+            // Show/hide color custom input for individual option
+            const colorCustomInput = document.getElementById('colorCustomInput');
+            if (color === 'individual') {
+                colorCustomInput.classList.add('visible');
+                document.getElementById('colorCustomText').focus();
+            } else {
+                colorCustomInput.classList.remove('visible');
+            }
 
             updateAddToCartButton();
         }
@@ -1409,25 +1427,24 @@
             const sizeOptionToSave = selectedSizeOption || 'as-photo';
             const product = window.products[currentCustomizeProductId];
 
-            let colorDescription = null;
+            // Get color custom text
+            const colorCustomText = document.getElementById('colorCustomText');
+            const colorDescription = (selectedColorOption === 'individual' && colorCustomText.value.trim())
+                ? colorCustomText.value.trim()
+                : (selectedColorName
+                    ? selectedColorName
+                    : (selectedColorOption ? 'Wie auf dem Foto' : null));
+
             let displayName = product.name;
 
             if (currentCustomizeProductId === 'farm') {
                 // Farm: no color, no lettering
-                colorDescription = null;
                 displayName = product.name;
             } else if (currentCustomizeProductId === 'fidget-star') {
                 // Fidget Star: color, no lettering
-                colorDescription = selectedColorName
-                    ? selectedColorName
-                    : (selectedColorOption ? 'Wie auf dem Foto' : null);
                 displayName = product.name;
             } else {
                 // For other products, handle color and lettering
-                colorDescription = selectedColorName
-                    ? selectedColorName
-                    : (selectedColorOption ? 'Wie auf dem Foto' : null);
-
                 displayName = letteringText
                     ? `${product.name} - "${letteringText}"`
                     : product.name;
