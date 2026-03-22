@@ -1204,12 +1204,23 @@
         };
 
         const colorNames = {
+            'black': 'Schwarz',
+            'chestnut-brown-marble': 'Kastanienbraun Marmor',
+            'light-green': 'Hellgrün',
+            'mint-green': 'Minzgrün',
+            'new-pink': 'Neu Pink',
+            'olive-green': 'Olivgrün',
+            'peach': 'Pfirsich',
+            'pink': 'Pink',
+            'purple': 'Lila',
+            'red': 'Rot',
+            'sakura-pink': 'Sakura Pink',
+            'sky-blue': 'Himmelblau',
+            'white': 'Weiß',
+            'yellow': 'Gelb',
+            // Legacy color names
             beige: 'Beige',
-            pink: 'Pink',
-            purple: 'Purple',
-            red: 'Red',
             orange: 'Orange',
-            yellow: 'Yellow',
             lemonyellow: 'Lemon Yellow',
             lightgreen: 'Light Green',
             mintgreen: 'Mint Green',
@@ -1220,6 +1231,30 @@
             newpink: 'New Pink',
             standard: 'Standard',
             custom: 'Custom'
+        };
+
+        // Dual color product configurations
+        const dualColorProducts = {
+            abitur: {
+                label1: '2026',
+                label2: 'Abitur'
+            },
+            doglover: {
+                label1: 'Dog',
+                label2: 'Lover'
+            },
+            ostern: {
+                label1: 'Frohe',
+                label2: 'Ostern'
+            },
+            schulkind: {
+                label1: '2026',
+                label2: 'Schulkind'
+            },
+            spring: {
+                label1: 'Hello',
+                label2: 'Frühlings'
+            }
         };
 
         // Get cart from localStorage
@@ -1284,7 +1319,34 @@
 
             let itemsHTML = cart.map((item, index) => {
                 const imagePath = getImagePath(item);
-                const colorText = item.color && item.color !== 'standard' ? `<span class="cart-item-color">Farbe: ${colorNames[item.color] || item.color}</span>` : '';
+
+                // Handle color display - check if dual color format (prefix:color1|color2)
+                let colorText = '';
+                if (item.color && item.color !== 'standard') {
+                    if (item.color.includes(':') && item.color.includes('|')) {
+                        // Dual color format: prefix:color1|color2
+                        const parts = item.color.split(':');
+                        if (parts.length === 2) {
+                            const prefix = parts[0];
+                            const colors = parts[1].split('|');
+                            const config = dualColorProducts[prefix];
+                            if (config && colors.length === 2) {
+                                const color1Name = colorNames[colors[0]] || colors[0];
+                                const color2Name = colorNames[colors[1]] || colors[1];
+                                colorText = `<span class="cart-item-color">Farben: ${config.label1} (${color1Name}), ${config.label2} (${color2Name})</span>`;
+                            } else {
+                                colorText = `<span class="cart-item-color">Farbe: ${item.color}</span>`;
+                            }
+                        } else {
+                            colorText = `<span class="cart-item-color">Farbe: ${item.color}</span>`;
+                        }
+                    } else if (colorNames[item.color]) {
+                        colorText = `<span class="cart-item-color">Farbe: ${colorNames[item.color]}</span>`;
+                    } else {
+                        colorText = `<span class="cart-item-color">Farbe: ${item.color}</span>`;
+                    }
+                }
+
                 const marbleText = item.isMarble ? `<span class="cart-item-marble">✨ Marmor (+20%)</span>` : '';
                 const sizeText = item.option && item.option !== 'as-photo' ? `<span class="cart-item-size">Größe: Nach Absprache</span>` : '';
                 const sizeDescText = item.sizeDescription ? `<span class="cart-item-size-desc">${item.sizeDescription}</span>` : '';
