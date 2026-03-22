@@ -1400,6 +1400,7 @@
                     </button>
                 </div>
                 <div class="color-options-grid" id="colorGrid">
+                    <!-- Colors will be loaded here by JavaScript -->
                 </div>
             </div>
             <div class="customize-modal-actions">
@@ -1988,6 +1989,58 @@
                 closeCustomizeModal();
             }
         });
+    </script>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-title">
+                <strong>Cookies & LocalStorage</strong>
+            </p>
+            <p class="cookie-text">
+                Wir verwenden nur erforderliche Cookies für den Warenkorb.
+
+    <script>
+        // Cookie Consent
+        const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
+
+        function checkCookieConsent() {
+            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted';
+        }
+
+        function setCookieConsent() {
+            localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            const banner = document.getElementById('cookieBanner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkCookieConsent()) {
+                setTimeout(() => {
+                    const banner = document.getElementById('cookieBanner');
+                    if (banner) {
+                        banner.classList.add('show');
+                    }
+                }, 500);
+            }
+
+            const acceptBtn = document.getElementById('cookieAcceptBtn');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', setCookieConsent);
+            }
+        });
+    </script>
+</body>
+</html>
+
+</body>
+</html>
         // Cookie Consent
         const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
 
