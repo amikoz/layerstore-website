@@ -1104,7 +1104,7 @@
                 price: '18,00 €',
                 images: ['farm1.jpeg', 'farm2.jpeg']
             },
-            fidget-star: {
+            'fidget-star': {
                 name: 'Fidget Star',
                 price: '8,00 €',
                 images: ['fidget1.jpeg', 'fidget2.jpeg']
@@ -1329,7 +1329,7 @@
             selectedSizeOption = size;
 
             const customInput = document.getElementById('sizeCustomInput');
-            if (size === 'custom') {
+            if (size === 'custom' || size === 'individual') {
                 customInput.classList.add('visible');
                 document.getElementById('sizeCustomText').focus();
             } else {
