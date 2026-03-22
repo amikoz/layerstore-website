@@ -210,6 +210,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         /* Product Card */
@@ -224,6 +226,8 @@
             opacity: 0;
             animation: fadeInUp 0.6s ease-out forwards;
             cursor: pointer;
+            max-width: 350px;
+            margin: 0 auto;
         }
 
         .product-card:nth-child(1) { animation-delay: 0.1s; }
@@ -1338,32 +1342,6 @@
 
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LayerStore</h4>
-                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
-                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-
-            <div class="footer-section">
-                <h4>Entdecken</h4>
-                <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">✨ Schriftzüge</a>
-                <a href="/cart">Warenkorb</a>
-            </div>
-
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <a href="/datenschutz">🔒 Datenschutz</a>
-                <a href="/impressum">ℹ️ Impressum</a>
-                <a href="/contact">📧 Kontakt</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
             Mit Präzision gedruckt in Deutschland
         </div>
     </footer>
@@ -1450,8 +1428,8 @@
                 name: 'Spring',
                 price: '6,00 €',
                 images: ['spring1.jpeg', 'spring2.jpeg']
-            };
-    </script>
+            }
+        };    </script>
 
         </div>
     </section>
@@ -1468,7 +1446,7 @@
             <div class="footer-section">
                 <h4>Entdecken</h4>
                 <a href="/collections">Kollektionen</a>
-                <a href="/collections/easter">✨ Schriftzüge</a>
+                <a href="/collections/easter">🐰 Ostern</a>
                 <a href="/cart">Warenkorb</a>
             </div>
 
@@ -1681,7 +1659,7 @@
                     id: productId,
                     name: product.name,
                     price: product.price,
-                    image: `/collections/schriftzuege/images/${product.images[0]}`,
+                    image: `/collections/Schriftzüge/images/${product.images[0]}`,
                     quantity: 1,
                     option: 'as-photo'
                 });
@@ -1921,6 +1899,7 @@
 
             // Check if this product should only show color options (no size)
             const productsWithOnlyColor = ['legsegg'];
+            const productsWithOnlySize = ['farm'];
 
             if (productsWithOnlyColor.includes(productId)) {
                 // Hide size options for products that only have color selection
@@ -1930,10 +1909,27 @@
 
                 // Automatically set size to 'as-photo' for these products
                 selectedSizeOption = 'as-photo';
+
+                // Show color section
+                document.getElementById('colorSubtitle').style.display = 'block';
+                document.getElementById('colorOptions').style.display = 'flex';
+            } else if (productsWithOnlySize.includes(productId)) {
+                // For Farm: show size options, hide color options
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('sizeOptions').style.display = 'flex';
+
+                // Hide color section
+                document.getElementById('colorSubtitle').style.display = 'none';
+                document.getElementById('colorOptions').style.display = 'none';
+                document.getElementById('colorGrid').style.display = 'none';
             } else {
                 // Show size options for products that have both size and color
                 document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('sizeOptions').style.display = 'flex';
+
+                // Show color section
+                document.getElementById('colorSubtitle').style.display = 'block';
+                document.getElementById('colorOptions').style.display = 'flex';
             }
 
             // Hide color grid initially, show both sections
@@ -2069,11 +2065,13 @@
             // Get product data
             const product = window.products[currentCustomizeProductId];
             const productPrice = product ? product.price : null;
-            const productImage = product && product.images && product.images[0] ? `/collections/schriftzuege/images/${product.images[0]}` : null;
+            const productImage = product && product.images && product.images[0] ? `/collections/Schriftzüge/images/${product.images[0]}` : null;
 
-            // Check if user selected a specific color
-            if (selectedColor) {
-                // User chose custom color
+            // For Farm: no color option, always pass null for color
+            if (currentCustomizeProductId === 'farm') {
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, null, sizeDescription);
+            } else if (selectedColor) {
+                // User chose custom color (for Fidget Star)
                 addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, selectedColor, sizeDescription);
             } else {
                 // User chose "Wie auf dem Foto" for color
