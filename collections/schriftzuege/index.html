@@ -114,11 +114,6 @@
             color: white;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
         nav a::after {
             content: '';
             position: absolute;
@@ -448,7 +443,7 @@
             background: var(--accent-light);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
         }
 
         /* Quantity Controls for Products */
@@ -596,6 +591,7 @@
             opacity: 1;
         }
 
+        /* Loading spinner */
         .gallery-image-container::before {
             content: '';
             position: absolute;
@@ -605,72 +601,98 @@
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+            z-index: 0;
+        }
+
+        .gallery-image-container.loading .gallery-image {
+            opacity: 0;
+        }
+
+        .gallery-image-container:not(.loading) .gallery-image.loaded {
+            opacity: 1;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        .gallery-image-container:has(.gallery-image.loaded)::before {
-            display: none;
-        }
-
-        .gallery-nav {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .gallery-nav-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .gallery-nav-btn:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        .gallery-nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .gallery-nav-btn:disabled:hover {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-
-        .gallery-close-btn {
+        .gallery-arrow {
             position: absolute;
-            top: -12px;
-            right: -12px;
-            width: 32px;
-            height: 32px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
             border: none;
-            background: var(--text-primary);
-            color: white;
+            color: rgba(234, 88, 12, 0.7);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            font-size: 1.2rem;
             cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.2s ease;
         }
 
-        .gallery-close-btn:hover {
+        .gallery-arrow:hover {
+            color: rgba(234, 88, 12, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .gallery-arrow.prev {
+            left: 0.5rem;
+        }
+
+        .gallery-arrow.next {
+            right: 0.5rem;
+        }
+
+        .gallery-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 28px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-close:hover {
             background: var(--accent);
-            transform: scale(1.1);
+            color: white;
+            transform: rotate(90deg);
+            border-color: var(--accent);
+        }
+
+        .gallery-info {
+            text-align: center;
+            color: var(--text-primary);
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .gallery-info h3 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
+            color: var(--accent);
+        }
+
+        .gallery-counter {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            font-weight: 400;
         }
 
         /* Customize Modal */
@@ -684,10 +706,10 @@
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
-            z-index: 3000;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 0.5rem 1rem;
         }
 
         .customize-modal.active {
@@ -695,206 +717,372 @@
         }
 
         .customize-modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: modalSlideIn 0.3s ease-out;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .customize-header {
+            position: relative;
+            width: 350px;
+            max-height: 80vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+            flex-direction: column;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
         }
 
-        .customize-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
+        .customize-scrollable-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem 1rem;
         }
 
-        .customize-close-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
+        .customize-scrollable-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .customize-scrollable-area::-webkit-scrollbar-track {
             background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        .customize-scrollable-area::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .customize-scrollable-area::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
+        .customize-modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
+        .customize-modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .customize-modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
+        .customize-close {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 28px;
+            height: 24px;
             border-radius: 50%;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 1.2rem;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
         }
 
-        .customize-close-btn:hover {
+        .customize-close:hover {
             background: var(--accent);
             color: white;
         }
 
-        .customize-section {
+        .customize-title {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .customize-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 700;
             margin-bottom: 1.5rem;
         }
 
-        .customize-section-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .customize-section-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+        .customize-subtitle.color-subtitle {
+            margin-top: 2rem;
         }
 
         .customize-options {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
-        .customize-option-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid var(--border);
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-        }
-
-        .customize-option-btn:hover {
-            border-color: var(--accent);
-        }
-
-        .customize-option-btn.selected-option,
-        .customize-option-btn.selected {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .color-option-btn {
-            width: 48px;
-            height: 48px;
-            border: 3px solid transparent;
-            border-radius: 50%;
-            cursor: pointer;
-            padding: 0;
-            transition: all 0.2s ease;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .color-option-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .color-option-btn.selected {
-            border-color: var(--text-primary);
-            box-shadow: 0 0 0 3px white, 0 0 0 5px var(--accent);
-        }
-
-        .customize-custom-input {
+        .size-custom-input {
             display: none;
             margin-top: 0.75rem;
         }
 
-        .customize-custom-input.visible {
+        .size-custom-input.visible {
             display: block;
         }
 
-        .customize-custom-input input {
+        .size-custom-input input {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.9rem;
-            transition: border-color 0.2s ease;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            transition: border-color 0.3s ease;
         }
 
-        .customize-custom-input input:focus {
+        .size-custom-input input:focus {
             outline: none;
             border-color: var(--accent);
         }
 
-        .customize-footer {
+        .size-custom-input input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .customize-modal-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
+            flex-shrink: 0;
+            background: white;
+            padding: 1rem 1.5rem;
             border-top: 1px solid var(--border);
         }
 
-        .customize-price {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .customize-add-btn {
-            padding: 0.75rem 2rem;
+        .customize-add-button {
+            width: 100%;
+            padding: 0.5rem 1rem;
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-align: center;
         }
 
-        .customize-add-btn:hover:not(:disabled) {
-            background: var(--accent-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-        }
-
-        .customize-add-btn:disabled {
-            opacity: 0.5;
+        .customize-add-button:disabled {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
             cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .customize-add-button:disabled:hover {
+            background: var(--bg-secondary);
+            transform: none;
+        }
+
+        .customize-add-button:hover {
+            background: var(--accent-light);
+            transform: scale(1.02);
+        }
+
+        .customize-options .customize-option-btn {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .customize-option-btn.default-option {
+            background: white;
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .customize-option-btn.selected-option {
+            background: white;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .customize-option-btn.selected {
+            background: white;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .color-option-btn {
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .color-option-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .color-option-btn .color-name {
+            display: none;
+        }
+
+        /* Custom tooltip */
+        .color-option-btn::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .color-option-btn:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .color-option-btn:hover {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .color-option-btn.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .color-options-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .color-divider {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: var(--border);
+            margin: 0.5rem 0;
+        }
+
+        .color-marble-notice {
+            grid-column: 1 / -1;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
+
+        .customize-option-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         /* Footer */
         footer {
+            padding: 4rem 4rem;
             background: var(--bg-primary);
-            padding: 3rem 2rem;
             border-top: 1px solid var(--border);
-            text-align: center;
         }
 
-        footer p {
-            color: var(--text-secondary);
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p {
             font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 300;
         }
 
         /* Responsive */
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
             .products-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
@@ -923,17 +1111,113 @@
                 padding: 5rem 1.5rem 1.5rem;
             }
 
-            .collection-hero h1 {
-                font-size: 2rem;
-            }
-
             .products-section {
-                padding: 2rem 1.5rem 4rem;
+                padding: 4rem 2rem;
             }
 
             .products-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .image-gallery-modal-content {
+                padding: 0.5rem 1rem;
+                width: 95vw;
+            }
+
+            .gallery-arrow {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .gallery-arrow.prev {
+                left: 0;
+            }
+
+            .gallery-arrow.next {
+                right: 0;
+            }
+
+            .gallery-close {
+                top: 0.75rem;
+                right: 0.75rem;
+                width: 32px;
+                height: 32px;
+            }
+
+            .gallery-info h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #232E3D;
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            z-index: 9999;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .cookie-banner.show {
+            display: block;
+        }
+
+        .cookie-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .cookie-title {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .cookie-text {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .cookie-note {
+            font-size: 0.8rem;
+            color: #2ecc71;
+            margin-bottom: 1rem;
+        }
+
+        .cookie-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--accent);
+            color: white;
+        }
+
+        .cookie-btn:hover {
+            background: var(--accent-light);
+        }
+
+        @media (max-width: 768px) {
+            .cookie-banner {
+                padding: 1.25rem 1.5rem;
             }
         }
     </style>
@@ -942,7 +1226,7 @@
     <!-- Header -->
     <header>
         <a href="/" class="logo">
-            <img src="/ls-logo-beige.svg" alt="LayerStore" width="60" height="24" loading="eager">
+            <img src="/ls-logo-beige.svg" alt="LayerStore Logo" width="60" height="24" loading="eager" decoding="sync" fetchpriority="high">
         </a>
         <nav>
             <a href="/">Startseite</a>
@@ -957,14 +1241,14 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Collection Hero -->
     <section class="collection-hero">
-        <h1>✨ Schriftzüge</h1>
+        <h1>Schriftzüge</h1>
         <p>Handgefertigte Buchstaben und personalisierte Beschriftungen für dein Zuhause</p>
     </section>
 
-    <!-- Products Section -->
-    <section class="products-section">
+    <!-- Products Grid -->
+    <section id="produkte" class="products-section">
         <div class="products-grid">
 
             <!-- Product 1: Abitur -->
@@ -1002,7 +1286,7 @@
             </div>
 
             <!-- Product 3: Ostern -->
-            <div class="product-card" onclick="openImageGallery('easter', 0)">
+            <div class="product-card" onclick="openImageGallery('ostern', 0)">
                 <div class="product-image-container">
                     <img src="images/easter1.jpeg" alt="Ostern" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
                     <img src="images/easter2.jpeg" alt="Ostern" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
@@ -1012,8 +1296,8 @@
                     <p>Frohe Ostern - ein fröhlicher Schriftzug für das Osterfest.</p>
                     <div class="product-price">6,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="easter" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="easter" onclick="event.stopPropagation(); openCustomizeModal('easter')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="ostern" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="ostern" onclick="event.stopPropagation(); openCustomizeModal('ostern')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1056,99 +1340,92 @@
     </section>
 
     <!-- Footer -->
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2025 LayerStore. Alle Rechte vorbehalten.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="/contact">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
     </footer>
 
-    <!-- Image Gallery Modal -->
-    <div class="image-gallery-modal" id="imageGalleryModal">
-        <div class="image-gallery-modal-content">
-            <button class="gallery-close-btn" onclick="closeImageGallery()">&times;</button>
-            <div class="gallery-image-container">
-                <img src="" alt="" class="gallery-image" id="galleryImage">
+    <!-- Customize Modal -->
+    <div class="customize-modal" id="customizeModal">
+        <button class="customize-close" id="closeCustomizeModal">&times;</button>
+        <div class="customize-modal-content">
+            <div class="customize-scrollable-area">
+                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
+                <p class="customize-subtitle" id="sizeSubtitle">Größe</p>
+                <div class="customize-options" id="sizeOptions">
+                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="size-custom-input" id="sizeCustomInput">
+                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
+                </div>
+                <p class="customize-subtitle color-subtitle" id="colorSubtitle">Farbe</p>
+                <div class="customize-options" id="colorOptions">
+                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="color-options-grid" id="colorGrid">
+                    <!-- Colors will be loaded here by JavaScript -->
+                </div>
             </div>
-            <div class="gallery-nav">
-                <button class="gallery-nav-btn" id="galleryPrevBtn" onclick="navigateGallery(-1)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 18l-6-6 6-6"/>
-                    </svg>
-                </button>
-                <button class="gallery-nav-btn" id="galleryNextBtn" onclick="navigateGallery(1)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </button>
+            <div class="customize-modal-actions">
+                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
             </div>
         </div>
     </div>
 
-    <!-- Customize Modal -->
-    <div class="customize-modal" id="customizeModal">
-        <div class="customize-modal-content">
-            <div class="customize-header">
-                <h2 id="customizeProductName">Produkt anpassen</h2>
-                <button class="customize-close-btn" onclick="closeCustomizeModal()">&times;</button>
+    <!-- Image Gallery Modal -->
+    <div class="image-gallery-modal" id="imageGalleryModal">
+        <button class="gallery-close" id="closeImageGallery">&times;</button>
+        <div class="image-gallery-modal-content">
+            <div class="gallery-image-container">
+                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
             </div>
-
-            <!-- Size Options -->
-            <div class="customize-section">
-                <div class="customize-section-title">Größe</div>
-                <div class="customize-section-subtitle" id="sizeSubtitle">Wähle eine Größe aus</div>
-                <div class="customize-options" id="sizeOptions">
-                    <button class="customize-option-btn" onclick="selectSizeOption('small', this)">Klein (15cm)</button>
-                    <button class="customize-option-btn" onclick="selectSizeOption('medium', this)">Mittel (20cm)</button>
-                    <button class="customize-option-btn" onclick="selectSizeOption('large', this)">Groß (25cm)</button>
-                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">Wie auf dem Foto</button>
-                </div>
-                <div class="customize-custom-input" id="sizeCustomInput">
-                    <input type="text" id="sizeCustomText" placeholder="Gewünschte Maßangabe in cm...">
+            <div class="gallery-info">
+                <h3 id="galleryProductName">Produktname</h3>
+                <div class="gallery-counter">
+                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">3</span>
                 </div>
             </div>
-
-            <!-- Color Options -->
-            <div class="customize-section">
-                <div class="customize-section-title">Farbe</div>
-                <div class="customize-section-subtitle">Wähle eine Farbe aus</div>
-                <div class="customize-options" id="colorOptions">
-                    <button class="customize-option-btn" onclick="selectColorOption(null, this)">Wie auf dem Foto</button>
-                    <button class="customize-option-btn" onclick="showColorGrid(this)">Eigene Farbe wählen</button>
-                </div>
-                <div class="customize-options" id="colorGrid" style="display: none; margin-top: 1rem;">
-                    <button class="color-option-btn" style="background-image: url('/colors/white.jpeg')" onclick="selectColor('/colors/white.jpeg', 'Weiß', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/black.jpeg')" onclick="selectColor('/colors/black.jpeg', 'Schwarz', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/pink.jpeg')" onclick="selectColor('/colors/pink.jpeg', 'Pink', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/new-pink.jpeg')" onclick="selectColor('/colors/new-pink.jpeg', 'New Pink', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/sakura-pink.jpeg')" onclick="selectColor('/colors/sakura-pink.jpeg', 'Sakura Pink', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/red.jpeg')" onclick="selectColor('/colors/red.jpeg', 'Rot', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/peach.jpeg')" onclick="selectColor('/colors/peach.jpeg', 'Pfirsich', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/yellow.jpeg')" onclick="selectColor('/colors/yellow.jpeg', 'Gelb', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/mint-green.jpeg')" onclick="selectColor('/colors/mint-green.jpeg', 'Mintgrün', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/light-green.jpeg')" onclick="selectColor('/colors/light-green.jpeg', 'Hellgrün', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/olive-green.jpeg')" onclick="selectColor('/colors/olive-green.jpeg', 'Olivgrün', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/sky-blue.jpeg')" onclick="selectColor('/colors/sky-blue.jpeg', 'Himmelblau', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/purple.jpeg')" onclick="selectColor('/colors/purple.jpeg', 'Lila', this)"></button>
-                    <button class="color-option-btn" style="background-image: url('/colors/chestnut-brown-marble.jpeg')" onclick="selectColor('/colors/chestnut-brown-marble.jpeg', 'Kastanienbraun Marmor', this)"></button>
-                </div>
-            </div>
-
-            <!-- Lettering Text -->
-            <div class="customize-section">
-                <div class="customize-section-title">Lettering Text</div>
-                <div class="customize-section-subtitle">Gib deinen gewünschten Text ein</div>
-                <div class="customize-custom-input visible">
-                    <input type="text" id="letteringText" placeholder="Dein Text oder Buchstabe..." maxlength="30">
-                </div>
-            </div>
-
-            <div class="customize-footer">
-                <div class="customize-price" id="customizePrice">6,00 €</div>
-                <button class="customize-add-btn" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
-            </div>
+            <button class="gallery-arrow prev" id="galleryPrev">&#10094;</button>
+            <button class="gallery-arrow next" id="galleryNext">&#10095;</button>
         </div>
     </div>
 
     <script>
-        // Product data
+        // Product data with all images in correct order
         window.products = {
             abitur: {
                 name: 'Abitur',
@@ -1160,7 +1437,7 @@
                 price: '6,00 €',
                 images: ['Doglover1.jpeg', 'Doglover2.jpeg']
             },
-            easter: {
+            ostern: {
                 name: 'Ostern',
                 price: '6,00 €',
                 images: ['easter1.jpeg', 'easter2.jpeg']
@@ -1174,48 +1451,228 @@
                 name: 'Spring',
                 price: '6,00 €',
                 images: ['spring1.jpeg', 'spring2.jpeg']
+            },    </script>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="/contact">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
+    </footer>
+
+    <!-- Customize Modal -->
+    <div class="customize-modal" id="customizeModal">
+        <button class="customize-close" id="closeCustomizeModal">&times;</button>
+        <div class="customize-modal-content">
+            <div class="customize-scrollable-area">
+                <h2 class="customize-title" id="customizeProductName">Produkt</h2>
+                <p class="customize-subtitle">Größe</p>
+                <div class="customize-options" id="sizeOptions">
+                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="size-custom-input" id="sizeCustomInput">
+                    <input type="text" id="sizeCustomText" placeholder="Bitte beschreiben Sie Ihre gewünschte Größe...">
+                </div>
+                <p class="customize-subtitle color-subtitle">Farbe</p>
+                <div class="customize-options" id="colorOptions">
+                    <button class="customize-option-btn" onclick="selectColorOption('as-photo', this)">
+                        Wie auf dem Foto
+                    </button>
+                    <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
+                        Individuell
+                    </button>
+                </div>
+                <div class="color-options-grid" id="colorGrid">
+                    <!-- Colors will be loaded here by JavaScript -->
+                </div>
+            </div>
+            <div class="customize-modal-actions">
+                <button class="customize-add-button" id="addToCartButton" disabled onclick="saveCustomizeSelection()">In den Warenkorb</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Gallery Modal -->
+    <div class="image-gallery-modal" id="imageGalleryModal">
+        <button class="gallery-close" id="closeImageGallery">&times;</button>
+        <div class="image-gallery-modal-content">
+            <div class="gallery-image-container">
+                <img src="" alt="Product Image" class="gallery-image" id="galleryImage">
+            </div>
+            <div class="gallery-info">
+                <h3 id="galleryProductName">Produktname</h3>
+                <div class="gallery-counter">
+                    <span id="galleryCurrentIndex">1</span> / <span id="galleryTotalImages">3</span>
+                </div>
+            </div>
+            <button class="gallery-arrow prev" id="galleryPrev">&#10094;</button>
+            <button class="gallery-arrow next" id="galleryNext">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        // Gallery functionality
+        const modal = document.getElementById('imageGalleryModal');
+        const galleryImage = document.getElementById('galleryImage');
+        const galleryProductName = document.getElementById('galleryProductName');
+        const galleryCurrentIndex = document.getElementById('galleryCurrentIndex');
+        const galleryTotalImages = document.getElementById('galleryTotalImages');
+
+        let currentProduct = null;
+        let currentImageIndex = 0;
+
+        function openImageGallery(productId, startIndex = 0) {
+            currentProduct = window.products[productId];
+            currentImageIndex = startIndex;
+
+            updateGalleryImage();
+            preloadAdjacentImages();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageGallery() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            currentProduct = null;
+            currentImageIndex = 0;
+        }
+
+        function updateGalleryImage() {
+            if (!currentProduct) return;
+
+            // Show loading state
+            document.querySelector('.gallery-image-container').classList.add('loading');
+            galleryImage.classList.remove('loaded');
+
+            const imagePath = 'images/' + currentProduct.images[currentImageIndex];
+
+            // Load new image
+            galleryImage.src = imagePath;
+            galleryProductName.textContent = currentProduct.name;
+            galleryCurrentIndex.textContent = currentImageIndex + 1;
+            galleryTotalImages.textContent = currentProduct.images.length;
+        }
+
+        // Add image load event listener
+        galleryImage.addEventListener('load', function() {
+            this.classList.add('loaded');
+            document.querySelector('.gallery-image-container').classList.remove('loading');
+        });
+
+        // Preload next and previous images for instant navigation
+        function preloadAdjacentImages() {
+            if (!currentProduct) return;
+
+            const prevIndex = currentImageIndex - 1;
+            const nextIndex = currentImageIndex + 1;
+
+            const indicesToPreload = [];
+            if (prevIndex >= 0) indicesToPreload.push(prevIndex);
+            if (nextIndex < currentProduct.images.length) indicesToPreload.push(nextIndex);
+
+            indicesToPreload.forEach(index => {
+                const img = new Image();
+                img.src = 'images/' + currentProduct.images[index];
+            });
+        }
+
+        function navigateGallery(direction) {
+            if (!currentProduct) return;
+
+            currentImageIndex += direction;
+
+            if (currentImageIndex < 0) {
+                currentImageIndex = currentProduct.images.length - 1;
+            } else if (currentImageIndex >= currentProduct.images.length) {
+                currentImageIndex = 0;
             }
-        };
+
+            updateGalleryImage();
+            preloadAdjacentImages();
+        }
+
+        // Event listeners
+        document.getElementById('closeImageGallery').addEventListener('click', closeImageGallery);
+        document.getElementById('galleryPrev').addEventListener('click', () => navigateGallery(-1));
+        document.getElementById('galleryNext').addEventListener('click', () => navigateGallery(1));
+
+        // Close on background click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeImageGallery();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!modal.classList.contains('active')) return;
+
+            if (e.key === 'Escape') {
+                closeImageGallery();
+            } else if (e.key === 'ArrowLeft') {
+                navigateGallery(-1);
+            } else if (e.key === 'ArrowRight') {
+                navigateGallery(1);
+            }
+        });
 
         // Cart functionality
-        const STORAGE_KEY = 'layerstore_cart';
-
         function getCart() {
-            try {
-                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            } catch {
-                return [];
-            }
+            const cart = localStorage.getItem('layerstore_cart');
+            return cart ? JSON.parse(cart) : [];
         }
 
         function saveCart(cart) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+            // Save to both cart and cart_test
+            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
+            localStorage.setItem('layerstore_cart_test', JSON.stringify(cart));
             updateCartCount();
         }
 
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const cartCount = document.getElementById('cartCount');
-            if (count > 0) {
-                cartCount.textContent = count;
-                cartCount.classList.add('visible');
-            } else {
-                cartCount.classList.remove('visible');
-            }
-        }
-
-        function addToCart(button) {
-            const productId = button.dataset.product;
+        function addToCart(buttonElement) {
+            const productId = buttonElement.getAttribute('data-product');
             const product = window.products[productId];
-            if (!product) return;
+
+            if (!product) {
+                console.error('Product not found:', productId);
+                return;
+            }
 
             const cart = getCart();
-            const existingItem = cart.find(item =>
-                item.id === productId &&
-                !item.sizeOption ||
-                item.sizeOption === 'as-photo'
-            );
+
+            // Check if product already exists in cart
+            const existingItem = cart.find(item => item.id === productId);
 
             if (existingItem) {
                 existingItem.quantity += 1;
@@ -1225,295 +1682,553 @@
                     name: product.name,
                     price: product.price,
                     image: `/collections/schriftzuege/images/${product.images[0]}`,
-                    sizeOption: 'as-photo',
-                    colorOption: null,
-                    quantity: 1
+                    quantity: 1,
+                    option: 'as-photo'
                 });
             }
 
             saveCart(cart);
+            showCartNotification();
+            updateProductButtons(buttonElement);
+        }
 
-            button.textContent = 'Hinzugefügt!';
-            button.classList.add('added');
+        function addToCartWithOption(id, name, price, image, option, color = null, sizeDescription = null) {
+            const cart = getCart();
+
+            // Check if marble color is selected
+            const isMarble = color && marbleColors.includes(color);
+            let finalPrice = price;
+            let basePrice = price;
+
+            if (isMarble) {
+                // Parse price (e.g., "15,00 €" -> 15.00)
+                const priceValue = parseFloat(price.replace(',', '.').replace('€', '').trim());
+                const marblePrice = priceValue * 1.20; // +20%
+                finalPrice = marblePrice.toFixed(2).replace('.', ',') + ' €';
+            }
+
+            // Create unique variant key from id + color + option + sizeDescription
+            // This ensures different variants of the same product are treated as separate cart items
+            const variantKey = `${id}|${color || 'null'}|${option || 'as-photo'}|${sizeDescription || 'null'}`;
+
+            // Check if product with EXACT same variant already exists in cart
+            const existingItem = cart.find(item => {
+                const itemKey = `${item.id}|${item.color || 'null'}|${item.option || 'as-photo'}|${item.sizeDescription || 'null'}`;
+                return itemKey === variantKey;
+            });
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: id,
+                    name: name,
+                    price: finalPrice,
+                    basePrice: basePrice,
+                    image: image,
+                    quantity: 1,
+                    option: option,
+                    color: color,
+                    sizeDescription: sizeDescription,
+                    isMarble: isMarble
+                });
+            }
+
+            saveCart(cart);
+            showCartNotification();
+            updateProductButtons();
+        }
+
+        function removeFromCart(id) {
+            let cart = getCart();
+            cart = cart.filter(item => item.id !== id);
+            saveCart(cart);
+            updateProductButtons();
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = totalCount;
+
+            if (totalCount > 0) {
+                cartCount.classList.add('visible');
+            } else {
+                cartCount.classList.remove('visible');
+            }
+        }
+
+        function updateProductButtons(clickedButton = null) {
+            const cart = getCart();
+
+            // Update all product cards
+            document.querySelectorAll('.product-card').forEach(card => {
+                const button = card.querySelector('.add-to-cart-btn');
+                const customizeBtn = card.querySelector('.customize-btn');
+                if (!button) return;
+
+                const productId = button.getAttribute('data-product');
+                const cartItem = cart.find(item => item.id === productId);
+                const buttonsContainer = card.querySelector('.product-buttons');
+
+                // Remove existing qty container if any
+                const existingQty = buttonsContainer.querySelector('.product-qty-container');
+                if (existingQty) {
+                    existingQty.remove();
+                }
+
+                if (cartItem && cartItem.quantity > 0) {
+                    // Hide add-to-cart button
+                    button.style.display = 'none';
+                    button.classList.remove('added');
+
+                    // Create and show quantity controls with text (insert after button, before customize)
+                    const qtyContainer = document.createElement('div');
+                    qtyContainer.className = 'product-qty-container visible';
+                    qtyContainer.innerHTML = `
+                        <span class="product-qty-text">HINZUGEFÜGT</span>
+                        <div class="product-qty-controls">
+                            <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', -1)">−</button>
+                            <span class="product-qty-value">${cartItem.quantity}</span>
+                            <button class="product-qty-btn" onclick="event.stopPropagation(); updateProductQuantity('${productId}', 1)">+</button>
+                        </div>
+                    `;
+                    buttonsContainer.insertBefore(qtyContainer, customizeBtn);
+                } else {
+                    // Show add-to-cart button
+                    button.style.display = 'block';
+                    button.textContent = 'In den Warenkorb';
+                    button.classList.remove('added');
+                }
+            });
+        }
+
+        // Update product quantity from product card
+        function updateProductQuantity(productId, change) {
+            const cart = getCart();
+            const item = cart.find(i => i.id === productId);
+
+            if (!item) return;
+
+            item.quantity += change;
+
+            // Remove item if quantity is 0
+            if (item.quantity <= 0) {
+                const index = cart.indexOf(item);
+                cart.splice(index, 1);
+            }
+
+            saveCart(cart);
+            updateCartCount();
+            updateProductButtons();
+        }
+
+        function showCartNotification() {
+            // Create notification element if it doesn't exist
+            let notification = document.getElementById('cartNotification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'cartNotification';
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: var(--accent);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 3000;
+                    opacity: 0;
+                    transform: translateY(20px);
+                    transition: all 0.3s ease;
+                `;
+                document.body.appendChild(notification);
+            }
+
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            notification.textContent = `${totalCount} ${totalCount === 1 ? 'Artikel' : 'Artikel'} im Warenkorb`;
+
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+
             setTimeout(() => {
-                button.textContent = 'In den Warenkorb';
-                button.classList.remove('added');
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
             }, 2000);
         }
 
-        // Image Gallery
-        let currentGalleryProduct = null;
-        let currentGalleryIndex = 0;
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            updateProductButtons(); // Check cart and update buttons on page load
+        });
 
-        function openImageGallery(productId, startIndex = 0) {
-            const product = window.products[productId];
-            if (!product || !product.images || product.images.length === 0) return;
-
-            currentGalleryProduct = productId;
-            currentGalleryIndex = startIndex;
-
-            const modal = document.getElementById('imageGalleryModal');
-            const galleryImage = document.getElementById('galleryImage');
-
-            galleryImage.classList.remove('loaded');
-            galleryImage.src = `/collections/schriftzuege/images/${product.images[startIndex]}`;
-            galleryImage.alt = product.name;
-            galleryImage.onload = () => galleryImage.classList.add('loaded');
-
-            updateGalleryNavButtons();
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeImageGallery() {
-            const modal = document.getElementById('imageGalleryModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            currentGalleryProduct = null;
-            currentGalleryIndex = 0;
-        }
-
-        function navigateGallery(direction) {
-            if (!currentGalleryProduct) return;
-
-            const product = window.products[currentGalleryProduct];
-            if (!product || !product.images) return;
-
-            currentGalleryIndex += direction;
-            if (currentGalleryIndex < 0) currentGalleryIndex = product.images.length - 1;
-            if (currentGalleryIndex >= product.images.length) currentGalleryIndex = 0;
-
-            const galleryImage = document.getElementById('galleryImage');
-            galleryImage.classList.remove('loaded');
-            galleryImage.src = `/collections/schriftzuege/images/${product.images[currentGalleryIndex]}`;
-            galleryImage.onload = () => galleryImage.classList.add('loaded');
-
-            updateGalleryNavButtons();
-        }
-
-        function updateGalleryNavButtons() {
-            const product = window.products[currentGalleryProduct];
-            if (!product || !product.images) return;
-
-            const prevBtn = document.getElementById('galleryPrevBtn');
-            const nextBtn = document.getElementById('galleryNextBtn');
-
-            prevBtn.disabled = product.images.length <= 1;
-            nextBtn.disabled = product.images.length <= 1;
-        }
-
-        // Customize Modal
+        // Customize Modal Functions
+        const customizeModal = document.getElementById('customizeModal');
+        const colorGrid = document.getElementById('colorGrid');
         let currentCustomizeProductId = null;
-        let selectedSizeOption = null;
-        let selectedColorOption = null;
-        let selectedColorName = null;
+        let selectedSizeOption = null; // Track size selection: 'as-photo' or 'custom'
+        let selectedColorOption = null; // Track if color option has been selected
+
+        // Available colors from /colors folder (only files without numbers)
+        const availableColors = [
+            'black', 'light-green', 'mint-green',
+            'new-pink', 'olive-green', 'peach', 'pink', 'purple',
+            'red', 'sakura-pink', 'sky-blue', 'white', 'yellow',
+            'chestnut-brown-marble'
+        ];
+
+        // Marble colors (with extra cost)
+        const marbleColors = ['chestnut-brown-marble'];
+
+        // Human-readable color names
+        const colorLabels = {
+            'black': 'Schwarz',
+            'chestnut-brown-marble': 'Kastanienbraun Marmor',
+            'light-green': 'Hellgrün',
+            'mint-green': 'Minzgrün',
+            'new-pink': 'Neu Pink',
+            'olive-green': 'Olivgrün',
+            'peach': 'Pfirsich',
+            'pink': 'Pink',
+            'purple': 'Lila',
+            'red': 'Rot',
+            'sakura-pink': 'Sakura Pink',
+            'sky-blue': 'Himmelblau',
+            'white': 'Weiß',
+            'yellow': 'Gelb'
+        };
+
+        function getColorLabel(colorId) {
+            return colorLabels[colorId] || colorId;
+        }
 
         function openCustomizeModal(productId) {
             currentCustomizeProductId = productId;
             const product = window.products[productId];
 
-            document.getElementById('customizeProductName').textContent = product.name;
-            document.getElementById('customizePrice').textContent = product.price;
-            document.getElementById('letteringText').value = '';
+            if (!product) {
+                console.error('Product not found:', productId);
+                return;
+            }
 
-            // Reset all selections
             selectedSizeOption = null;
             selectedColorOption = null;
-            selectedColorName = null;
+            selectedColor = null;
+            document.getElementById('customizeProductName').textContent = product.name;
 
-            // Reset all button states
+            // Check if this product should only show color options (no size)
+            const productsWithOnlyColor = ['legsegg'];
+
+            if (productsWithOnlyColor.includes(productId)) {
+                // Hide size options for products that only have color selection
+                document.getElementById('sizeSubtitle').style.display = 'none';
+                document.getElementById('sizeOptions').style.display = 'none';
+                document.getElementById('sizeCustomInput').classList.remove('visible');
+
+                // Automatically set size to 'as-photo' for these products
+                selectedSizeOption = 'as-photo';
+            } else {
+                // Show size options for products that have both size and color
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('sizeOptions').style.display = 'flex';
+            }
+
+            // Hide color grid initially, show both sections
+            document.getElementById('colorOptions').style.display = 'flex';
+            document.getElementById('colorGrid').classList.remove('visible');
+            document.getElementById('colorGrid').style.display = 'none';
+
+            // Reset all button states in both sections
             const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
             allButtons.forEach(btn => {
                 btn.classList.remove('selected-option', 'selected');
             });
 
+            // Reset color button states
             const colorButtons = document.querySelectorAll('.color-option-btn');
             colorButtons.forEach(btn => {
                 btn.classList.remove('selected');
             });
 
+            // Reset size custom input
             document.getElementById('sizeCustomInput').classList.remove('visible');
             document.getElementById('sizeCustomText').value = '';
-            document.getElementById('colorGrid').classList.remove('visible');
-            document.getElementById('colorGrid').style.display = 'none';
 
+            // Disable add to cart button until BOTH selections are made (or just color for legsegg)
             document.getElementById('addToCartButton').disabled = true;
 
-            const modal = document.getElementById('customizeModal');
-            modal.classList.add('active');
+            customizeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function closeCustomizeModal() {
-            const modal = document.getElementById('customizeModal');
-            modal.classList.remove('active');
+            customizeModal.classList.remove('active');
             document.body.style.overflow = '';
             currentCustomizeProductId = null;
             selectedSizeOption = null;
             selectedColorOption = null;
-            selectedColorName = null;
+
+            // Reset view to initial state
+            setTimeout(() => {
+                document.getElementById('colorOptions').style.display = 'flex';
+                document.getElementById('colorGrid').style.display = 'none';
+                document.getElementById('sizeOptions').style.display = 'flex';
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('colorGrid').classList.remove('visible');
+            }, 300);
         }
 
-        function selectSizeOption(size, btnElement) {
-            document.querySelectorAll('#sizeOptions .customize-option-btn').forEach(btn => {
-                btn.classList.remove('selected-option');
-            });
-            btnElement.classList.add('selected-option');
-            selectedSizeOption = size;
+        function loadColorOptions() {
+            // Only load colors when called
+            if (colorGrid.innerHTML.trim() !== '') {
+                colorGrid.innerHTML = '';
 
-            const customInput = document.getElementById('sizeCustomInput');
-            if (size === 'custom') {
-                customInput.classList.add('visible');
-                document.getElementById('sizeCustomText').focus();
-            } else {
-                customInput.classList.remove('visible');
+                let marbleDividerAdded = false;
+
+                availableColors.forEach(color => {
+                    // Add divider before marble colors
+                    if (marbleColors.includes(color) && !marbleDividerAdded) {
+                        const divider = document.createElement('div');
+                        divider.className = 'color-divider';
+                        colorGrid.appendChild(divider);
+
+                        const notice = document.createElement('div');
+                        notice.className = 'color-marble-notice';
+                        notice.textContent = 'Marmorfarbe (+20% Aufschlag)';
+                        colorGrid.appendChild(notice);
+
+                        marbleDividerAdded = true;
+                    }
+
+                    const btn = document.createElement('button');
+                    btn.className = 'color-option-btn';
+                    btn.onclick = () => selectColor(color, btn);
+                    btn.title = getColorLabel(color);
+
+                    const img = document.createElement('img');
+                    img.src = `/colors/${color}.jpeg`;
+                    img.alt = color;
+                    img.loading = 'lazy';
+
+                    const colorName = document.createElement('span');
+                    colorName.className = 'color-name';
+                    colorName.textContent = getColorLabel(color);
+
+                    btn.appendChild(img);
+                    btn.appendChild(colorName);
+                    colorGrid.appendChild(btn);
+                });
             }
-
-            updateAddToCartButton();
         }
 
-        function selectColorOption(color, btnElement) {
-            document.querySelectorAll('#colorOptions .customize-option-btn').forEach(btn => {
-                btn.classList.remove('selected-option');
-            });
-            btnElement.classList.add('selected-option');
-            selectedColorOption = color;
-            selectedColorName = null;
+        let selectedColor = null;
 
-            document.getElementById('colorGrid').classList.remove('visible');
-            document.getElementById('colorGrid').style.display = 'none';
+        function checkAndUpdateCartButton() {
+            // Enable button based on product type
+            const addToCartButton = document.getElementById('addToCartButton');
+            const productsWithOnlyColor = ['legsegg'];
 
-            updateAddToCartButton();
+            if (productsWithOnlyColor.includes(currentCustomizeProductId)) {
+                // For legsegg, only need color selection
+                if (selectedColorOption !== null) {
+                    addToCartButton.disabled = false;
+                } else {
+                    addToCartButton.disabled = true;
+                }
+            } else {
+                // For other products, need BOTH size AND color options selected
+                if (selectedSizeOption !== null && selectedColorOption !== null) {
+                    addToCartButton.disabled = false;
+                } else {
+                    addToCartButton.disabled = true;
+                }
+            }
         }
 
-        function showColorGrid(btnElement) {
-            document.querySelectorAll('#colorOptions .customize-option-btn').forEach(btn => {
-                btn.classList.remove('selected-option');
-            });
-            btnElement.classList.add('selected-option');
-
-            document.getElementById('colorGrid').classList.add('visible');
-            document.getElementById('colorGrid').style.display = 'flex';
-        }
-
-        function selectColor(color, colorName, btnElement) {
+        function selectColor(color, btnElement) {
+            // Remove selected from all color buttons
             document.querySelectorAll('.color-option-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
+
             btnElement.classList.add('selected');
-            selectedColorOption = color;
-            selectedColorName = colorName;
-            updateAddToCartButton();
+            selectedColor = color;
         }
-
-        function updateAddToCartButton() {
-            const addToCartButton = document.getElementById('addToCartButton');
-            const letteringText = document.getElementById('letteringText').value.trim();
-
-            if (selectedSizeOption && selectedColorOption !== null && letteringText) {
-                addToCartButton.disabled = false;
-            } else {
-                addToCartButton.disabled = true;
-            }
-        }
-
-        // Listen for lettering text input
-        document.addEventListener('DOMContentLoaded', () => {
-            const letteringInput = document.getElementById('letteringText');
-            if (letteringInput) {
-                letteringInput.addEventListener('input', updateAddToCartButton);
-            }
-        });
 
         function saveCustomizeSelection() {
-            const letteringText = document.getElementById('letteringText').value.trim();
+            // Get size description if user selected custom size and entered text
             const sizeCustomText = document.getElementById('sizeCustomText');
-            const sizeDescription = (selectedSizeOption === 'custom' && sizeCustomText.value.trim())
-                ? sizeCustomText.value.trim()
-                : null;
+            const sizeDescription = (selectedSizeOption === 'custom' && sizeCustomText.value.trim()) ? sizeCustomText.value.trim() : null;
 
+            // Use 'as-photo' as default if no size was selected
             const sizeOptionToSave = selectedSizeOption || 'as-photo';
+
+            // Get product data
             const product = window.products[currentCustomizeProductId];
+            const productPrice = product ? product.price : null;
+            const productImage = product && product.images && product.images[0] ? `/collections/schriftzuege/images/${product.images[0]}` : null;
 
-            const colorDescription = selectedColorName
-                ? selectedColorName
-                : (selectedColorOption ? 'Wie auf dem Foto' : null);
-
-            const displayName = letteringText
-                ? `${product.name} - "${letteringText}"`
-                : product.name;
-
-            const cart = getCart();
-            const cartItem = {
-                id: currentCustomizeProductId,
-                name: displayName,
-                price: product.price,
-                image: `/collections/schriftzuege/images/${product.images[0]}`,
-                sizeOption: sizeOptionToSave,
-                sizeDescription: sizeDescription,
-                colorOption: colorDescription,
-                letteringText: letteringText,
-                quantity: 1
-            };
-
-            const existingItem = cart.find(item =>
-                item.id === cartItem.id &&
-                item.sizeOption === cartItem.sizeOption &&
-                item.colorOption === cartItem.colorOption &&
-                item.letteringText === cartItem.letteringText
-            );
-
-            if (existingItem) {
-                existingItem.quantity += 1;
+            // Check if user selected a specific color
+            if (selectedColor) {
+                // User chose custom color
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, selectedColor, sizeDescription);
             } else {
-                cart.push(cartItem);
+                // User chose "Wie auf dem Foto" for color
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, null, sizeDescription);
             }
 
-            saveCart(cart);
+            // Reset selection and close modal
+            selectedColor = null;
             closeCustomizeModal();
+        }
 
-            // Show feedback
-            const button = document.querySelector(`[data-product="${currentCustomizeProductId}"].add-to-cart-btn`);
-            if (button) {
-                button.textContent = 'Hinzugefügt!';
-                button.classList.add('added');
-                setTimeout(() => {
-                    button.textContent = 'In den Warenkorb';
-                    button.classList.remove('added');
-                }, 2000);
+        function selectCustomizeOption(option) {
+            // 'Wie auf dem Foto' does nothing in both cases (for size and color sections)
+            if (option === 'as-photo') {
+                return;
+            }
+
+            // 'Individuell' buttons show color grid
+            if (option === 'color' || option === 'custom') {
+                document.getElementById('sizeOptions').style.display = 'none';
+                document.getElementById('colorOptions').style.display = 'none';
+                colorGrid.classList.add('visible');
+                loadColorOptions();
             }
         }
 
-        // Close modals on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeImageGallery();
-                closeCustomizeModal();
-            }
-        });
+        function selectSizeOption(option, btnElement) {
+            // Get all buttons in size options
+            const sizeButtons = document.querySelectorAll('#sizeOptions .customize-option-btn');
+            const sizeCustomInput = document.getElementById('sizeCustomInput');
 
-        // Close modals on backdrop click
-        document.getElementById('imageGalleryModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                closeImageGallery();
-            }
-        });
-
-        document.getElementById('customizeModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                closeCustomizeModal();
-            }
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCartCount();
-
-            window.addEventListener('storage', (e) => {
-                if (e.key === STORAGE_KEY) {
-                    updateCartCount();
-                }
+            // Remove all state classes from all size buttons
+            sizeButtons.forEach(btn => {
+                btn.classList.remove('default-option', 'selected-option');
             });
+
+            // Track selection
+            selectedSizeOption = option;
+
+            // Add selected state to clicked button
+            btnElement.classList.add('selected-option');
+
+            // Show/hide custom input based on selection
+            if (option === 'custom') {
+                sizeCustomInput.classList.add('visible');
+            } else {
+                sizeCustomInput.classList.remove('visible');
+                document.getElementById('sizeCustomText').value = '';
+            }
+
+            // Check if button should be enabled
+            checkAndUpdateCartButton();
+        }
+
+        function selectColorOption(option, btnElement) {
+            // Get all buttons in color options
+            const colorButtons = document.querySelectorAll('#colorOptions .customize-option-btn');
+
+            // Remove all state classes from all color buttons
+            colorButtons.forEach(btn => {
+                btn.classList.remove('default-option', 'selected-option');
+            });
+
+            // Add selected state to clicked button
+            btnElement.classList.add('selected-option');
+
+            // Track that color option has been selected
+            selectedColorOption = option;
+
+            if (option === 'custom') {
+                // Show color grid
+                colorGrid.style.display = 'grid';
+                loadColorOptions();
+            } else {
+                // Hide color grid when "Wie auf dem Foto" is selected
+                colorGrid.style.display = 'none';
+                // Also clear selected color state
+                selectedColor = null;
+                // Reset color button selections
+                const colorBtns = document.querySelectorAll('.color-option-btn');
+                colorBtns.forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            }
+
+            // Check if button should be enabled
+            checkAndUpdateCartButton();
+        }
+
+        // Event listeners for customize modal
+        document.getElementById('closeCustomizeModal').addEventListener('click', closeCustomizeModal);
+
+        customizeModal.addEventListener('click', (e) => {
+            if (e.target === customizeModal) {
+                closeCustomizeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (customizeModal.classList.contains('active') && e.key === 'Escape') {
+                closeCustomizeModal();
+            }
+        });
+    </script>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-title">
+                <strong>Cookies & LocalStorage</strong>
+            </p>
+            <p class="cookie-text">
+                Wir verwenden nur erforderliche Cookies für den Warenkorb.
+            </p>
+            <p class="cookie-note">
+                Keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gerät.
+            </p>
+            <button id="cookieAcceptBtn" class="cookie-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Cookie Consent
+        const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
+
+        function checkCookieConsent() {
+            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted';
+        }
+
+        function setCookieConsent() {
+            localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            const banner = document.getElementById('cookieBanner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkCookieConsent()) {
+                setTimeout(() => {
+                    const banner = document.getElementById('cookieBanner');
+                    if (banner) {
+                        banner.classList.add('show');
+                    }
+                }, 500);
+            }
+
+            const acceptBtn = document.getElementById('cookieAcceptBtn');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', setCookieConsent);
+            }
         });
     </script>
 </body>
