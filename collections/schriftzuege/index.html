@@ -1027,6 +1027,42 @@
             margin-top: 0.25rem;
         }
 
+        /* Abitur special options */
+        .abitur-options {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .abitur-options.visible {
+            display: grid;
+        }
+
+        .abitur-option-btn {
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .abitur-option-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .abitur-option-btn.selected {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
         .customize-option-btn:hover {
             border-color: var(--accent);
             color: var(--accent);
@@ -1398,6 +1434,11 @@
                     <button class="customize-option-btn" onclick="selectColorOption('custom', this)">
                         Individuell
                     </button>
+                </div>
+                <!-- Abitur special options -->
+                <div class="abitur-options" id="abiturOptions" style="display: none;">
+                    <button class="abitur-option-btn" onclick="selectAbiturOption('2026', this)">2026</button>
+                    <button class="abitur-option-btn" onclick="selectAbiturOption('abitur', this)">Abitur</button>
                 </div>
                 <div class="color-options-grid" id="colorGrid">
                 </div>
@@ -1796,6 +1837,7 @@
         let currentCustomizeProductId = null;
         let selectedSizeOption = null; // Track size selection: 'as-photo' or 'custom'
         let selectedColorOption = null; // Track if color option has been selected
+        let selectedAbiturOption = null; // Track Abitur special option
 
         // Available colors from /colors folder (only files without numbers)
         const availableColors = [
@@ -1842,13 +1884,32 @@
             selectedSizeOption = null;
             selectedColorOption = null;
             selectedColor = null;
+            selectedAbiturOption = null;
             document.getElementById('customizeProductName').textContent = product.name;
+
+            // Hide Abitur special options initially
+            document.getElementById('abiturOptions').style.display = 'none';
+            document.getElementById('abiturOptions').classList.remove('visible');
 
             // Check if this product should only show color options (no size)
             const productsWithOnlyColor = ['legsegg'];
             const productsWithOnlySize = ['farm'];
+            const productsWithAbiturOptions = ['abitur'];
 
-            if (productsWithOnlyColor.includes(productId)) {
+            if (productsWithAbiturOptions.includes(productId)) {
+                // Abitur: show size options + special Abitur options
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('sizeOptions').style.display = 'flex';
+
+                // Hide standard color options
+                document.getElementById('colorSubtitle').style.display = 'none';
+                document.getElementById('colorOptions').style.display = 'none';
+                document.getElementById('colorGrid').style.display = 'none';
+
+                // Show Abitur special options
+                document.getElementById('abiturOptions').style.display = 'grid';
+                document.getElementById('abiturOptions').classList.add('visible');
+            } else if (productsWithOnlyColor.includes(productId)) {
                 // Hide size options for products that only have color selection
                 document.getElementById('sizeSubtitle').style.display = 'none';
                 document.getElementById('sizeOptions').style.display = 'none';
@@ -1879,8 +1940,7 @@
                 document.getElementById('colorOptions').style.display = 'flex';
             }
 
-            // Hide color grid initially, show both sections
-            document.getElementById('colorOptions').style.display = 'flex';
+            // Hide color grid initially
             document.getElementById('colorGrid').classList.remove('visible');
             document.getElementById('colorGrid').style.display = 'none';
 
@@ -1888,6 +1948,12 @@
             const allButtons = document.querySelectorAll('#sizeOptions .customize-option-btn, #colorOptions .customize-option-btn');
             allButtons.forEach(btn => {
                 btn.classList.remove('selected-option', 'selected');
+            });
+
+            // Reset Abitur button states
+            const abiturButtons = document.querySelectorAll('.abitur-option-btn');
+            abiturButtons.forEach(btn => {
+                btn.classList.remove('selected');
             });
 
             // Reset color button states
@@ -1900,7 +1966,7 @@
             document.getElementById('sizeCustomInput').classList.remove('visible');
             document.getElementById('sizeCustomText').value = '';
 
-            // Disable add to cart button until BOTH selections are made (or just color for legsegg)
+            // Disable add to cart button until selections are made
             document.getElementById('addToCartButton').disabled = true;
 
             customizeModal.classList.add('active');
@@ -1913,6 +1979,7 @@
             currentCustomizeProductId = null;
             selectedSizeOption = null;
             selectedColorOption = null;
+            selectedAbiturOption = null;
 
             // Reset view to initial state
             setTimeout(() => {
@@ -1921,6 +1988,8 @@
                 document.getElementById('sizeOptions').style.display = 'flex';
                 document.getElementById('sizeSubtitle').style.display = 'block';
                 document.getElementById('colorGrid').classList.remove('visible');
+                document.getElementById('abiturOptions').style.display = 'none';
+                document.getElementById('abiturOptions').classList.remove('visible');
             }, 300);
         }
 
@@ -2000,6 +2069,19 @@
             selectedColor = color;
         }
 
+        function selectAbiturOption(option, btnElement) {
+            // Remove selected from all Abitur buttons
+            document.querySelectorAll('.abitur-option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            btnElement.classList.add('selected');
+            selectedAbiturOption = option;
+
+            // Enable add to cart button when Abitur option is selected
+            document.getElementById('addToCartButton').disabled = false;
+        }
+
         function saveCustomizeSelection() {
             // Get size description if user selected custom size and entered text
             const sizeCustomText = document.getElementById('sizeCustomText');
@@ -2014,8 +2096,12 @@
             const productPrice = (selectedSizeOption === 'custom') ? null : (product ? product.price : null);
             const productImage = product && product.images && product.images[0] ? `/collections/schriftzuege/images/${product.images[0]}` : null;
 
-            // For Farm: no color option, always pass null for color
-            if (currentCustomizeProductId === 'farm') {
+            // For Abitur: use special Abitur option
+            if (currentCustomizeProductId === 'abitur' && selectedAbiturOption) {
+                // For Abitur, the option is stored in the color field with "abitur:" prefix
+                addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, 'abitur:' + selectedAbiturOption, sizeDescription);
+            } else if (currentCustomizeProductId === 'farm') {
+                // For Farm: no color option, always pass null for color
                 addToCartWithOption(currentCustomizeProductId, document.getElementById('customizeProductName').textContent, productPrice, productImage, sizeOptionToSave, null, sizeDescription);
             } else if (selectedColor) {
                 // User chose custom color (for Fidget Star)
@@ -2027,6 +2113,7 @@
 
             // Reset selection and close modal
             selectedColor = null;
+            selectedAbiturOption = null;
             closeCustomizeModal();
         }
 
