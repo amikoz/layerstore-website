@@ -1978,9 +1978,8 @@
         }
 
         function loadColorOptions() {
-            // Only load colors when called
-            if (colorGrid.innerHTML.trim() !== '') {
-                colorGrid.innerHTML = '';
+            // Only load colors when grid is empty
+            if (colorGrid.innerHTML.trim() === '') {
 
                 let marbleDividerAdded = false;
 
