@@ -984,19 +984,19 @@
                 </div>
             </div>
 
-            <!-- Product 2: Fidget -->
-            <div class="product-card" onclick="openImageGallery('fidget', 0)">
+            <!-- Product 2: Fidget Star -->
+            <div class="product-card" onclick="openImageGallery('fidget-star', 0)">
                 <div class="product-image-container">
-                    <img src="images/fidget1.jpeg" alt="Fidget" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
-                    <img src="images/fidget2.jpeg" alt="Fidget" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/fidget1.jpeg" alt="Fidget Star" class="product-image primary" loading="lazy" decoding="async" width="400" height="400">
+                    <img src="images/fidget2.jpeg" alt="Fidget Star" class="product-image secondary" loading="lazy" decoding="async" width="400" height="400">
                 </div>
                 <div class="product-info">
-                    <h3>Fidget</h3>
-                    <p>Fidget-Spielzeug für Konzentration und sensorische stimulation.</p>
+                    <h3>Fidget Star</h3>
+                    <p>Fidget Star in verschiedenen Farben und Größen für sensorische stimulation.</p>
                     <div class="product-price">8,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="fidget" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="fidget" onclick="event.stopPropagation(); openCustomizeModal('fidget')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="fidget-star" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="fidget-star" onclick="event.stopPropagation(); openCustomizeModal('fidget-star')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1104,8 +1104,8 @@
                 price: '18,00 €',
                 images: ['farm1.jpeg', 'farm2.jpeg']
             },
-            fidget: {
-                name: 'Fidget',
+            fidget-star: {
+                name: 'Fidget Star',
                 price: '8,00 €',
                 images: ['fidget1.jpeg', 'fidget2.jpeg']
             }
@@ -1282,6 +1282,17 @@
                 `;
                 document.getElementById('colorSection').style.display = 'none';
                 document.getElementById('letteringSection').style.display = 'none';
+            } else if (productId === 'fidget-star') {
+                // For fidget-star: show size and color, no lettering
+                document.getElementById('sizeSubtitle').style.display = 'block';
+                document.getElementById('sizeOptions').innerHTML = `
+                    <button class="customize-option-btn" onclick="selectSizeOption('small', this)">Klein</button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('medium', this)">Mittel</button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('large', this)">Groß</button>
+                    <button class="customize-option-btn" onclick="selectSizeOption('as-photo', this)">Wie auf dem Foto</button>
+                `;
+                document.getElementById('colorSection').style.display = 'block';
+                document.getElementById('letteringSection').style.display = 'none';
             } else {
                 // Reset to default options for other products
                 document.getElementById('sizeSubtitle').style.display = 'block';
@@ -1368,18 +1379,13 @@
 
             if (currentCustomizeProductId === 'farm') {
                 // For farm, only size selection is required
-                if (selectedSizeOption) {
-                    addToCartButton.disabled = false;
-                } else {
-                    addToCartButton.disabled = true;
-                }
+                addToCartButton.disabled = !selectedSizeOption;
+            } else if (currentCustomizeProductId === 'fidget-star') {
+                // For fidget-star, size and color are required (no lettering text)
+                addToCartButton.disabled = !(selectedSizeOption && selectedColorOption !== null);
             } else {
                 // For other products, size, color and lettering text are required
-                if (selectedSizeOption && selectedColorOption !== null && letteringText) {
-                    addToCartButton.disabled = false;
-                } else {
-                    addToCartButton.disabled = true;
-                }
+                addToCartButton.disabled = !(selectedSizeOption && selectedColorOption !== null && letteringText);
             }
         }
 
@@ -1406,8 +1412,18 @@
             let colorDescription = null;
             let displayName = product.name;
 
-            if (currentCustomizeProductId !== 'farm') {
-                // For non-farm products, handle color and lettering
+            if (currentCustomizeProductId === 'farm') {
+                // Farm: no color, no lettering
+                colorDescription = null;
+                displayName = product.name;
+            } else if (currentCustomizeProductId === 'fidget-star') {
+                // Fidget Star: color, no lettering
+                colorDescription = selectedColorName
+                    ? selectedColorName
+                    : (selectedColorOption ? 'Wie auf dem Foto' : null);
+                displayName = product.name;
+            } else {
+                // For other products, handle color and lettering
                 colorDescription = selectedColorName
                     ? selectedColorName
                     : (selectedColorOption ? 'Wie auf dem Foto' : null);
