@@ -2084,6 +2084,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
             updateProductButtons(); // Check cart and update buttons on page load
+
+            // Add event listeners to all add-to-cart buttons (backup for inline handlers)
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    addToCart(button);
+                });
+            });
         });
 
         // Customize Modal Functions
