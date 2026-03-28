@@ -1822,8 +1822,109 @@
             showToast('E-Mail geöffnet! ✉️', 'Vielen Dank! Senden Sie die E-Mail einfach ab.', 'success');
         }
 
+        // Check for payment success in URL
+        function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const canceled = urlParams.get('canceled');
+            const sessionId = urlParams.get('session_id');
+
+            if (success === 'true') {
+                // Payment successful - show success popup
+                showPaymentSuccessPopup(sessionId);
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (canceled === 'true') {
+                // Payment canceled
+                showToast('Zahlung abgebrochen', 'Sie können die Zahlung jederzeit erneut versuchen.', 'info');
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        // Show payment success popup
+        function showPaymentSuccessPopup(sessionId) {
+            // Create popup overlay
+            const popupOverlay = document.createElement('div');
+            popupOverlay.id = 'paymentSuccessPopup';
+            popupOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            // Create popup content
+            const popupContent = document.createElement('div');
+            popupContent.style.cssText = `
+                background: white;
+                padding: 40px;
+                border-radius: 12px;
+                max-width: 500px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                animation: slideUp 0.4s ease;
+            `;
+
+            popupContent.innerHTML = `
+                <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+                <h2 style="color: #232E3D; margin-bottom: 15px; font-size: 28px;">Zahlung erfolgreich!</h2>
+                <p style="color: #666; margin-bottom: 10px; font-size: 16px;">Vielen Dank für Ihre Bestellung.</p>
+                ${sessionId ? `<p style="color: #888; font-size: 14px; margin-bottom: 20px;">Bestellnummer: <strong style="color: #232E3D;">${sessionId.substring(0, 20)}...</strong></p>` : ''}
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Sie erhalten eine Bestätigungs-E-Mail mit allen Details.</p>
+                <button onclick="closePaymentSuccessPopup()" style="
+                    background: #232E3D;
+                    color: #F0ECDA;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#4A5A6A'" onmouseout="this.style.background='#232E3D'">
+                    Weiter shoppen
+                </button>
+            `;
+
+            popupOverlay.appendChild(popupContent);
+            document.body.appendChild(popupOverlay);
+
+            // Add CSS animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { transform: translateY(30px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Close payment success popup
+        function closePaymentSuccessPopup() {
+            const popup = document.getElementById('paymentSuccessPopup');
+            if (popup) {
+                popup.style.animation = 'fadeIn 0.3s ease reverse';
+                setTimeout(() => popup.remove(), 300);
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            checkPaymentStatus(); // Check for payment success first
             loadPromoCodes();
             updateCartCount();
             renderCart();
