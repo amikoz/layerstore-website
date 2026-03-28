@@ -4,6 +4,11 @@
 stripe-config.php
 config.local.php
 
+# Log files
+*.log
+webhook.log
+email.log
+
 # Keep example files for reference
 !.env.example
 !stripe-config.php.example

@@ -115,8 +115,89 @@ if ($httpCode >= 400) {
     exit;
 }
 
+// Send immediate email notification about the checkout session
+sendCheckoutNotificationEmail($decoded, $sanitizedItems);
+
 echo json_encode([
     'success' => true,
     'url' => $decoded['url'],
     'sessionId' => $decoded['id']
 ]);
+
+/**
+ * Send email notification when checkout session is created
+ */
+function sendCheckoutNotificationEmail($sessionData, $items) {
+    $toEmail = 'info@layerstore.eu';
+    $subject = 'Neue Checkout Session gestartet - LayerStore';
+
+    // Calculate total amount
+    $totalAmount = 0;
+    foreach ($items as $item) {
+        $totalAmount += $item['price_data']['unit_amount'] * $item['quantity'];
+    }
+    $totalInEur = number_format($totalAmount / 100, 2, ',', '.') . ' €';
+
+    // Build email content
+    $message = "
+    <html>
+    <head>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #232E3D; color: #F0ECDA; padding: 20px; text-align: center; }
+            .content { padding: 20px; background: #f9f9f9; }
+            .order-details { background: white; padding: 15px; margin: 15px 0; border: 1px solid #ddd; }
+            .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h2>LayerStore - Neue Zahlung gestartet</h2>
+            </div>
+            <div class='content'>
+                <h3>Eine neue Zahlung wurde initiiert!</h3>
+                <p>Ein Kunde hat den Checkout-Prozess gestartet.</p>
+
+                <div class='order-details'>
+                    <h4>Details:</h4>
+                    <p><strong>Session ID:</strong> {$sessionData['id']}</p>
+                    <p><strong>Gesamtbetrag:</strong> {$totalInEur}</p>
+                    <p><strong>Anzahl Artikel:</strong> " . count($items) . "</p>
+                    <p><strong>Checkout URL:</strong> <a href='{$sessionData['url']}'>Zur Zahlung</a></p>
+                    <p><strong>Erstellt am:</strong> " . date('d.m.Y H:i') . "</p>
+                </div>
+
+                <p><strong>Hinweis:</strong></p>
+                <ul>
+                    <li>Diese E-Mail zeigt an, dass ein Kunde die Zahlungsseite aufgerufen hat</li>
+                    <li>Die Zahlung ist noch nicht abgeschlossen</li>
+                    <li>Wenn der Kunde bezahlt, erhältst du eine weitere Bestätigung</li>
+                </ul>
+            </div>
+            <div class='footer'>
+                <p>Diese E-Mail wurde automatisch vom LayerStore Zahlungssystem generiert.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    ";
+
+    // Send email
+    $headers = [
+        'MIME-Version: 1.0',
+        'Content-Type: text/html; charset=UTF-8',
+        'From: LayerStore <noreply@layerstore.eu>',
+        'Reply-To: info@layerstore.eu',
+        'X-Mailer: PHP/' . phpversion()
+    ];
+
+    if (mail($toEmail, $subject, $message, implode("\r\n", $headers))) {
+        // Log successful email
+        file_put_contents(__DIR__ . '/email.log', date('Y-m-d H:i:s') . ' - Checkout notification email sent for session ' . $sessionData['id'] . PHP_EOL, FILE_APPEND);
+    } else {
+        // Log failed email
+        file_put_contents(__DIR__ . '/email.log', date('Y-m-d H:i:s') . ' - Failed to send checkout notification email for session ' . $sessionData['id'] . PHP_EOL, FILE_APPEND);
+    }
+}
