@@ -104,7 +104,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
+// curl_close() is deprecated in PHP 8.5+, not needed anymore
 
 $decoded = json_decode($response, true);
 
