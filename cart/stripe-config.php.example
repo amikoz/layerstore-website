@@ -1,0 +1,15 @@
+<?php
+/**
+ * Stripe Configuration Example
+ *
+ * SECURITY: Copy this file to stripe-config.php and add your actual keys.
+ * The stripe-config.php file is excluded from git via .gitignore
+ */
+
+// Return your Stripe Secret Key
+// For production: sk_live_your_live_key_here
+// For testing: sk_test_your_test_key_here
+return 'sk_live_your_live_key_here';
+
+// Alternative: Load from environment variable
+// return getenv('STRIPE_SECRET_KEY') ?? null;

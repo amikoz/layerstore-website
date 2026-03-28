@@ -1144,6 +1144,9 @@
     </div>
 
     <script>
+        // Backend Configuration - Update this URL to match your ngrok tunnel or production backend
+        const STRIPE_BACKEND_URL = 'https://c765-134-19-37-143.ngrok-free.app';
+
         // Product data
         const products = {
             osterkarotte: {
@@ -1801,6 +1804,60 @@
                 emailBtn.disabled = !this.checked;
             });
         });
+
+        // Stripe Payment Integration
+        async function orderViaStripe() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                showToast('Warenkorb leer', 'Ihr Warenkorb ist leer.', 'error');
+                return;
+            }
+
+            try {
+                // Calculate total
+                const total = cart.reduce((sum, item) => {
+                    if (!item.price || item.option === 'individuell') return sum;
+                    const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                    return sum + (priceNum * item.quantity);
+                }, 0);
+
+                const totalInCents = Math.round(total * 100);
+
+                // Call Stripe API via configured backend
+                const response = await fetch(`${STRIPE_BACKEND_URL}/create-checkout-session.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        line_items: [{
+                            price_data: {
+                                currency: 'eur',
+                                product_data: {
+                                    name: 'LayerStore Bestellung'
+                                },
+                                unit_amount: totalInCents
+                            },
+                            quantity: 1
+                        }],
+                        success_url: window.location.origin + '/cart/?success=true',
+                        cancel_url: window.location.origin + '/cart/?canceled=true'
+                    })
+                });
+
+                const session = await response.json();
+
+                if (session.success && session.url) {
+                    // Clear cart and redirect to Stripe
+                    localStorage.removeItem('layerstore_cart');
+                    window.location.href = session.url;
+                } else {
+                    throw new Error(session.error || 'Stripe Fehler');
+                }
+
+            } catch (error) {
+                console.error('Stripe Error:', error);
+                showToast('Zahlungsfehler', 'Die Zahlung konnte nicht gestartet werden: ' + error.message, 'error');
+            }
+        }
     </script>
 
     <!-- Cookie Banner -->

@@ -1,0 +1,9 @@
+# Stripe Configuration - NEVER commit these files!
+.env
+.env.local
+stripe-config.php
+config.local.php
+
+# Keep example files for reference
+!.env.example
+!stripe-config.php.example
