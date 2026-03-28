@@ -821,6 +821,46 @@
             border-color: var(--accent);
         }
 
+        .btn-stripe {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: #635bff;
+            color: white;
+            border: 2px solid #635bff;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-stripe:hover {
+            background: #5449e0;
+            border-color: #5449e0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(99, 91, 255, 0.2);
+        }
+
+        .btn-stripe:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-stripe:disabled:hover {
+            background: #ccc;
+            border-color: #ccc;
+            transform: none;
+            box-shadow: none;
+        }
+
         .btn-call {
             display: flex;
             align-items: center;
@@ -1131,6 +1171,13 @@
                             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                         </svg>
                         Über E-Mail bestellen
+                    </button>
+
+                    <button class="btn-stripe" id="stripeBtn" disabled>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 4.515.858l.664-3.192s-1.541-.742-4.178-.742c-4.414 0-7.274 2.291-7.274 5.628 0 4.256 5.877 4.578 5.877 6.958 0 .705-.591 1.394-1.958 1.394-2.453 0-4.957-1.254-4.957-1.254l-.701 3.271s1.881.946 4.777.946c4.762 0 7.665-2.163 7.665-5.749 0-4.321-5.973-4.715-5.973-7.056z"/>
+                        </svg>
+                        Direkt bezahlen
                     </button>
                 </div>
             </div>
@@ -1773,6 +1820,7 @@
             const closeBtn = document.getElementById('closeCheckout');
             const whatsappBtn = document.getElementById('whatsappBtn');
             const emailBtn = document.getElementById('emailBtn');
+            const stripeBtn = document.getElementById('stripeBtn');
             const privacyConsent = document.getElementById('privacyConsent');
 
             // Close modal on X button
@@ -1798,10 +1846,14 @@
             // Email button
             emailBtn.addEventListener('click', orderViaEmail);
 
+            // Stripe button
+            stripeBtn.addEventListener('click', orderViaStripe);
+
             // Privacy consent toggle
             privacyConsent.addEventListener('change', function() {
                 whatsappBtn.disabled = !this.checked;
                 emailBtn.disabled = !this.checked;
+                stripeBtn.disabled = !this.checked;
             });
         });
 
