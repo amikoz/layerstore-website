@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LayerStore - Cart</title>
-    <script src="https://js.stripe.com/v3/"></script>
+    <title>Warenkorb | LayerStore</title>
+    <link rel="preload" href="/ls-logo-beige.svg" as="image">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #FAF9F0;
+            --bg-secondary: #F5F3EB;
             --text-primary: #1a1a1a;
+            --text-secondary: #666666;
             --accent: #232F3D;
-            --success: #28a745;
-            --error: #dc3545;
-            --stripe-purple: #635BFF;
+            --accent-light: #4A5A6A;
+            --border: #e7e5e4;
+            --danger: #dc2626;
         }
 
         * {
@@ -22,717 +28,2055 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Quicksand', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem 1rem;
         }
 
-        .container {
-            max-width: 600px;
-            width: 100%;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent);
-        }
-
-        .badge {
-            display: inline-block;
-            background: #ffc107;
-            color: #000;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
-
-        .section {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .section h2 {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .cart-item {
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.2rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            background: var(--bg-primary);
+            background: #232E3D;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 24px;
+            width: auto;
+            padding: 6px 0;
+            transition: transform 0.2s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 0.3rem 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .cart-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #F0ECDA;
+            transition: fill 0.3s ease;
+        }
+
+        .cart-icon:hover svg {
+            fill: white;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 600;
+            min-width: 16px;
+            height: 16px;
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-count.visible {
+            opacity: 1;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 3000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-title {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .toast-message {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .toast.success .toast-title {
+            color: #10b981;
+        }
+
+        .toast.error .toast-title {
+            color: #ef4444;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        h1 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+
+        /* Empty Cart */
+        .empty-cart {
+            text-align: center;
+            padding: 6rem 2rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .empty-cart svg {
+            width: 120px;
+            height: 120px;
+            fill: var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .empty-cart h2 {
+            font-size: 1.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        /* Cart Items */
+        .cart-items {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 2rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: var(--bg-secondary);
+        }
+
+        .cart-item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .cart-item-name {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.4rem;
+            color: var(--accent);
+        }
+
+        .cart-item-color {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .cart-item-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
             margin-bottom: 0.5rem;
         }
 
-        .item-info h3 {
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
+        .cart-item-size {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
-        .item-info p {
+        .cart-item-size-desc {
             font-size: 0.85rem;
-            color: #666;
+            color: var(--text-secondary);
+            font-style: italic;
+            display: block;
+            margin-top: 0.25rem;
         }
 
-        .item-price {
+        .cart-item-marble {
+            font-size: 0.85rem;
+            color: #92400e;
+            font-weight: 500;
+        }
+        }
+
+        .cart-item-price {
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--accent);
         }
 
-        .total {
+        .cart-item-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 2px solid #eee;
-            margin-top: 1rem;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1rem;
         }
 
-        .total-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .total-amount {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        button {
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+        .quantity-controls {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
         }
 
-        .btn-stripe {
-            background: var(--stripe-purple);
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text-primary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .quantity-value {
+            width: 50px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .remove-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: var(--danger);
             color: white;
         }
 
-        .btn-stripe:hover:not(:disabled) {
-            background: #4a45c2;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+        /* Cart Summary */
+        .cart-summary {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            max-width: 400px;
+            margin-left: auto;
         }
 
-        .btn-stripe:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1rem;
         }
 
-        .status {
-            padding: 1rem;
-            border-radius: 8px;
+        .summary-row.total {
+            border-top: 2px solid var(--border);
+            padding-top: 1rem;
             margin-top: 1rem;
-            font-size: 0.9rem;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
-        .status.info {
-            background: #e3f2fd;
-            color: #1976d2;
+        .summary-row.discount {
+            color: #22c55e;
+            font-weight: 500;
         }
 
-        .status.success {
-            background: #d4edda;
-            color: var(--success);
-        }
-
-        .status.error {
-            background: #f8d7da;
-            color: var(--error);
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .code-block {
-            background: #1e1e1e;
-            color: #d4d4d4;
+        /* Promo Code Section */
+        .promo-code-section {
+            margin: 1.5rem 0;
             padding: 1rem;
+            background: var(--bg-secondary);
             border-radius: 8px;
-            overflow-x: auto;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.8rem;
-            margin: 1rem 0;
         }
 
-        .code-block .keyword { color: #569cd6; }
-        .code-block .string { color: #ce9178; }
-        .code-block .comment { color: #6a9955; }
-        .code-block .function { color: #dcdcaa; }
+        .promo-code-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
 
-        .tabs {
+        .promo-code-input-group {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #eee;
         }
 
-        .tab {
+        .promo-code-input {
             flex: 1;
             padding: 0.75rem;
-            background: transparent;
-            border: none;
-            border-radius: 8px 8px 0 0;
-            cursor: pointer;
+            border: 1px solid var(--border);
+            border-radius: 4px;
             font-size: 0.9rem;
-            color: #666;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
         }
 
-        .tab.active {
-            background: white;
-            color: var(--accent);
-            border-bottom: 2px solid var(--accent);
-            margin-bottom: -2px;
+        .promo-code-input:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
-        .tab-content {
+        .promo-code-input.invalid {
+            border-color: var(--danger);
+        }
+
+        .promo-code-input.valid {
+            border-color: #22c55e;
+        }
+
+        .promo-code-apply-btn {
+            padding: 0.75rem 1.25rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .promo-code-apply-btn:hover {
+            background: var(--accent-light);
+        }
+
+        .promo-code-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .promo-code-applied {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .promo-code-applied.visible {
+            display: flex;
+        }
+
+        .promo-code-applied-text {
+            color: #166534;
+            font-weight: 500;
+        }
+
+        .promo-code-applied-remove {
+            background: none;
+            border: none;
+            color: #166534;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0 0.3rem;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .promo-code-applied-remove:hover {
+            color: #dc2626;
+        }
+
+        .promo-code-message {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
             display: none;
         }
 
-        .tab-content.active {
+        .promo-code-message.success {
             display: block;
+            color: #22c55e;
+            background: #dcfce7;
         }
 
-        .api-config {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .api-config label {
+        .promo-code-message.error {
             display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            color: var(--danger);
+            background: #fecaca;
         }
 
-        .api-config input {
+        .checkout-btn {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border: 2px solid var(--accent);
             border-radius: 4px;
-            font-family: monospace;
-        }
-
-        .payment-methods {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .payment-method {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .payment-method:hover {
-            border-color: var(--stripe-purple);
-            background: #f0f5ff;
-        }
-
-        .payment-method.selected {
-            border-color: var(--stripe-purple);
-            background: #e8f0fe;
-        }
-
-        .checkout-options {
-            display: grid;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .checkout-option {
-            padding: 1rem;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .checkout-option:hover {
-            border-color: var(--stripe-purple);
-        }
-
-        .checkout-option.selected {
-            border-color: var(--stripe-purple);
-            background: #f0f5ff;
-        }
-
-        .checkout-option h3 {
             font-size: 1rem;
-            margin-bottom: 0.5rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
         }
 
-        .checkout-option p {
-            font-size: 0.85rem;
-            color: #666;
+        .checkout-btn:hover {
+            background: transparent;
+            color: var(--accent);
         }
 
-        .test-cards {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
+        /* Continue Shopping */
+        .continue-shopping {
+            margin-top: 2rem;
         }
 
-        .test-card {
-            display: flex;
-            justify-content: space-between;
+        .continue-shopping a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex;
             align-items: center;
-            padding: 0.5rem;
-            font-size: 0.85rem;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
         }
 
-        .test-card code {
+        .continue-shopping a:hover {
+            color: var(--accent);
+        }
+
+        /* Checkout Modal */
+        .checkout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkout-modal.active {
+            display: flex;
+        }
+
+        .checkout-modal-content {
             background: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-family: monospace;
+            border-radius: 16px;
+            padding: 0.5rem 1rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
         }
 
-        /* Success Page Styles */
-        .success-page {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .success-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--success);
+        .checkout-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
         }
 
-        .success-icon svg {
-            width: 40px;
-            height: 40px;
-            fill: white;
+        .checkout-close:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(90deg);
+            border-color: var(--accent);
         }
 
-        .success-page h2 {
-            font-size: 1.5rem;
+        .checkout-modal h2 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.8rem;
             margin-bottom: 0.5rem;
+            color: var(--accent);
         }
 
-        .order-details {
-            background: #f8f9fa;
-            padding: 1rem;
+        .checkout-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            margin: 1.5rem 0;
-            text-align: left;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .checkout-submit-btn {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkout-submit-btn:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .checkout-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .checkout-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .privacy-consent {
+            margin-top: 1.5rem;
+        }
+
+        .privacy-consent label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .privacy-consent input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .privacy-consent a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-email {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-email:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        .btn-whatsapp:disabled,
+        .btn-email:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-whatsapp:disabled:hover,
+        .btn-email:disabled:hover {
+            background: #25D366;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-email:disabled:hover {
+            background: white;
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-stripe {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: #635bff;
+            color: white;
+            border: 2px solid #635bff;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-stripe:hover {
+            background: #5449e0;
+            border-color: #5449e0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(99, 91, 255, 0.2);
+        }
+
+        .btn-stripe:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-stripe:disabled:hover {
+            background: #ccc;
+            border-color: #ccc;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-call {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: #22c55e;
+            color: white;
+            border: 2px solid #22c55e;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .checkout-choice-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkout-choice-text strong {
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 4rem;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.65rem 0.75rem;
+            }
+
+            .logo img {
+                height: 22px;
+                padding: 5px 0;
+            }
+
+            nav {
+                gap: 0.75rem;
+            }
+
+            nav a {
+                font-size: 0.75rem;
+            }
+
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                gap: 1rem;
+            }
+
+            .cart-item-image {
+                width: 80px;
+                height: 80px;
+                grid-row: span 2;
+            }
+
+            .cart-item-actions {
+                grid-column: span 2;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .cart-summary {
+                max-width: 100%;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #232E3D;
+            border-top: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            z-index: 9999;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .cookie-banner.show {
+            display: block;
+        }
+
+        .cookie-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .cookie-title {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .cookie-text {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .cookie-note {
+            font-size: 0.8rem;
+            color: #2ecc71;
+            margin-bottom: 1rem;
+        }
+
+        .cookie-btn {
+            padding: 0.7rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--accent);
+            color: white;
+        }
+
+        .cookie-btn:hover {
+            background: var(--accent-light);
+        }
+
+        @media (max-width: 768px) {
+            .cookie-banner {
+                padding: 1.25rem 1.5rem;
+            }
         }
     </style>
 </head>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
 <body>
-    <div class="container">
-        <h1>🛒 LayerStore Cart</h1>
-        <span class="badge">Stripe Checkout Integration</span>
-
-        <!-- Success Page (hidden by default) -->
-        <div id="success-page" class="success-page section" style="display: none;">
-            <div class="success-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+    <!-- Header -->
+    <header>
+        <a href="/" class="logo">
+            <img src="/ls-logo-beige.svg" alt="LayerStore Logo" width="60" height="24" loading="eager" decoding="sync" fetchpriority="high">
+        </a>
+        <nav>
+            <a href="/">Startseite</a>
+            <a href="/collections">Kollektionen</a>
+            <div class="cart-icon" id="cartIcon" title="Warenkorb">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
                 </svg>
+                <span class="cart-count" id="cartCount">0</span>
             </div>
-            <h2>Zahlung erfolgreich!</h2>
-            <p>Vielen Dank für Ihre Bestellung.</p>
-            <div class="order-details" id="order-details"></div>
-            <button class="btn-stripe" onclick="continueShopping()">
-                🛍️ Weiter einkaufen
-            </button>
+        </nav>
+    </header>
+
+    <!-- Test Mode Banner -->
+    <div id="testModeBanner" style="display: none; background: #ff6b6b; color: white; text-align: center; padding: 0.75rem; font-weight: 600; font-size: 0.9rem; position: fixed; top: 60px; left: 0; right: 0; z-index: 999; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        🧪 TEST MODE - Payments use Stripe Test Keys - No real charges
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Ihr Warenkorb</h1>
+
+        <div id="cartContent">
+            <!-- Cart items will be rendered here -->
         </div>
 
-        <!-- Cart Page -->
-        <div id="cart-page">
-            <!-- Cart Items -->
-            <div class="section">
-                <h2>📦 Ihr Warenkorb</h2>
-                <div id="cart-items"></div>
-                <div class="total">
-                    <span class="total-label">Gesamt</span>
-                    <span class="total-amount" id="total-amount">0,00 €</span>
+        <div class="continue-shopping">
+            <a href="/collections/easter">
+                ← Weiter einkaufen
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen für jeden Anlass.</p>
+                <p>© 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter">🐰 Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz">🔒 Datenschutz</a>
+                <a href="/impressum">ℹ️ Impressum</a>
+                <a href="/contact">📧 Kontakt</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            Mit Präzision gedruckt in Deutschland
+        </div>
+    </footer>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-modal-content">
+            <button class="checkout-close" id="closeCheckout">×</button>
+            <h2>Anfrage senden</h2>
+            <p>Bitte geben Sie Ihre Kontaktdaten ein. Wir werden uns schnellstmöglich bei Ihnen melden.</p>
+
+            <div id="checkoutForm">
+                <div class="form-group">
+                    <label for="customerName">Name (optional)</label>
+                    <input
+                        type="text"
+                        id="customerName"
+                        name="name"
+                        placeholder="Ihr Name"
+                    >
                 </div>
-            </div>
 
-            <!-- Checkout Tabs -->
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('checkout')">Stripe Checkout</button>
-                <button class="tab" onclick="showTab('backend')">Backend Code</button>
-                <button class="tab" onclick="showTab('test')">Testkarten</button>
-            </div>
+                <div class="checkout-choice-text">
+                    Wählen Sie Ihre bevorzugte Kontaktmöglichkeit:<br>
+                    <strong>Wir melden uns schnellstmöglich bei Ihnen!</strong>
+                </div>
 
-            <!-- Stripe Checkout Tab -->
-            <div id="tab-checkout" class="tab-content active">
-                <div class="section">
-                    <h2>💳 Kasse</h2>
+                <div class="privacy-consent">
+                    <label>
+                        <input type="checkbox" id="privacyConsent">
+                        <span>Ich stimme der Verarbeitung meiner Daten gemäß der <a href="/datenschutz" target="_blank">Datenschutzerklärung</a> zu. *</span>
+                    </label>
+                </div>
 
-                    <!-- API Configuration -->
-                    <div class="api-config">
-                        <label>🔧 Backend API URL</label>
-                        <input
-                            type="text"
-                            id="api-url"
-                            placeholder="https://your-server.com/api/create-checkout-session"
-                            value="https://layerstore.eu/api/create-checkout-session.php"
-                        >
-                        <p style="font-size: 0.8rem; margin-top: 0.5rem; color: #666;">
-                            Dein Server, der die Stripe Checkout Session erstellt
-                        </p>
-                    </div>
-
-                    <!-- Customer Email -->
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">E-Mail (optional)</label>
-                        <input
-                            type="email"
-                            id="customer-email"
-                            placeholder="deine@email.de"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;"
-                        >
-                    </div>
-
-                    <!-- Checkout Button -->
-                    <button class="btn-stripe" id="checkout-btn" onclick="startCheckout()">
-                        <span id="checkout-text">⚡ Jetzt bezahlen mit Stripe</span>
+                <div class="checkout-buttons">
+                    <button class="btn-whatsapp" id="whatsappBtn" disabled>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                        </svg>
+                        Über WhatsApp bestellen
                     </button>
 
-                    <!-- Payment Methods -->
-                    <div class="payment-methods">
-                        <div class="payment-method">
-                            💳 Karte
-                        </div>
-                        <div class="payment-method">
-                            🏦 Sofort
-                        </div>
-                        <div class="payment-method">
-                            🅿️ PayPal
-                        </div>
-                        <div class="payment-method">
-                            🇪🇺 SEPA
-                        </div>
-                    </div>
+                    <button class="btn-email" id="emailBtn" disabled>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        Über E-Mail bestellen
+                    </button>
 
-                    <!-- Status -->
-                    <div id="checkout-status" class="status info">
-                        ℹ️ Klicke auf "Jetzt bezahlen" um zur Stripe Kasse zu gelangen
-                    </div>
-                </div>
-            </div>
-
-            <!-- Backend Code Tab -->
-            <div id="tab-backend" class="tab-content">
-                <div class="section">
-                    <h2>🔧 Backend Implementierung</h2>
-                    <p style="margin-bottom: 1rem; color: #666;">
-                        Dein Server muss eine Checkout Session erstellen. Hier ist der benötigte PHP-Code:
-                    </p>
-
-                    <div class="code-block"><span class="keyword">&lt;?php</span>
-<span class="comment">// create-checkout-session.php</span>
-
-<span class="keyword">require_once</span> <span class="string">'vendor/autoload.php'</span>;
-
-<span class="comment">// Stripe Secret Key</span>
-<span class="variable">$stripe</span> = <span class="keyword">new</span> \Stripe\StripeClient(<span class="string">'sk_test_...'</span>);
-
-<span class="comment">// Empfangene Daten</span>
-<span class="variable">$input</span> = json_decode(file_get_contents(<span class="string">'php://input'</span>), <span class="keyword">true</span>);
-
-<span class="comment">// Checkout Session erstellen</span>
-<span class="variable">$session</span> = <span class="variable">$stripe</span>->checkout->sessions->create([
-    <span class="string">'line_items'</span> => <span class="variable">$input</span>[<span class="string">'line_items'</span>],
-    <span class="string">'mode'</span> => <span class="string">'payment'</span>,
-    <span class="string">'success_url'</span> => <span class="variable">$input</span>[<span class="string">'success_url'</span>],
-    <span class="string">'cancel_url'</span> => <span class="variable">$input</span>[<span class="string">'cancel_url'</span>],
-    <span class="string">'customer_email'</span> => <span class="variable">$input</span>[<span class="string">'customer_email'</span>] ?? <span class="keyword">null</span>,
-    <span class="string">'locale'</span> => <span class="string">'de'</span>,
-]);
-
-<span class="keyword">echo</span> json_encode([<span class="string">'url'</span> => <span class="variable">$session</span>->url]);
-</div>
-
-                    <p style="font-size: 0.85rem; color: #666; margin-top: 1rem;">
-                        <strong>Installation:</strong><br>
-                        <code>composer require stripe/stripe-php</code>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Test Cards Tab -->
-            <div id="tab-test" class="tab-content">
-                <div class="section">
-                    <h2>🧪 Testkarten</h2>
-                    <div class="test-cards">
-                        <div class="test-card">
-                            <span>✅ Erfolgreiche Zahlung</span>
-                            <code>4242 4242 4242 4242</code>
-                        </div>
-                        <div class="test-card">
-                            <span>❌ Karte abgelehnt</span>
-                            <code>4000 0000 0000 0002</code>
-                        </div>
-                        <div class="test-card">
-                            <span>🔐 3D Secure erforderlich</span>
-                            <code>4000 0025 0000 3155</code>
-                        </div>
-                        <div class="test-card">
-                            <span>⏳ Ausstehend (Verzögerung)</span>
-                            <code>4000 0000 0000 0077</code>
-                        </div>
-                    </div>
-                    <p style="font-size: 0.85rem; color: #666; margin-top: 1rem;">
-                        <strong>Ablaufdatum:</strong> Beliebig in der Zukunft<br>
-                        <strong>CVC:</strong> Beliebige 3 Ziffern
-                    </p>
+                    <button class="btn-stripe" id="stripeBtn" disabled>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 4.515.858l.664-3.192s-1.541-.742-4.178-.742c-4.414 0-7.274 2.291-7.274 5.628 0 4.256 5.877 4.578 5.877 6.958 0 .705-.591 1.394-1.958 1.394-2.453 0-4.957-1.254-4.957-1.254l-.701 3.271s1.881.946 4.777.946c4.762 0 7.665-2.163 7.665-5.749 0-4.321-5.973-4.715-5.973-7.056z"/>
+                        </svg>
+                        Direkt bezahlen
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-title" id="toastTitle"></div>
+        <div class="toast-message" id="toastMessage"></div>
+    </div>
+
     <script>
-        // ==================== SAMPLE CART DATA ====================
-        const sampleCart = [
-            {
-                name: '3D Gedruckte Dekoration',
-                description: 'Handgefertigter 3D-Druck',
-                price: 29.90,
-                quantity: 1
+        // Backend Configuration - Update this URL to match your ngrok tunnel or production backend
+        const STRIPE_BACKEND_URL = 'https://ed15-134-19-37-143.ngrok-free.app';
+
+        // TEST MODE - Set to false for production
+        const STRIPE_TEST_MODE = true;
+
+        // Show/hide test mode banner
+        if (STRIPE_TEST_MODE) {
+            document.getElementById('testModeBanner').style.display = 'block';
+        }
+
+        // Product data
+        const products = {
+            osterkarotte: {
+                name: 'Osterkarotte',
+                price: '13,00 €',
+                images: ['/collections/easter/images/carrot1.jpeg']
             },
-            {
-                name: 'Osterhase Skandi',
-                description: 'Deko-Hase 12cm',
-                price: 10.00,
-                quantity: 2
+            hasenkorb: {
+                name: 'Hasenkorb',
+                price: '13,00 €',
+                images: ['/collections/easter/images/bunnybasketbeige.jpeg']
+            },
+            osterei: {
+                name: 'Osterei mit Beinen',
+                price: '2,00 €',
+                images: ['/collections/easter/images/legseggkinder.jpeg']
+            },
+            gestricktesei: {
+                name: 'Gestricktes Ei',
+                price: '9,00 €',
+                images: ['/collections/easter/images/knittedeggmintgreen.jpeg']
+            },
+            kinderhalter: {
+                name: 'Hasen-Kinderhalter',
+                price: '4,00 €',
+                images: ['/collections/easter/images/bunnykinderholder.jpeg']
+            },
+            hasemmitkorb: {
+                name: 'Hase mit Korb',
+                price: '5,00 €',
+                images: ['/collections/easter/images/bunnywithbasket.jpeg']
+            },
+            kinderrahmen: {
+                name: 'Hasen-Kinderrahmen',
+                price: '2,00 €',
+                images: ['/collections/easter/images/kinderrahmen.jpg']
+            },
+            hasedekochoco: {
+                name: 'Hase Deko 15cm',
+                price: '12,00 €',
+                images: ['/collections/easter/images/fuzzybunnydekochoco1.jpeg']
+            },
+            hasedekowhite: {
+                name: 'Hase Deko 11cm',
+                price: '8,00 €',
+                images: ['/collections/easter/images/fuzzybunnydekowhite.jpeg']
+            },
+            skandibig: {
+                name: 'Osterhase "Skandi Linien" 12,5cm',
+                price: '10,00 €',
+                images: ['/collections/easter/images/OsterhaseSkandiBig.jpeg']
+            },
+            skandismall: {
+                name: 'Osterhase "Skandi Linien" 11cm',
+                price: '8,00 €',
+                images: ['/collections/easter/images/OsterhaseSkandi.jpeg']
             }
-        ];
+        };
 
-        // ==================== CONFIG ====================
-        let API_URL = localStorage.getItem('stripe_api_url') || 'https://c765-134-19-37-143.ngrok-free.app/create-checkout-session.php';
+        const colorNames = {
+            'black': 'Schwarz',
+            'chestnut-brown-marble': 'Kastanienbraun Marmor',
+            'light-green': 'Hellgrün',
+            'mint-green': 'Minzgrün',
+            'new-pink': 'Neu Pink',
+            'olive-green': 'Olivgrün',
+            'peach': 'Pfirsich',
+            'pink': 'Pink',
+            'purple': 'Lila',
+            'red': 'Rot',
+            'sakura-pink': 'Sakura Pink',
+            'sky-blue': 'Himmelblau',
+            'white': 'Weiß',
+            'yellow': 'Gelb',
+            // Legacy color names
+            beige: 'Beige',
+            orange: 'Orange',
+            lemonyellow: 'Lemon Yellow',
+            lightgreen: 'Light Green',
+            mintgreen: 'Mint Green',
+            olivegreen: 'Olive Green',
+            skyblue: 'Sky Blue',
+            blue: 'Blue',
+            deeppink: 'Deep Pink',
+            newpink: 'New Pink',
+            standard: 'Standard',
+            custom: 'Custom'
+        };
 
-        // ==================== INIT ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCart();
-            checkPaymentStatus();
+        // Dual color product configurations
+        const dualColorProducts = {
+            abitur: {
+                label1: '2026',
+                label2: 'Abitur'
+            },
+            doglover: {
+                label1: 'Dog',
+                label2: 'Lover'
+            },
+            ostern: {
+                label1: 'Frohe',
+                label2: 'Ostern'
+            },
+            schulkind: {
+                label1: '2026',
+                label2: 'Schulkind'
+            },
+            spring: {
+                label1: 'Hello',
+                label2: 'Frühlings'
+            }
+        };
 
-            // Load saved API URL
-            document.getElementById('api-url').value = API_URL;
+        // Get cart from localStorage
+        function getCart() {
+            const cart = localStorage.getItem('layerstore_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
 
-            // Save API URL on change
-            document.getElementById('api-url').addEventListener('change', (e) => {
-                API_URL = e.target.value;
-                localStorage.setItem('stripe_api_url', API_URL);
-            });
-        });
+        // Save cart to localStorage (both cart and cart_test)
+        function saveCart(cart) {
+            localStorage.setItem('layerstore_cart', JSON.stringify(cart));
+            localStorage.setItem('layerstore_cart_test', JSON.stringify(cart));
+            updateCartCount();
+        }
 
-        // ==================== RENDER CART ====================
+        // Update cart count in header
+        function updateCartCount() {
+            const cart = getCart();
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCount = document.getElementById('cartCount');
+            cartCount.textContent = totalCount;
+
+            if (totalCount > 0) {
+                cartCount.classList.add('visible');
+            } else {
+                cartCount.classList.remove('visible');
+            }
+        }
+
+        // Get image path for cart item
+        function getImagePath(item) {
+            if (item.image) {
+                return item.image.startsWith('http') || item.image.startsWith('/')
+                    ? item.image
+                    : `/collections/easter/images/${item.image}`;
+            }
+            const product = products[item.id];
+            if (product && product.images && product.images[0]) {
+                return `/collections/easter/images/${product.images[0]}`;
+            }
+            return '/collections/easter/images/placeholder.jpg';
+        }
+
+        // Render cart
         function renderCart() {
-            const container = document.getElementById('cart-items');
-            const totalEl = document.getElementById('total-amount');
+            const cart = getCart();
+            const cartContent = document.getElementById('cartContent');
 
-            let total = 0;
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        <h2>Ihr Warenkorb ist leer</h2>
+                        <p>Haben Sie keine Lust mehr? Schauen Sie sich unsere Oster-Kollektion an!</p>
+                        <a href="/collections/easter" class="btn-primary">Zur Kollektion</a>
+                    </div>
+                `;
+                return;
+            }
 
-            container.innerHTML = sampleCart.map(item => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
+            let itemsHTML = cart.map((item, index) => {
+                const imagePath = getImagePath(item);
+
+                // Handle color display - check if dual color format (prefix:color1|color2)
+                let colorText = '';
+                if (item.color && item.color !== 'standard') {
+                    if (item.color.includes(':') && item.color.includes('|')) {
+                        // Dual color format: prefix:color1|color2
+                        const parts = item.color.split(':');
+                        if (parts.length === 2) {
+                            const prefix = parts[0];
+                            const colors = parts[1].split('|');
+                            const config = dualColorProducts[prefix];
+                            if (config && colors.length === 2) {
+                                const color1Name = colorNames[colors[0]] || colors[0];
+                                const color2Name = colorNames[colors[1]] || colors[1];
+                                colorText = `<span class="cart-item-color">Farben: ${config.label1} (${color1Name}), ${config.label2} (${color2Name})</span>`;
+                            } else {
+                                colorText = `<span class="cart-item-color">Farbe: ${item.color}</span>`;
+                            }
+                        } else {
+                            colorText = `<span class="cart-item-color">Farbe: ${item.color}</span>`;
+                        }
+                    } else if (colorNames[item.color]) {
+                        colorText = `<span class="cart-item-color">Farbe: ${colorNames[item.color]}</span>`;
+                    } else {
+                        colorText = `<span class="cart-item-color">Farbe: ${item.color}</span>`;
+                    }
+                }
+
+                const marbleText = item.isMarble ? `<span class="cart-item-marble">✨ Marmor (+20%)</span>` : '';
+                const sizeText = item.option && item.option !== 'as-photo' ? `<span class="cart-item-size">Größe: Nach Absprache</span>` : '';
+                const sizeDescText = item.sizeDescription ? `<span class="cart-item-size-desc">${item.sizeDescription}</span>` : '';
+                const optionsText = (colorText || marbleText || sizeText || sizeDescText) ? `<div class="cart-item-options">${colorText}${marbleText}${sizeText}${sizeDescText}</div>` : '';
+                const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
 
                 return `
-                    <div class="cart-item">
-                        <div class="item-info">
-                            <h3>${item.name}</h3>
-                            <p>${item.description}</p>
+                    <div class="cart-item" data-index="${index}">
+                        <img src="${imagePath}" alt="${item.name}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            ${optionsText}
+                            <div class="cart-item-price">${priceText}</div>
                         </div>
-                        <div class="item-price">${item.price.toFixed(2).replace('.', ',')} € × ${item.quantity}</div>
+                        <div class="cart-item-actions">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">−</button>
+                                <span class="quantity-value">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                            </div>
+                            <button class="remove-btn" onclick="removeItem(${index})">Entfernen</button>
+                        </div>
                     </div>
                 `;
             }).join('');
 
-            totalEl.textContent = total.toFixed(2).replace('.', ',') + ' €';
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Calculate total price in EUR
+            const total = cart.reduce((sum, item) => {
+                if (!item.price || item.option === 'individuell') return sum;
+                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                return sum + (priceNum * item.quantity);
+            }, 0);
+
+            // Get discount from applied promo code
+            const discount = calculateDiscount();
+            const finalTotal = total - discount;
+
+            const summaryHTML = `
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Zwischensumme:</span>
+                        <span>${total.toFixed(2)} €</span>
+                    </div>
+                    ${discount > 0 ? `
+                    <div class="summary-row discount">
+                        <span>Rabatt (Promo-Code):</span>
+                        <span>-${discount.toFixed(2)} €</span>
+                    </div>
+                    ` : ''}
+                    <div class="summary-row">
+                        <span>Anzahl Artikel:</span>
+                        <span>${totalItems}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Gesamt:</span>
+                        <span>${finalTotal.toFixed(2)} €</span>
+                    </div>
+
+                    <div class="promo-code-section">
+                        <div class="promo-code-label">Promo-Code eingeben:</div>
+                        <div class="promo-code-input-group">
+                            <input
+                                type="text"
+                                id="promoCodeInput"
+                                class="promo-code-input"
+                                placeholder="Ihr Code"
+                                maxlength="20"
+                            >
+                            <button class="promo-code-apply-btn" id="promoApplyBtn" onclick="applyPromoCode()">Anwenden</button>
+                        </div>
+                        <div id="promoCodeApplied" class="promo-code-applied${getAppliedPromoCode() ? ' visible' : ''}">
+                            <span class="promo-code-applied-text">${getAppliedPromoCode() ? 'Promo-Code: ' + getAppliedPromoCode() : ''}</span>
+                            <button class="promo-code-applied-remove" onclick="removePromoCode()" title="Promo-Code entfernen">×</button>
+                        </div>
+                        <div id="promoCodeMessage" class="promo-code-message"></div>
+                    </div>
+
+                    <button class="checkout-btn" onclick="checkout()">Anfrage senden</button>
+                </div>
+            `;
+
+            cartContent.innerHTML = `
+                <div class="cart-items">${itemsHTML}</div>
+                ${summaryHTML}
+            `;
         }
 
-        // ==================== TABS ====================
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        // Update quantity
+        function updateQuantity(index, change) {
+            const cart = getCart();
+            const item = cart[index];
 
-            event.target.classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active');
+            item.quantity += change;
+
+            if (item.quantity <= 0) {
+                cart.splice(index, 1);
+            }
+
+            saveCart(cart);
+            renderCart();
         }
 
-        // ==================== CHECKOUT ====================
-        async function startCheckout() {
-            const btn = document.getElementById('checkout-btn');
-            const btnText = document.getElementById('checkout-text');
-            const statusEl = document.getElementById('checkout-status');
-            const email = document.getElementById('customer-email').value;
+        // Remove item
+        function removeItem(index) {
+            const cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            renderCart();
+        }
 
-            // Disable button
-            btn.disabled = true;
-            btnText.innerHTML = '<span class="spinner"></span> Wird geladen...';
-            statusEl.className = 'status info';
-            statusEl.textContent = '⏳ Verbindung zum Server...';
+        // Promo Code Management
+        const DEFAULT_PROMO_CODES = {
+            'TM26MG': { discount: 0.1, description: 'Troedelmarkt Metro Godorf 01.03.2026' },
+            'TY26KM': { discount: 0.1, description: 'Thank You card' }
+        };
 
-            // Prepare line items for Stripe
-            const lineItems = sampleCart.map(item => ({
-                price_data: {
-                    currency: 'eur',
-                    product_data: {
-                        name: item.name,
-                        description: item.description
-                    },
-                    unit_amount: Math.round(item.price * 100) // in cents
-                },
-                quantity: item.quantity
-            }));
+        let PROMO_CODES = { ...DEFAULT_PROMO_CODES };
 
-            // Get URLs
-            const baseUrl = window.location.origin + window.location.pathname;
-            const successUrl = baseUrl + '?session_id={CHECKOUT_SESSION_ID}';
-            const cancelUrl = baseUrl + '?canceled=true';
-
-            try {
-                console.log('🔵 API URL:', API_URL);
-                console.log('🔵 Line Items:', lineItems);
-
-                // Call backend API
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        line_items: lineItems,
-                        mode: 'payment',
-                        success_url: successUrl,
-                        cancel_url: cancelUrl,
-                        customer_email: email || null
-                    })
-                });
-
-                const data = await response.json();
-                console.log('🔵 Response:', data);
-
-                if (!response.ok || data.error) {
-                    throw new Error(data.error || 'API Fehler');
+        // Load promo codes from localStorage (for future extensibility)
+        function loadPromoCodes() {
+            const stored = localStorage.getItem('layerstore_promo_codes');
+            if (stored) {
+                try {
+                    const storedCodes = JSON.parse(stored);
+                    PROMO_CODES = { ...DEFAULT_PROMO_CODES, ...storedCodes };
+                } catch (e) {
+                    PROMO_CODES = { ...DEFAULT_PROMO_CODES };
                 }
-
-                if (data.url) {
-                    // Redirect to Stripe Checkout
-                    statusEl.className = 'status success';
-                    statusEl.textContent = '✅ Weiterleitung zu Stripe...';
-                    window.location.href = data.url;
-                } else {
-                    throw new Error('Keine URL erhalten');
-                }
-
-            } catch (error) {
-                console.error('❌ Error:', error);
-                btn.disabled = false;
-                btnText.innerHTML = '⚡ Jetzt bezahlen mit Stripe';
-                statusEl.className = 'status error';
-                statusEl.textContent = '❌ ' + error.message;
-
-                if (error.message.includes('fetch')) {
-                    statusEl.innerHTML = '❌ Server nicht erreichbar. <br><small>Prüfe die API URL oder stelle sicher, dass der Backend-Code installiert ist.</small>';
-                }
+            } else {
+                PROMO_CODES = { ...DEFAULT_PROMO_CODES };
             }
         }
 
-        // ==================== CHECK PAYMENT STATUS ====================
-        async function checkPaymentStatus() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const sessionId = urlParams.get('session_id');
-            const canceled = urlParams.get('canceled');
+        function getAppliedPromoCode() {
+            return localStorage.getItem('layerstore_promo_code') || null;
+        }
 
-            if (canceled === 'true') {
-                document.getElementById('checkout-status').className = 'status info';
-                document.getElementById('checkout-status').textContent = 'ℹ️ Zahlung abgebrochen. Versuchen Sie es erneut.';
-                // Clean URL
-                window.history.replaceState({}, document.title, window.location.pathname);
+        function setAppliedPromoCode(code) {
+            if (code) {
+                localStorage.setItem('layerstore_promo_code', code);
+            } else {
+                localStorage.removeItem('layerstore_promo_code');
+            }
+        }
+
+        function calculateDiscount() {
+            const promoCode = getAppliedPromoCode();
+            if (!promoCode || !PROMO_CODES[promoCode]) {
+                return 0;
+            }
+
+            const cart = getCart();
+            const total = cart.reduce((sum, item) => {
+                if (!item.price || item.option === 'individuell') return sum;
+                const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                return sum + (priceNum * item.quantity);
+            }, 0);
+
+            const discountPercent = PROMO_CODES[promoCode].discount;
+            return total * discountPercent;
+        }
+
+        function applyPromoCode() {
+            const input = document.getElementById('promoCodeInput');
+            const messageDiv = document.getElementById('promoCodeMessage');
+            const code = input.value.trim().toUpperCase();
+
+            if (!code) {
+                messageDiv.textContent = 'Bitte geben Sie einen Promo-Code ein.';
+                messageDiv.className = 'promo-code-message error';
+                messageDiv.style.display = 'block';
+                input.classList.add('invalid');
                 return;
             }
 
-            if (sessionId) {
-                // Show success page
-                document.getElementById('cart-page').style.display = 'none';
-                document.getElementById('success-page').style.display = 'block';
+            if (PROMO_CODES[code]) {
+                setAppliedPromoCode(code);
+                input.classList.remove('invalid');
+                input.value = '';
+                messageDiv.style.display = 'none';
 
-                // Fetch session details
-                try {
-                    const response = await fetch(`/api/get-session.php?session_id=${sessionId}`);
-                    const session = await response.json();
+                // Re-render cart to update prices and show promo code
+                renderCart();
+            } else {
+                messageDiv.textContent = '✗ Ungültiger Promo-Code';
+                messageDiv.className = 'promo-code-message error';
+                messageDiv.style.display = 'block';
+                input.classList.add('invalid');
+                input.classList.remove('valid');
+                setAppliedPromoCode(null);
+            }
+        }
 
-                    document.getElementById('order-details').innerHTML = `
-                        <strong>Bestellnummer:</strong> ${sessionId}<br>
-                        <strong>Betrag:</strong> ${(session.amount_total / 100).toFixed(2).replace('.', ',')} €<br>
-                        <strong>E-Mail:</strong> ${session.customer_details?.email || 'N/A'}<br>
-                        <strong>Zahlungsstatus:</strong> ${session.payment_status === 'paid' ? '✅ Bezahlt' : session.payment_status}
-                    `;
-                } catch (e) {
-                    document.getElementById('order-details').innerHTML = `
-                        <strong>Session ID:</strong> ${sessionId}<br>
-                        <strong>Bestellung erfolgreich!</strong>
-                    `;
+        function removePromoCode() {
+            // Clear promo code
+            setAppliedPromoCode(null);
+
+            // Re-render cart to update prices and hide promo code
+            renderCart();
+        }
+
+        // Allow Enter key to apply promo code
+        document.addEventListener('DOMContentLoaded', () => {
+            const promoInput = document.getElementById('promoCodeInput');
+            if (promoInput) {
+                promoInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyPromoCode();
+                    }
+                });
+            }
+        });
+
+        // Checkout
+        function checkout() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Ihr Warenkorb ist leer.');
+                return;
+            }
+
+            // Open checkout modal
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Focus on email input
+            setTimeout(() => {
+                document.getElementById('customerEmail').focus();
+            }, 100);
+        }
+
+        // Close checkout modal
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Show toast notification
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+
+            // Log for debugging
+            console.log(`[${type.toUpperCase()}] ${title}: ${message}`);
+        }
+
+        // Prepare order details
+        function prepareOrderDetails() {
+            const cart = getCart();
+
+            let orderDetails = '=== BESTELLTE ARTIKEL ===\n\n';
+
+            let totalItems = 0;
+            cart.forEach(item => {
+                let itemDetails = `${item.quantity}x ${item.name}`;
+
+                // Add color if not standard
+                if (item.color && item.color !== 'standard') {
+                    const colorName = colorNames[item.color] || item.color;
+                    const marbleNote = item.isMarble ? ' (Marmor +20%)' : '';
+                    itemDetails += `\n   Farbe: ${colorName}${marbleNote}`;
                 }
 
+                // Add size option if not as-photo
+                if (item.option && item.option !== 'as-photo') {
+                    itemDetails += `\n   Größe: Nach Absprache`;
+                }
+
+                // Add size description if provided
+                if (item.sizeDescription) {
+                    itemDetails += `\n   (${item.sizeDescription})`;
+                }
+
+                // Show price as null if size is custom
+                const priceText = item.option && item.option !== 'as-photo' ? 'null' : item.price;
+                itemDetails += ` - ${priceText}`;
+                orderDetails += itemDetails + '\n';
+                totalItems += item.quantity;
+            });
+
+            orderDetails += `\n=== ZUSAMMENFASSUNG ===\n`;
+            orderDetails += `Gesamt: ${totalItems} Artikel\n`;
+
+            // Add promo code info if applied
+            const promoCode = getAppliedPromoCode();
+            if (promoCode && PROMO_CODES[promoCode]) {
+                const discount = calculateDiscount();
+                orderDetails += `Promo-Code: ${promoCode}\n`;
+                orderDetails += `Rabatt: -${discount.toFixed(2)} €\n`;
+            }
+
+            orderDetails += `Datum: ${new Date().toLocaleDateString('de-DE')}\n`;
+            orderDetails += `Zeit: ${new Date().toLocaleTimeString('de-DE')}\n`;
+
+            return orderDetails;
+        }
+
+        // Order via WhatsApp
+        function orderViaWhatsApp() {
+            // Check privacy consent
+            const privacyConsent = document.getElementById('privacyConsent');
+            if (!privacyConsent.checked) {
+                showToast('Fehler', 'Bitte stimmen Sie der Datenschutzerklärung zu.');
+                return;
+            }
+
+            const nameInput = document.getElementById('customerName');
+            const name = nameInput.value.trim();
+
+            const orderDetails = prepareOrderDetails();
+
+            // ============================================================
+            // WhatsApp Nummer hier ändern (Format: 49 + Nummer ohne +0)
+            // Beispiel: 0176 456 789 000 → 4917645678900
+            // ============================================================
+            const whatsappNumber = '4915259821293';
+
+            // Build message
+            let message = '🎨 *Neue Bestellung von LayerStore*\n\n';
+
+            if (name) {
+                message += `👤 *Name:* ${name}\n`;
+            }
+
+            message += '\n' + orderDetails;
+
+            // Encode message for URL
+            const encodedMessage = encodeURIComponent(message);
+
+            // Open WhatsApp
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+
+            // Close modal and clear cart
+            closeCheckoutModal();
+            localStorage.removeItem('layerstore_cart');
+            setAppliedPromoCode(null);  // Clear promo code
+            updateCartCount();
+            renderCart();
+            nameInput.value = '';
+
+            // Show success message
+            showToast('WhatsApp geöffnet! 🎉', 'Vielen Dank! Senden Sie die Nachricht einfach ab.', 'success');
+        }
+
+        // Order via Email
+        function orderViaEmail() {
+            // Check privacy consent
+            const privacyConsent = document.getElementById('privacyConsent');
+            if (!privacyConsent.checked) {
+                showToast('Fehler', 'Bitte stimmen Sie der Datenschutzerklärung zu.');
+                return;
+            }
+
+            const nameInput = document.getElementById('customerName');
+            const name = nameInput.value.trim();
+
+            const orderDetails = prepareOrderDetails();
+
+            // Email recipient
+            const recipientEmail = 'info@layerstore.eu';
+
+            // Build email subject and body
+            const subject = encodeURIComponent('Neue Bestellung von LayerStore');
+
+            let emailBody = 'Neue Bestellung von LayerStore\n\n';
+
+            if (name) {
+                emailBody += `Name: ${name}\n`;
+            }
+
+            emailBody += '\n' + orderDetails;
+
+            // Encode body
+            const encodedBody = encodeURIComponent(emailBody);
+
+            // Open email client
+            const mailtoUrl = `mailto:${recipientEmail}?subject=${subject}&body=${encodedBody}`;
+            window.location.href = mailtoUrl;
+
+            // Close modal and clear cart
+            closeCheckoutModal();
+            localStorage.removeItem('layerstore_cart');
+            setAppliedPromoCode(null);  // Clear promo code
+            updateCartCount();
+            renderCart();
+            nameInput.value = '';
+
+            // Show success message
+            showToast('E-Mail geöffnet! ✉️', 'Vielen Dank! Senden Sie die E-Mail einfach ab.', 'success');
+        }
+
+        // Check for payment success in URL
+        function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const canceled = urlParams.get('canceled');
+            const sessionId = urlParams.get('session_id');
+
+            if (success === 'true') {
+                // Payment successful - show success popup
+                showPaymentSuccessPopup(sessionId);
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (canceled === 'true') {
+                // Payment canceled
+                showToast('Zahlung abgebrochen', 'Sie können die Zahlung jederzeit erneut versuchen.', 'info');
                 // Clean URL
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
 
-        // ==================== CONTINUE SHOPPING ====================
-        function continueShopping() {
-            document.getElementById('success-page').style.display = 'none';
-            document.getElementById('cart-page').style.display = 'block';
+        // Show payment success popup
+        function showPaymentSuccessPopup(sessionId) {
+            // Create popup overlay
+            const popupOverlay = document.createElement('div');
+            popupOverlay.id = 'paymentSuccessPopup';
+            popupOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            // Create popup content
+            const popupContent = document.createElement('div');
+            popupContent.style.cssText = `
+                background: white;
+                padding: 40px;
+                border-radius: 12px;
+                max-width: 500px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                animation: slideUp 0.4s ease;
+            `;
+
+            popupContent.innerHTML = `
+                <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+                <h2 style="color: #232E3D; margin-bottom: 15px; font-size: 28px;">Zahlung erfolgreich!</h2>
+                <p style="color: #666; margin-bottom: 10px; font-size: 16px;">Vielen Dank für Ihre Bestellung.</p>
+                ${sessionId ? `<p style="color: #888; font-size: 14px; margin-bottom: 20px;">Bestellnummer: <strong style="color: #232E3D;">${sessionId.substring(0, 20)}...</strong></p>` : ''}
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Sie erhalten eine Bestätigungs-E-Mail mit allen Details.</p>
+                <button onclick="closePaymentSuccessPopup()" style="
+                    background: #232E3D;
+                    color: #F0ECDA;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: background 0.2s;
+                " onmouseover="this.style.background='#4A5A6A'" onmouseout="this.style.background='#232E3D'">
+                    Weiter shoppen
+                </button>
+            `;
+
+            popupOverlay.appendChild(popupContent);
+            document.body.appendChild(popupOverlay);
+
+            // Add CSS animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { transform: translateY(30px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
         }
+
+        // Close payment success popup
+        function closePaymentSuccessPopup() {
+            const popup = document.getElementById('paymentSuccessPopup');
+            if (popup) {
+                popup.style.animation = 'fadeIn 0.3s ease reverse';
+                setTimeout(() => popup.remove(), 300);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkPaymentStatus(); // Check for payment success first
+            loadPromoCodes();
+            updateCartCount();
+            renderCart();
+
+            // Checkout modal event listeners
+            const modal = document.getElementById('checkoutModal');
+            const closeBtn = document.getElementById('closeCheckout');
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const emailBtn = document.getElementById('emailBtn');
+            const stripeBtn = document.getElementById('stripeBtn');
+            const privacyConsent = document.getElementById('privacyConsent');
+
+            // Close modal on X button
+            closeBtn.addEventListener('click', closeCheckoutModal);
+
+            // Close modal on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeCheckoutModal();
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeCheckoutModal();
+                }
+            });
+
+            // WhatsApp button
+            whatsappBtn.addEventListener('click', orderViaWhatsApp);
+
+            // Email button
+            emailBtn.addEventListener('click', orderViaEmail);
+
+            // Stripe button
+            stripeBtn.addEventListener('click', orderViaStripe);
+
+            // Privacy consent toggle
+            privacyConsent.addEventListener('change', function() {
+                whatsappBtn.disabled = !this.checked;
+                emailBtn.disabled = !this.checked;
+                stripeBtn.disabled = !this.checked;
+            });
+        });
+
+        // Stripe Payment Integration
+        async function orderViaStripe() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                showToast('Warenkorb leer', 'Ihr Warenkorb ist leer.', 'error');
+                return;
+            }
+
+            try {
+                // Calculate total
+                const total = cart.reduce((sum, item) => {
+                    if (!item.price || item.option === 'individuell') return sum;
+                    const priceNum = parseFloat(item.price.replace(',', '.').replace(' €', ''));
+                    return sum + (priceNum * item.quantity);
+                }, 0);
+
+                const totalInCents = Math.round(total * 100);
+
+                // Call Stripe API via configured backend
+                const response = await fetch(`${STRIPE_BACKEND_URL}/create-checkout-session.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        line_items: [{
+                            price_data: {
+                                currency: 'eur',
+                                product_data: {
+                                    name: 'LayerStore Bestellung'
+                                },
+                                unit_amount: totalInCents
+                            },
+                            quantity: 1
+                        }],
+                        success_url: window.location.origin + '/cart_test/?success=true',
+                        cancel_url: window.location.origin + '/cart_test/?canceled=true'
+                    })
+                });
+
+                const session = await response.json();
+
+                if (session.success && session.url) {
+                    // Clear cart and redirect to Stripe
+                    localStorage.removeItem('layerstore_cart');
+                    window.location.href = session.url;
+                } else {
+                    throw new Error(session.error || 'Stripe Fehler');
+                }
+
+            } catch (error) {
+                console.error('Stripe Error:', error);
+                showToast('Zahlungsfehler', 'Die Zahlung konnte nicht gestartet werden: ' + error.message, 'error');
+            }
+        }
+    </script>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-title">
+                <strong>Cookies & LocalStorage</strong>
+            </p>
+            <p class="cookie-text">
+                Wir verwenden nur erforderliche Cookies für den Warenkorb.
+            </p>
+            <p class="cookie-note">
+                Keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gerät.
+            </p>
+            <button id="cookieAcceptBtn" class="cookie-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Cookie Consent
+        const COOKIE_CONSENT_KEY = 'layerstore_cookie_consent';
+
+        function checkCookieConsent() {
+            return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted';
+        }
+
+        function setCookieConsent() {
+            localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+            hideCookieBanner();
+        }
+
+        function hideCookieBanner() {
+            const banner = document.getElementById('cookieBanner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkCookieConsent()) {
+                setTimeout(() => {
+                    const banner = document.getElementById('cookieBanner');
+                    if (banner) {
+                        banner.classList.add('show');
+                    }
+                }, 500);
+            }
+
+            const acceptBtn = document.getElementById('cookieAcceptBtn');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', setCookieConsent);
+            }
+        });
     </script>
 </body>
 </html>

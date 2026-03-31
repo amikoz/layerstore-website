@@ -1,42 +1,18 @@
 <?php
 /**
- * Stripe Checkout Session API
- * Creates a checkout session and returns URL for redirect
+ * Stripe Checkout Session API - Production Ready
  *
- * Endpoint: /api/create-checkout-session.php
- * Method: POST
- * Content-Type: application/json
+ * Load Stripe key from config file (not in git)
  */
 
 header('Content-Type: application/json');
 
-// CORS - allow requests from all origins for IONOS hosting
-$allowedOrigins = [
-    'https://layerstore.eu',
-    'https://www.layerstore.eu',
-    'https://layerstore.com',
-    'https://amikoz.github.io',
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:8000'
-];
-
-// Allow all for development (remove in production if needed)
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
-if ($origin === '*' || in_array($origin, $allowedOrigins)) {
-    header('Access-Control-Allow-Origin: ' . ($origin === '*' ? '*' : $origin));
-}
-
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (in_array($origin, $allowedOrigins)) {
-    header('Access-Control-Allow-Origin: ' . $origin);
-}
+// CORS for production
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
-header('Access-Control-Allow-Credentials: true');
 
-// OPTIONS request for CORS preflight
+// OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -49,28 +25,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// ==================== CONFIGURATION ====================
-
-// Stripe Secret Key (TEST MODE)
-// Get this key from: https://dashboard.stripe.com/test/apikeys
-$stripeSecretKey = getenv('STRIPE_SECRET_KEY') ?: 'sk_test_...';
-
-// Base URLs
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-    $protocol = 'https';
+// Load Stripe configuration
+if (file_exists(__DIR__ . '/stripe-config.php')) {
+    $stripeSecretKey = include __DIR__ . '/stripe-config.php';
 } else {
-    $protocol = 'http';
+    $stripeSecretKey = getenv('STRIPE_SECRET_KEY') ?? null;
 }
-$host = $_SERVER['HTTP_HOST'];
-$baseUrl = $protocol . '://' . $host;
 
-// Default URLs
-$defaultSuccessUrl = $baseUrl . '/cart_test/?session_id={CHECKOUT_SESSION_ID}';
-$defaultCancelUrl = $baseUrl . '/cart_test/?canceled=true';
+if (!$stripeSecretKey) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Stripe not configured']);
+    exit;
+}
 
-// ========================================================
-
-// Get data from request body
+// Get request data
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input) {
@@ -79,128 +47,132 @@ if (!$input) {
     exit;
 }
 
-// Accept line_items directly (Stripe format) or items array
 $lineItems = $input['line_items'] ?? [];
-$totalAmount = 0;
 
-// If line_items is empty, try items array (legacy format)
 if (empty($lineItems)) {
-    $items = $input['items'] ?? [];
-    if (empty($items)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'No items provided']);
-        exit;
-    }
-    // Convert items to line_items format
-    foreach ($items as $item) {
-        $price = floatval($item['price'] ?? 0);
-        $quantity = intval($item['quantity'] ?? 1);
-        $amountInCents = round($price * 100);
-
-        $lineItems[] = [
-            'price_data' => [
-                'currency' => 'eur',
-                'product_data' => [
-                    'name' => $item['name'] ?? 'Produkt',
-                    'description' => $item['description'] ?? '',
-                    'images' => $item['images'] ?? [],
-                ],
-                'unit_amount' => $amountInCents,
-            ],
-            'quantity' => $quantity,
-        ];
-
-        $totalAmount += $amountInCents * $quantity;
-    }
-} else {
-    // Calculate total from provided line_items
-    foreach ($lineItems as $item) {
-        $amount = intval($item['price_data']['unit_amount'] ?? 0);
-        $quantity = intval($item['quantity'] ?? 1);
-        $totalAmount += $amount * $quantity;
-    }
+    http_response_code(400);
+    echo json_encode(['error' => 'No items provided']);
+    exit;
 }
 
-// Success/Cancel URLs (support both naming conventions)
-$successUrl = $input['success_url'] ?? $input['successUrl'] ?? $defaultSuccessUrl;
-$cancelUrl = $input['cancel_url'] ?? $input['cancelUrl'] ?? $defaultCancelUrl;
+$successUrl = $input['success_url'] ?? 'https://layerstore.eu/cart/?success=true&session_id={CHECKOUT_SESSION_ID}';
+$cancelUrl = $input['cancel_url'] ?? 'https://layerstore.eu/cart/?canceled=true';
 
-// Customer email (optional)
-$customerEmail = $input['customerEmail'] ?? null;
+// Sanitize and collect product data
+$sanitizedItems = [];
+$productsForMetadata = [];
 
-// Customer creation (optional)
-$createCustomer = $input['createCustomer'] ?? false;
+foreach ($lineItems as $item) {
+    if (!isset($item['price_data']['unit_amount']) || $item['price_data']['unit_amount'] <= 0) {
+        continue;
+    }
 
-// Metadata (optional)
-$metadata = $input['metadata'] ?? [];
+    // Extract product name and description
+    $productName = $item['price_data']['product_data']['name'] ?? 'LayerStore Produkt';
+    $productDescription = $item['price_data']['product_data']['description'] ?? '';
+    $unitAmount = intval($item['price_data']['unit_amount']);
+    $quantity = $item['quantity'] ?? 1;
 
-// ==================== STRIPE API CALL ====================
-
-function createStripeCheckoutSession($lineItems, $successUrl, $cancelUrl, $customerEmail, $createCustomer, $metadata, $secretKey) {
-    $ch = curl_init();
-
-    $postData = [
-        'payment_method_types' => ['card', 'sofort', 'paypal', 'sepa_debit'],
-        'line_items' => $lineItems,
-        'mode' => 'payment',
-        'success_url' => $successUrl,
-        'cancel_url' => $cancelUrl,
-        'locale' => 'de',
-        'metadata' => $metadata,
+    $sanitizedItem = [
+        'price_data' => [
+            'currency' => 'eur',
+            'product_data' => [
+                'name' => substr($productName, 0, 500), // Stripe max length
+                'description' => substr($productDescription, 0, 500)
+            ],
+            'unit_amount' => $unitAmount
+        ],
+        'quantity' => $quantity
     ];
 
-    if ($customerEmail) {
-        $postData['customer_email'] = $customerEmail;
+    // Add image if available
+    if (isset($item['price_data']['product_data']['images']) && !empty($item['price_data']['product_data']['images'])) {
+        $sanitizedItem['price_data']['product_data']['images'] = $item['price_data']['product_data']['images'];
     }
 
-    if ($createCustomer && $customerEmail) {
-        $postData['customer_creation'] = 'always';
-    }
+    $sanitizedItems[] = $sanitizedItem;
 
-    // Add expriation time (30 minutes)
-    $postData['expires_at'] = time() + 1800;
-
-    curl_setopt($ch, CURLOPT_URL, 'https://api.stripe.com/v1/checkout/sessions');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Authorization: Bearer ' . $secretKey,
-        'Content-Type: application/x-www-form-urlencoded'
-    ]);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    $decoded = json_decode($response, true);
-
-    if ($httpCode >= 400) {
-        $errorMessage = $decoded['error']['message'] ?? 'Stripe API error';
-        $errorType = $decoded['error']['type'] ?? 'api_error';
-        throw new Exception($errorMessage . ' (' . $errorType . ')');
-    }
-
-    return $decoded;
+    // Collect for metadata (size limit is 500 chars for each metadata value)
+    $productsForMetadata[] = [
+        'name' => $productName,
+        'price' => $unitAmount,
+        'quantity' => $quantity
+    ];
 }
 
-// ==================== EXECUTE ====================
+if (empty($sanitizedItems)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'No valid items']);
+    exit;
+}
 
-try {
-    $session = createStripeCheckoutSession($lineItems, $successUrl, $cancelUrl, $customerEmail, $createCustomer, $metadata, $stripeSecretKey);
+// Prepare metadata (Stripe has limits on metadata size)
+$metadata = [
+    'created_at' => date('Y-m-d H:i:s'),
+    'source' => 'layerstore.eu'
+];
 
-    echo json_encode([
-        'success' => true,
-        'url' => $session['url'],
-        'sessionId' => $session['id'],
-        'totalAmount' => $totalAmount,
-        'totalFormatted' => number_format($totalAmount / 100, 2, ',', '') . ' €'
-    ]);
+// Add items as JSON (truncated if needed)
+$itemsJson = json_encode($productsForMetadata);
+if (strlen($itemsJson) > 500) {
+    // If too long, just store count and total
+    $metadata['items_count'] = count($productsForMetadata);
+    $total = 0;
+    foreach ($productsForMetadata as $item) {
+        $total += $item['price'] * $item['quantity'];
+    }
+    $metadata['total_amount'] = $total;
+} else {
+    $metadata['items'] = $itemsJson;
+}
 
-} catch (Exception $e) {
+// Add customer email if provided
+if (isset($input['customer_email']) && filter_var($input['customer_email'], FILTER_VALIDATE_EMAIL)) {
+    $metadata['customer_email'] = $input['customer_email'];
+    $postData['customer_email'] = $input['customer_email'];
+}
+
+$postData = [
+    'payment_method_types' => ['card'],
+    'line_items' => $sanitizedItems,
+    'mode' => 'payment',
+    'success_url' => $successUrl,
+    'cancel_url' => $cancelUrl,
+    'metadata' => $metadata
+];
+
+// Add phone number collection if enabled
+if (isset($input['collect_phone']) && $input['collect_phone']) {
+    $postData['phone_number_collection'] = [
+        'enabled' => true
+    ];
+}
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://api.stripe.com/v1/checkout/sessions');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $stripeSecretKey,
+    'Content-Type: application/x-www-form-urlencoded'
+]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+// curl_close() is deprecated in PHP 8.5+, not needed anymore
+
+$decoded = json_decode($response, true);
+
+if ($httpCode >= 400) {
+    $errorMessage = $decoded['error']['message'] ?? 'Stripe API error';
     http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage()
-    ]);
+    echo json_encode(['error' => $errorMessage]);
+    exit;
 }
+
+echo json_encode([
+    'success' => true,
+    'url' => $decoded['url'],
+    'sessionId' => $decoded['id']
+]);
