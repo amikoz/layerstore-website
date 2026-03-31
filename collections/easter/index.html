@@ -1296,8 +1296,8 @@
                     <p>Verspieltes Ei mit beweglichen Beinen fur Kinder-Uberraschungen.</p>
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="legsegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="legsegg" onclick="event.stopPropagation(); openCustomizeModal('legsegg')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="osterei" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="osterei" onclick="event.stopPropagation(); openCustomizeModal('osterei')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1347,8 +1347,8 @@
                     <p>Elegantes Osterei im Strick-Look.</p>
                     <div class="product-price">5,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="knittedegg" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="knittedegg" onclick="event.stopPropagation(); openCustomizeModal('knittedegg')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="gestricktesei" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="gestricktesei" onclick="event.stopPropagation(); openCustomizeModal('gestricktesei')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1364,8 +1364,8 @@
                     <p>Niedlicher Hase speziell fur Kinder-Uberraschungseier.</p>
                     <div class="product-price">4,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnykinderholder" onclick="event.stopPropagation(); openCustomizeModal('bunnykinderholder')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="kinderhalter" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="kinderhalter" onclick="event.stopPropagation(); openCustomizeModal('kinderhalter')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -1381,8 +1381,8 @@
                     <p>Hase mit Korb für Oster-Deko.</p>
                     <div class="product-price">6,00 €</div>
                     <div class="product-buttons">
-                        <button class="add-to-cart-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
-                        <button class="customize-btn" data-product="bunnywithbasket2" onclick="event.stopPropagation(); openCustomizeModal('bunnywithbasket2')">Anpassen</button>
+                        <button class="add-to-cart-btn" data-product="hasemmitkorb" onclick="event.stopPropagation(); addToCart(this)">In den Warenkorb</button>
+                        <button class="customize-btn" data-product="hasemmitkorb" onclick="event.stopPropagation(); openCustomizeModal('hasemmitkorb')">Anpassen</button>
                     </div>
                 </div>
             </div>
@@ -2216,8 +2216,6 @@
 
                 let marbleDividerAdded = false;
 
-                let marbleDividerAdded = false;
-
                 availableColors.forEach(color => {
                     // Add divider before marble colors
                     if (marbleColors.includes(color) && !marbleDividerAdded) {
@@ -2460,6 +2458,17 @@
             if (acceptBtn) {
                 acceptBtn.addEventListener('click', setCookieConsent);
             }
+        });
+
+        // DEBUG: Prüfe ob JavaScript korrekt geladen ist
+        console.log('DEBUG: Page loaded');
+        console.log('DEBUG: window.products:', window.products ? 'found' : 'MISSING');
+        console.log('DEBUG: addToCart:', typeof addToCart);
+        console.log('DEBUG: openCustomizeModal:', typeof openCustomizeModal);
+
+        // DEBUG: Prüfe alle Buttons
+        document.querySelectorAll('.add-to-cart-btn').forEach((btn, i) => {
+            console.log(`DEBUG: Button ${i}:`, btn.getAttribute('data-product'), 'exists:', !!window.products[btn.getAttribute('data-product')]);
         });
     </script>
 </body>
