@@ -108,17 +108,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .admin-header h1 {
-            font-size: 1.25rem;
-            color: #232F3D;
+        .admin-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .admin-nav a {
+            padding: 0.5rem 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .admin-nav a:hover,
+        .admin-nav a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
         }
 
         .logout-btn {
             padding: 0.5rem 1rem;
-            background: rgba(35, 47, 61, 0.1);
-            color: #232F3D;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -127,7 +144,7 @@
         }
 
         .logout-btn:hover {
-            background: rgba(35, 47, 61, 0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .admin-content {
@@ -403,7 +420,10 @@
     <!-- Admin Dashboard -->
     <div class="admin-dashboard" id="adminDashboard">
         <div class="admin-header">
-            <h1>LayerStore Admin Panel</h1>
+            <nav class="admin-nav">
+                <a href="/admin/" class="active">Promo-Codes</a>
+                <a href="/admin/orders.php">Bestellungen</a>
+            </nav>
             <button class="logout-btn" onclick="logout()">Abmelden</button>
         </div>
         <div class="admin-content">

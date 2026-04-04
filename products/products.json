@@ -1,0 +1,312 @@
+{
+  "products": [
+    {
+      "id": "osterkarotte",
+      "name": "Osterkarotte",
+      "description": "Dekorative Osterkarotte aus hochwertigem PLA-Kunststoff. Perfekt als Osterdeko oder Geschenk. Hergestellt mit Liebe zum Detail in Deutschland.",
+      "price": 13.00,
+      "images": [
+        "/collections/easter/images/carrot1.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["orange", "green", "white"],
+      "sizes": ["small", "medium", "large"],
+      "stock": 50,
+      "featured": true,
+      "tags": ["ostern", "karotte", "deko"]
+    },
+    {
+      "id": "hasenkorb",
+      "name": "Hasenkorb",
+      "description": "Niedlicher kleiner Hase mit Korb. Ideal als Tischdeko oder als Geschenk für Osten. Verschiedene Farben verfügbar.",
+      "price": 13.00,
+      "images": [
+        "/collections/easter/images/bunnybasketbeige.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["beige", "white", "pink", "light-green"],
+      "sizes": ["small", "medium"],
+      "stock": 35,
+      "featured": true,
+      "tags": ["ostern", "hase", "korb"]
+    },
+    {
+      "id": "osterei-beine",
+      "name": "Osterei mit Beinen",
+      "description": "Verspieltes Osterei mit kleinen Beinen. Ein lustiger Blickfang für Ihre Osterdeko. In vielen verschiedenen Farben erhältlich.",
+      "price": 2.00,
+      "images": [
+        "/collections/easter/images/legseggkinder.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["white", "yellow", "pink", "blue", "green", "orange"],
+      "sizes": ["small"],
+      "stock": 100,
+      "featured": false,
+      "tags": ["ostern", "ei", "deko"]
+    },
+    {
+      "id": "gestricktes-ei",
+      "name": "Gestricktes Ei",
+      "description": "Osterei mit raffinierter Strick-Optik. Das 3D-gedruckte Muster sieht aus wie ein echtes Strickmuster. Sehr detailreich und hochwertig verarbeitet.",
+      "price": 9.00,
+      "images": [
+        "/collections/easter/images/knittedeggmintgreen.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["mint-green", "pink", "white", "yellow", "light-green"],
+      "sizes": ["medium", "large"],
+      "stock": 40,
+      "featured": true,
+      "tags": ["ostern", "ei", "gestrickt"]
+    },
+    {
+      "id": "kinderhalter-hase",
+      "name": "Hasen-Kinderhalter",
+      "description": "Praktischer Kinderhalter im Design eines süßen Hasen. Ideal für Kindergeburtstage oder als Geschenk zur Taufe.",
+      "price": 4.00,
+      "images": [
+        "/collections/easter/images/bunnykinderholder.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["white", "beige", "pink", "blue"],
+      "sizes": ["small", "medium"],
+      "stock": 60,
+      "featured": false,
+      "tags": ["ostern", "hase", "kinderhalter"]
+    },
+    {
+      "id": "hase-mit-korb",
+      "name": "Hase mit Korb",
+      "description": "Kleiner Osterhase mit einem gefüllten Korb. Eine schöne Ergänzung für jede Osterdekoration. Handbemalt für ein einzigartiges Aussehen.",
+      "price": 5.00,
+      "images": [
+        "/collections/easter/images/bunnywithbasket.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["white", "beige", "brown"],
+      "sizes": ["small"],
+      "stock": 45,
+      "featured": false,
+      "tags": ["ostern", "hase", "korb"]
+    },
+    {
+      "id": "kinderrahmen-hase",
+      "name": "Hasen-Kinderrahmen",
+      "description": "Niedlicher Bilderrahmen mit Hasenmotiv. Perfekt für die ersten Fotos Ihres Kindes. Ein wunderbares Geschenk zur Geburt oder Taufe.",
+      "price": 2.00,
+      "images": [
+        "/collections/easter/images/kinderrahmen.jpg"
+      ],
+      "category": "easter",
+      "colors": ["white", "beige", "pink", "blue"],
+      "sizes": ["small"],
+      "stock": 70,
+      "featured": false,
+      "tags": ["ostern", "hase", "rahmen", "kinder"]
+    },
+    {
+      "id": "hase-deko-choco",
+      "name": "Hase Deko 15cm",
+      "description": "Große Osterhasen-Figur mit flauschiger Textur. Diese 15cm hohe Deko-Figur ist ein echter Blickfang auf jeder Osterdekoration. Die Oberfläche fühlt sich weich an.",
+      "price": 12.00,
+      "images": [
+        "/collections/easter/images/fuzzybunnydekochoco1.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["brown", "white", "beige"],
+      "sizes": ["large"],
+      "stock": 25,
+      "featured": true,
+      "tags": ["ostern", "hase", "deko", "groß"]
+    },
+    {
+      "id": "hase-deko-white",
+      "name": "Hase Deko 11cm",
+      "description": "Elegante weiße Osterhasen-Figur mit flauschiger Oberfläche. 11cm hoch - perfekt für Regale oder als Tischdeko. Hergestellt aus premium PLA.",
+      "price": 8.00,
+      "images": [
+        "/collections/easter/images/fuzzybunnydekowhite.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["white", "beige", "pink"],
+      "sizes": ["medium"],
+      "stock": 30,
+      "featured": false,
+      "tags": ["ostern", "hase", "deko"]
+    },
+    {
+      "id": "osterhase-skandi-big",
+      "name": "Osterhase Skandi Linien 12,5cm",
+      "description": "Skandinavischer Stil Osterhase mit eleganten Linien. Diese 12,5cm hohe Figur passt perfekt in modernes Interior. Minimalistisch und zeitlos.",
+      "price": 10.00,
+      "images": [
+        "/collections/easter/images/OsterhaseSkandiBig.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["white", "black", "gray", "beige"],
+      "sizes": ["medium"],
+      "stock": 35,
+      "featured": true,
+      "tags": ["ostern", "hase", "skandi", "modern"]
+    },
+    {
+      "id": "osterhase-skandi-small",
+      "name": "Osterhase Skandi Linien 11cm",
+      "description": "Kleinere Version des beliebten Skandi-Osterhasen. 11cm hoch mit cleanem Liniendesign. Perfekt für kleine Dekorationsflächen.",
+      "price": 8.00,
+      "images": [
+        "/collections/easter/images/OsterhaseSkandi.jpeg"
+      ],
+      "category": "easter",
+      "colors": ["white", "black", "gray", "beige"],
+      "sizes": ["medium"],
+      "stock": 40,
+      "featured": false,
+      "tags": ["ostern", "hase", "skandi", "modern"]
+    },
+    {
+      "id": "namensschild-basic",
+      "name": "Namensschild Basic",
+      "description": "Personalisiertes Namensschild für Türen, Schreibtische oder als Geschenk. Wählen Sie Ihren Namen und die Farbe frei.",
+      "price": 8.00,
+      "images": [],
+      "category": "schriftzuege",
+      "colors": ["white", "black", "gold", "silver", "pink", "blue"],
+      "sizes": ["small", "medium", "large"],
+      "stock": 999,
+      "featured": true,
+      "tags": ["schriftzug", "name", "personalisiert"],
+      "customizable": true
+    },
+    {
+      "id": "tischkarte-set",
+      "name": "Tischkarten-Set",
+      "description": "Set von 6 personalisierten Tischkarten für Ihre Hochzeit oder das nächste besondere Dinner. 3D-gedruckt mit elegantem Design.",
+      "price": 24.00,
+      "images": [],
+      "category": "schriftzuege",
+      "colors": ["white", "beige", "gold", "silver"],
+      "sizes": ["medium"],
+      "stock": 999,
+      "featured": true,
+      "tags": ["hochzeit", "tischkarte", "personalisiert", "set"],
+      "customizable": true
+    },
+    {
+      "id": "schriftzug-love",
+      "name": "Schriftzug LOVE",
+      "description": "Romantischer Schriftzug LOVE als Dekoration. Perfekt für Hochzeiten, Valentinstag oder als Geschenk für Ihren Lieblingsmenschen.",
+      "price": 15.00,
+      "images": [],
+      "category": "schriftzuege",
+      "colors": ["white", "pink", "red", "gold", "silver"],
+      "sizes": ["small", "medium", "large"],
+      "stock": 999,
+      "featured": false,
+      "tags": ["schriftzug", "love", "herz", "hochzeit"]
+    },
+    {
+      "id": "fidget-ring",
+      "name": "Fidget Ring",
+      "description": "Sensorischer Fidget-Ring zum Beruhigen und Konzentrieren. Ideal für Menschen mit ADHS, Autismus oder zum Stressabbau. Leise und diskret.",
+      "price": 6.00,
+      "images": [],
+      "category": "sensorik",
+      "colors": ["white", "black", "blue", "pink", "purple", "green"],
+      "sizes": ["small", "medium", "large"],
+      "stock": 80,
+      "featured": true,
+      "tags": ["fidget", "sensorik", "adhs", "stress"]
+    },
+    {
+      "id": "textur-stein",
+      "name": "Textur-Stein Set",
+      "description": "Set von verschiedenen taktilen Steinen mit unterschiedlichen Texturen. Förderung der sensorischen Wahrnehmung und Feinmotorik.",
+      "price": 18.00,
+      "images": [],
+      "category": "sensorik",
+      "colors": ["multicolor"],
+      "sizes": ["medium"],
+      "stock": 50,
+      "featured": false,
+      "tags": ["sensorik", "textur", "taktil", "motorik"]
+    }
+  ],
+  "categories": [
+    {
+      "id": "easter",
+      "name": "Ostern",
+      "description": "Osterhasen, Dekorationen und Geschenke für das Osterfest",
+      "image": "/collections/easter/images/carrot1.jpeg",
+      "emoji": "🐰",
+      "active": true
+    },
+    {
+      "id": "schriftzuege",
+      "name": "Schriftzüge",
+      "description": "Handgefertigte Buchstaben, Namensschilder und personalisierte Texte",
+      "image": null,
+      "emoji": "🔤",
+      "active": true
+    },
+    {
+      "id": "sensorik",
+      "name": "Sensorik",
+      "description": "Fidgets, sensorische Spielzeuge und entdeckendes Lernen",
+      "image": null,
+      "emoji": "🧠",
+      "active": true
+    },
+    {
+      "id": "weihnachten",
+      "name": "Weihnachten",
+      "description": "Weiße Weihnachten, Dekorationen und festliche Accessoires",
+      "image": null,
+      "emoji": "🎄",
+      "active": false
+    },
+    {
+      "id": "geburtstag",
+      "name": "Geburtstag",
+      "description": "Personalisierte Geschenke, Dekorationen und Accessoires",
+      "image": null,
+      "emoji": "🎂",
+      "active": false
+    }
+  ],
+  "colors": [
+    {"id": "white", "name": "Weiß", "hex": "#FFFFFF"},
+    {"id": "black", "name": "Schwarz", "hex": "#000000"},
+    {"id": "beige", "name": "Beige", "hex": "#F5F5DC"},
+    {"id": "pink", "name": "Pink", "hex": "#FFC0CB"},
+    {"id": "blue", "name": "Blau", "hex": "#4A90D9"},
+    {"id": "green", "name": "Grün", "hex": "#4CAF50"},
+    {"id": "yellow", "name": "Gelb", "hex": "#FFEB3B"},
+    {"id": "orange", "name": "Orange", "hex": "#FF9800"},
+    {"id": "brown", "name": "Braun", "hex": "#795548"},
+    {"id": "purple", "name": "Lila", "hex": "#9C27B0"},
+    {"id": "red", "name": "Rot", "hex": "#F44336"},
+    {"id": "gold", "name": "Gold", "hex": "#FFD700"},
+    {"id": "silver", "name": "Silber", "hex": "#C0C0C0"},
+    {"id": "gray", "name": "Grau", "hex": "#9E9E9E"},
+    {"id": "mint-green", "name": "Minzgrün", "hex": "#98FF98"},
+    {"id": "light-green", "name": "Hellgrün", "hex": "#90EE90"},
+    {"id": "olive-green", "name": "Olivgrün", "hex": "#808000"},
+    {"id": "sky-blue", "name": "Himmelblau", "hex": "#87CEEB"},
+    {"id": "new-pink", "name": "Neu Pink", "hex": "#FF69B4"},
+    {"id": "sakura-pink", "name": "Sakura Pink", "hex": "#FFB7C5"},
+    {"id": "chestnut-brown-marble", "name": "Kastanienbraun Marmor", "hex": "#8B4513"}
+  ],
+  "sizes": [
+    {"id": "small", "name": "Klein", "description": "Unter 10cm"},
+    {"id": "medium", "name": "Mittel", "description": "10-15cm"},
+    {"id": "large", "name": "Groß", "description": "Über 15cm"}
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-04-04",
+    "currency": "EUR",
+    "taxRate": 0.19
+  }
+}

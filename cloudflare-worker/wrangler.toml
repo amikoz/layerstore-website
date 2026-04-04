@@ -5,10 +5,10 @@ compatibility_date = "2024-01-01"
 # Environment variables (nicht in Git committen!)
 # Via: wrangler secret put STRIPE_WEBHOOK_SECRET
 
-# Routes (optional - für custom domain)
-# routes = [
-#   { pattern = "webhook.layerstore.eu/*", zone_name = "layerstore.eu" }
-# ]
+# Routes für layerstore.eu
+routes = [
+  { pattern = "webhook.layerstore.eu/*", zone_name = "layerstore.eu" }
+]
 
 # KV Namespace für Logging (optional)
 # [[kv_namespaces]]

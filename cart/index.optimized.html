@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warenkorb | LayerStore</title>
+    <link rel="preload" href="/ls-logo-beige.svg" as="image">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="/cart/cart.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/cart/cart.css"></noscript>
+    <style>
+        /* Critical CSS for First Paint - minified */
+        :root{--bg-primary:#FAF9F0;--bg-secondary:#F5F3EB;--text-primary:#1a1a1a;--text-secondary:#666;--accent:#232F3D;--accent-light:#4A5A6A;--border:#e7e5e4;--danger:#dc2626}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Quicksand',sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;min-height:100vh}header{position:fixed;top:0;left:0;right:0;padding:1.2rem 1.5rem;display:flex;justify-content:space-between;align-items:center;background:#232E3D;z-index:1000}.logo{display:flex;align-items:center;text-decoration:none}.logo img{height:24px;width:auto;padding:6px 0;transition:transform .2s ease}.logo:hover img{transform:scale(1.05)}nav{display:flex;gap:1.5rem;align-items:center}nav a{text-decoration:none;color:rgba(255,255,255,.85);font-size:.8rem;font-weight:400;letter-spacing:.02em;transition:color .3s ease}nav a:hover{color:#fff}.cart-icon{position:relative;cursor:pointer;padding:.3rem .5rem}.cart-icon svg{width:20px;height:20px;fill:#F0ECDA}.cart-count{position:absolute;top:-2px;right:-2px;background:var(--accent);color:#fff;font-size:.65rem;font-weight:600;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;opacity:0;transition:opacity .3s ease}.cart-count.visible{opacity:1}.container{max-width:1200px;margin:0 auto;padding:8rem 2rem 4rem}h1{font-family:'Quicksand',sans-serif;font-size:clamp(2.5rem,5vw,3.5rem);font-weight:400;margin-bottom:2rem;letter-spacing:-.02em;color:var(--accent)}.empty-cart{text-align:center;padding:6rem 2rem;background:#fff;border-radius:12px;border:1px solid var(--border)}.empty-cart svg{width:120px;height:120px;fill:var(--border);margin-bottom:2rem}.btn-primary{display:inline-block;padding:1rem 2.5rem;background:var(--accent);color:#fff;text-decoration:none;font-size:.9rem;border-radius:4px}.btn-primary:hover{background:0 0;color:var(--accent)}footer{padding:4rem;background:var(--bg-primary);border-top:1px solid var(--border)}.footer-content{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem}.footer-section h4{font-family:'Quicksand',sans-serif;font-size:1.2rem;font-weight:400;margin-bottom:1rem;color:var(--accent)}.footer-section p,.footer-section a{font-size:.9rem;color:var(--text-secondary);margin-bottom:.5rem;text-decoration:none}.footer-section a:hover{color:var(--accent)}.footer-bottom{text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--text-secondary)}@media (max-width:768px){header{padding:.65rem .75rem}.container{padding:2rem 1rem}.footer-content{grid-template-columns:1fr;gap:2rem}}
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="/" class="logo">
+            <img src="/ls-logo-beige.svg" alt="LayerStore Logo" width="60" height="24" loading="eager" decoding="sync" fetchpriority="high">
+        </a>
+        <nav>
+            <a href="/">Startseite</a>
+            <a href="/collections">Kollektionen</a>
+            <div class="cart-icon" id="cartIcon" title="Warenkorb">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Ihr Warenkorb</h1>
+        <div id="cartContent"></div>
+        <div class="continue-shopping">
+            <a href="/collections/easter"> Weiter einkaufen</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>LayerStore</h4>
+                <p>Individuelle 3D-Druck-Kreationen fr jeden Anlass.</p>
+                <p> 2026 LayerStore. Alle Rechte vorbehalten.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Entdecken</h4>
+                <a href="/collections">Kollektionen</a>
+                <a href="/collections/easter"> Ostern</a>
+                <a href="/cart">Warenkorb</a>
+            </div>
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <a href="/datenschutz"> Datenschutz</a>
+                <a href="/impressum"> Impressum</a>
+                <a href="/contact"> Kontakt</a>
+            </div>
+        </div>
+        <div class="footer-bottom">Mit Przision gedruckt in Deutschland</div>
+    </footer>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-modal-content">
+            <button class="checkout-close" id="closeCheckout"></button>
+            <h2>Anfrage senden</h2>
+            <p>Bitte geben Sie Ihre Kontaktdaten ein. Wir werden uns schnellstmglich bei Ihnen melden.</p>
+            <div id="checkoutForm">
+                <div class="form-group">
+                    <label for="customerName">Name (optional)</label>
+                    <input type="text" id="customerName" name="name" placeholder="Ihr Name">
+                </div>
+                <div class="checkout-choice-text">
+                    Whlen Sie Ihre bevorzugte Kontaktmglichkeit:<br>
+                    <strong>Wir melden uns schnellstmglich bei Ihnen!</strong>
+                </div>
+                <div class="privacy-consent">
+                    <label>
+                        <input type="checkbox" id="privacyConsent">
+                        <span>Ich stimme der Verarbeitung meiner Daten gem der <a href="/datenschutz" target="_blank">Datenschutzerklrung</a> zu. *</span>
+                    </label>
+                </div>
+                <div class="checkout-buttons">
+                    <button class="btn-stripe" id="stripeBtn" disabled>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        <span id="stripeBtnText">Jetzt bezahlen mit Stripe</span>
+                    </button>
+                    <div class="payment-methods-info"><span>Karte  Sofort  PayPal  SEPA</span></div>
+                    <div class="checkout-divider"><span>oder kontaktlos anfragen</span></div>
+                    <button class="btn-whatsapp" id="whatsappBtn" disabled>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        ber WhatsApp bestellen
+                    </button>
+                    <button class="btn-email" id="emailBtn" disabled>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        ber E-Mail bestellen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stripe Success Overlay -->
+    <div class="stripe-success-overlay" id="stripeSuccessOverlay"></div>
+    <div class="stripe-success-message" id="stripeSuccessMessage">
+        <div class="stripe-success-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        </div>
+        <h2>Zahlung erfolgreich!</h2>
+        <p>Vielen Dank fr Ihre Bestellung. Wir werden Ihre Bestellung schnellstmglich bearbeiten.</p>
+        <button class="btn-primary" onclick="closeStripeSuccess()">Weiter einkaufen</button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-title" id="toastTitle"></div>
+        <div class="toast-message" id="toastMessage"></div>
+    </div>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-title"><strong>Cookies & LocalStorage</strong></p>
+            <p class="cookie-text">Wir verwenden nur erforderliche Cookies fr den Warenkorb.</p>
+            <p class="cookie-note">Keine Analyse- oder Marketing-Cookies. Ihre Daten bleiben auf Ihrem Gert.</p>
+            <button id="cookieAcceptBtn" class="cookie-btn">OK</button>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/" async></script>
+    <script src="/cart/cart.js" defer></script>
+    <script src="/cart/stripe.js" defer></script>
+</body>
+</html>

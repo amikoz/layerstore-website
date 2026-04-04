@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Debugger - LayerStore Ostern</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .debug-section {
+            background: #2a2a2a;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .debug-section h3 {
+            margin-top: 0;
+            color: #00ffff;
+        }
+        .success {
+            color: #00ff00;
+        }
+        .error {
+            color: #ff4444;
+        }
+        .warning {
+            color: #ffaa00;
+        }
+        .info {
+            color: #00ffff;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+        pre {
+            background: #1a1a1a;
+            padding: 10px;
+            border-left: 3px solid #00ff00;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .log-entry {
+            padding: 5px;
+            border-bottom: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Button Debugger - LayerStore Ostern-Seite</h1>
+
+    <div class="debug-section">
+        <h3>1. Verbindung zur Ostern-Seite</h3>
+        <p>Öffne die Ostern-Seite in einem neuen Tab:</p>
+        <button onclick="window.open('http://127.0.0.1:8888', '_blank')">Ostern-Seite öffnen</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>2. Automatische Tests</h3>
+        <button onclick="runAllTests()">▶️ Alle Tests ausführen</button>
+        <div id="test-results"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>3. Konsolen-Logs</h3>
+        <div id="console-logs"></div>
+    </div>
+
+    <script>
+        // Interception von console.log
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn
+        };
+
+        const logs = [];
+
+        function captureLog(type, args) {
+            const message = Array.from(args).map(arg =>
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            logs.push({ type, message, time: new Date().toISOString() });
+            updateConsoleDisplay();
+        }
+
+        console.log = function(...args) {
+            originalConsole.log(...args);
+            captureLog('log', args);
+        };
+
+        console.error = function(...args) {
+            originalConsole.error(...args);
+            captureLog('error', args);
+        };
+
+        console.warn = function(...args) {
+            originalConsole.warn(...args);
+            captureLog('warn', args);
+        };
+
+        function updateConsoleDisplay() {
+            const container = document.getElementById('console-logs');
+            container.innerHTML = logs.map(log => {
+                const className = log.type === 'error' ? 'error' :
+                                  log.type === 'warn' ? 'warning' : 'info';
+                return `<div class="log-entry ${className}">
+                    [${log.time.split('T')[1].split('.')[0]}] [${log.type.toUpperCase()}] ${log.message}
+                </div>`;
+            }).join('');
+        }
+
+        async function runAllTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p class="info">Tests laufen...</p>';
+
+            const results = [];
+
+            // Test 1: Prüfe window.products
+            try {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = 'http://127.0.0.1:8888';
+                document.body.appendChild(iframe);
+
+                await new Promise(resolve => {
+                    iframe.onload = resolve;
+                    setTimeout(resolve, 2000);
+                });
+
+                const productsData = iframe.contentWindow?.products;
+                if (productsData) {
+                    results.push({
+                        test: 'window.products Objekt',
+                        status: 'success',
+                        message: `Gefunden: ${Object.keys(productsData).length} Produkte`
+                    });
+                } else {
+                    results.push({
+                        test: 'window.products Objekt',
+                        status: 'error',
+                        message: 'window.products ist nicht definiert'
+                    });
+                }
+
+                document.body.removeChild(iframe);
+            } catch (error) {
+                results.push({
+                    test: 'window.products Objekt',
+                    status: 'error',
+                    message: `Fehler: ${error.message}`
+                });
+            }
+
+            // Test 2: Prüfe Button-Existenz (direkter DOM-Zugriff nicht möglich wegen CORS)
+            results.push({
+                test: 'Button-Prüfung',
+                status: 'warning',
+                message: 'Kann wegen CORS-Restrictions nicht automatisch geprüft werden. Bitte manuell prüfen.'
+            });
+
+            // Ergebnisse anzeigen
+            resultsDiv.innerHTML = results.map(r => {
+                const className = r.status === 'success' ? 'success' :
+                                 r.status === 'error' ? 'error' : 'warning';
+                return `<p class="${className}">
+                    <strong>${r.test}:</strong> ${r.message}
+                </p>`;
+            }).join('');
+        }
+
+        // Manuelles Debugging-Script das auf der Ostern-Seite ausgeführt werden kann
+        const manualDebugScript = `
+// Kopiere dieses Script in die Browser-Konsole auf http://127.0.0.1:8888
+
+console.log('=== DEBUGGING START ===');
+
+// 1. Prüfe window.products
+console.log('1. window.products:', window.products);
+
+// 2. Prüfe Buttons
+const cartButtons = document.querySelectorAll('.add-to-cart-btn');
+const customizeButtons = document.querySelectorAll('.customize-btn');
+
+console.log('2. "In den Warenkorb" Buttons gefunden:', cartButtons.length);
+console.log('3. "Anpassen" Buttons gefunden:', customizeButtons.length);
+
+// 3. Prüfe erstem Button
+if (cartButtons.length > 0) {
+    const firstBtn = cartButtons[0];
+    console.log('4. Erster Button Info:', {
+        text: firstBtn.textContent,
+        dataProduct: firstBtn.getAttribute('data-product'),
+        onclick: firstBtn.getAttribute('onclick'),
+        visible: firstBtn.offsetWidth > 0 && firstBtn.offsetHeight > 0,
+        computedStyle: window.getComputedStyle(firstBtn)
+    });
+
+    // 4. Prüfe auf überlagernde Elemente
+    const rect = firstBtn.getBoundingClientRect();
+    const elementAtPoint = document.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2
+    );
+    console.log('5. Element an Button-Position:', elementAtPoint);
+    console.log('   Ist es der Button?', elementAtPoint === firstBtn);
+
+    // 5. Teste Click
+    console.log('6. Teste Klick...');
+    try {
+        firstBtn.click();
+        console.log('   Klick erfolgreich ausgeführt!');
+    } catch (error) {
+        console.error('   Fehler beim Klick:', error);
+    }
+}
+
+// 6. Prüfe auf JavaScript-Fehler
+window.addEventListener('error', (e) => {
+    console.error('JavaScript Error:', e.message);
+});
+
+console.log('=== DEBUGGING ENDE ===');
+        `;
+
+        const manualScriptSection = document.createElement('div');
+        manualScriptSection.className = 'debug-section';
+        manualScriptSection.innerHTML = `
+            <h3>4. Manuelles Debugging Script</h3>
+            <p class="warning">Kopiere dieses Script und führe es in der Browser-Konsole auf http://127.0.0.1:8888 aus:</p>
+            <pre>${manualDebugScript}</pre>
+            <button onclick="navigator.clipboard.writeText(\`${manualDebugScript}\`)">
+                📋 Script in Zwischenablage kopieren
+            </button>
+        `;
+        document.body.appendChild(manualScriptSection);
+    </script>
+</body>
+</html>

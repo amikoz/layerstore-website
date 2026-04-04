@@ -55,7 +55,7 @@ export default {
         return jsonResponse({ error: 'No signature' }, 401);
       }
 
-      const event = verifyStripeSignature(body, signature, env.STRIPE_WEBHOOK_SECRET || STRIPE_WEBHOOK_SECRET);
+      const event = await verifyStripeSignature(body, signature, env.STRIPE_WEBHOOK_SECRET || STRIPE_WEBHOOK_SECRET);
 
       if (!event) {
         return jsonResponse({ error: 'Invalid signature' }, 401);
@@ -338,7 +338,7 @@ async function sendViaSendGrid({ to, subject, html, fromEmail, env }) {
 // STRIPE SIGNATURE VERIFICATION
 // ============================================
 
-function verifyStripeSignature(payload, signature, secret) {
+async function verifyStripeSignature(payload, signature, secret) {
   const elements = signature.split(',');
   let timestamp = null;
   let signatureHash = null;

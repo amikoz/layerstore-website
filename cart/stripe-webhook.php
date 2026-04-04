@@ -1,9 +1,10 @@
 <?php
 /**
- * Stripe Webhook Handler - Email Notifications
+ * Stripe Webhook Handler - Resend API Integration
  *
  * Receives webhook events from Stripe and sends email notifications
- * for successful payments.
+ * via Resend API for reliable delivery.
+ * Also saves orders to the OrderStorage system.
  */
 
 header('Content-Type: application/json');
@@ -12,6 +13,15 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, Stripe-Signature');
+
+// Load dependencies
+require_once __DIR__ . '/../email/config.php';
+require_once __DIR__ . '/../email/ResendEmailService.php';
+require_once __DIR__ . '/../orders/storage.php';
+
+use LayerStore\Email\ResendEmailService;
+use LayerStore\Email\EmailConfig;
+use LayerStore\Orders\OrderStorage;
 
 // OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -26,21 +36,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Initialize email config
+EmailConfig::init();
+
+// Initialize order storage
+OrderStorage::init();
+
 // Load Stripe configuration
 if (file_exists(__DIR__ . '/stripe-config.php')) {
     $stripeSecretKey = include __DIR__ . '/stripe-config.php';
 } else {
-    $stripeSecretKey = getenv('STRIPE_SECRET_KEY') ?? null;
+    $stripeSecretKey = $_ENV['STRIPE_SECRET_KEY'] ?? null;
 }
 
 if (!$stripeSecretKey) {
+    EmailConfig::log('Stripe not configured - missing STRIPE_SECRET_KEY', 'ERROR');
     http_response_code(500);
     echo json_encode(['error' => 'Stripe not configured']);
     exit;
 }
 
-// Webhook signing secret from Stripe Dashboard
-$webhookSecret = getenv('STRIPE_WEBHOOK_SECRET') ?? '';
+// Webhook signing secret from environment
+$webhookSecret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? '';
 
 // Get raw POST data
 $input = file_get_contents('php://input');
@@ -63,7 +80,8 @@ if ($webhookSecret && $sigHeader) {
     }
 
     // Check timestamp tolerance (5 minutes)
-    if (abs(time() - $timestamp) > 300) {
+    if (abs(time() - (int)$timestamp) > 300) {
+        EmailConfig::log('Webhook timestamp too old', 'WARNING');
         http_response_code(400);
         echo json_encode(['error' => 'Timestamp too old']);
         exit;
@@ -74,6 +92,7 @@ if ($webhookSecret && $sigHeader) {
     $expectedSignature = hash_hmac('sha256', $signedPayload, $webhookSecret);
 
     if (!hash_equals($signature, $expectedSignature)) {
+        EmailConfig::log('Invalid webhook signature', 'WARNING');
         http_response_code(400);
         echo json_encode(['error' => 'Invalid signature']);
         exit;
@@ -88,32 +107,35 @@ if (!$event || !isset($event['type'])) {
     exit;
 }
 
-// Log webhook event for debugging
-file_put_contents(__DIR__ . '/webhook.log', date('Y-m-d H:i:s') . ' - Event: ' . $event['type'] . PHP_EOL, FILE_APPEND);
+// Log webhook event
+EmailConfig::log("Stripe webhook received: {$event['type']}", 'INFO');
 
 // Handle different event types
 switch ($event['type']) {
     case 'checkout.session.completed':
         $session = $event['data']['object'];
         if ($session['payment_status'] === 'paid') {
-            sendOrderConfirmationEmail($session);
-            sendCustomerConfirmationEmail($session);
+            handleCheckoutCompleted($session);
         }
         break;
 
     case 'payment_intent.succeeded':
         $paymentIntent = $event['data']['object'];
-        sendPaymentSuccessEmail($paymentIntent);
+        handlePaymentSucceeded($paymentIntent);
         break;
 
     case 'payment_intent.payment_failed':
         $paymentIntent = $event['data']['object'];
-        sendPaymentFailedEmail($paymentIntent);
+        handlePaymentFailed($paymentIntent);
+        break;
+
+    case 'invoice.paid':
+        $invoice = $event['data']['object'];
+        handleInvoicePaid($invoice);
         break;
 
     default:
-        // Log unhandled events
-        file_put_contents(__DIR__ . '/webhook.log', date('Y-m-d H:i:s') . ' - Unhandled event: ' . $event['type'] . PHP_EOL, FILE_APPEND);
+        EmailConfig::log("Unhandled webhook event: {$event['type']}", 'INFO');
         break;
 }
 
@@ -122,241 +144,337 @@ http_response_code(200);
 echo json_encode(['status' => 'success', 'event' => $event['type']]);
 
 /**
- * Send order confirmation email to store owner
+ * Handle checkout.session.completed event
  */
-function sendOrderConfirmationEmail($session) {
-    $toEmail = 'info@layerstore.eu';
-    $subject = '✅ Neue Bestellung bei LayerStore - #' . substr($session['id'], -8);
-
-    // Extract customer information
-    $customerEmail = $session['customer_details']['email'] ?? 'Nicht angegeben';
+function handleCheckoutCompleted(array $session): void
+{
+    $customerEmail = $session['customer_details']['email'] ?? '';
     $customerName = $session['customer_details']['name'] ?? 'Kunde';
-    $totalAmount = number_format($session['amount_total'] / 100, 2, ',', '.') . ' €';
-    $createdDate = date('d.m.Y H:i', $session['created']);
 
-    // Get line items from metadata or session
-    $itemsInfo = '';
+    // Generate order ID
+    $orderId = 'LS-' . date('Y') . '-' . strtoupper(substr($session['id'], -8));
+
+    // Parse items from metadata
+    $items = [];
     if (isset($session['metadata']['items'])) {
-        $items = json_decode($session['metadata']['items'], true);
-        if ($items) {
-            $itemsInfo = '<h4>Bestellte Artikel:</h4><ul>';
-            foreach ($items as $item) {
-                $itemsInfo .= '<li>' . htmlspecialchars($item['name'] ?? 'Produkt') . ' - ' .
-                             number_format($item['price'] / 100, 2, ',', '.') . ' € x ' .
-                             ($item['quantity'] ?? 1) . '</li>';
-            }
-            $itemsInfo .= '</ul>';
+        $parsedItems = json_decode($session['metadata']['items'], true);
+        if (is_array($parsedItems)) {
+            $items = $parsedItems;
         }
     }
 
-    // Build email content
-    $message = "
-    <html>
-    <head>
-        <style>
-            body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #232E3D 0%, #3a4a5c 100%); color: #F0ECDA; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { padding: 30px; background: #f9f9f9; }
-            .order-details { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #ea580c; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
-            .highlight { background: #fff3cd; padding: 10px; border-radius: 5px; margin: 15px 0; }
-            .btn { display: inline-block; padding: 12px 24px; background: #ea580c; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
-        </style>
-    </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <h1>🎉 Neue Bestellung!</h1>
-                <p>Eine neue Bestellung wurde erfolgreich bezahlt.</p>
-            </div>
-            <div class='content'>
-                <div class='highlight'>
-                    <strong>Bestellnummer:</strong> " . htmlspecialchars(substr($session['id'], -8)) . "<br>
-                    <strong>Erstellt:</strong> $createdDate
-                </div>
+    // Save order to database
+    try {
+        $orderData = [
+            'order_id' => $orderId,
+            'stripe_session_id' => $session['id'],
+            'stripe_payment_intent_id' => $session['payment_intent'] ?? null,
+            'customer_name' => $customerName,
+            'customer_email' => $customerEmail,
+            'customer_phone' => $session['customer_details']['phone'] ?? null,
+            'items' => $items,
+            'subtotal' => (int)($session['amount_subtotal'] ?? 0),
+            'tax' => (int)($session['total_details']['amount_tax'] ?? 0),
+            'shipping' => (int)(($session['total_details']['amount_shipping'] ?? 0) + ($session['shipping_cost']['amount_total'] ?? 0)),
+            'total' => (int)($session['amount_total'] ?? 0),
+            'currency' => strtoupper($session['currency'] ?? 'eur'),
+            'status' => 'pending',
+            'shipping_address' => isset($session['shipping']) ? [
+                'name' => $session['shipping']['name'] ?? '',
+                'address' => $session['shipping']['address'] ?? []
+            ] : null,
+            'billing_address' => isset($session['customer_details']['address']) ? [
+                'name' => $customerName,
+                'address' => $session['customer_details']['address']
+            ] : null,
+            'metadata' => $session['metadata'] ?? []
+        ];
 
-                <div class='order-details'>
-                    <h3>👤 Kunde</h3>
-                    <p><strong>Name:</strong> " . htmlspecialchars($customerName) . "</p>
-                    <p><strong>Email:</strong> <a href='mailto:$customerEmail'>" . htmlspecialchars($customerEmail) . "</a></p>
-
-                    <h3>💰 Zahlung</h3>
-                    <p><strong>Gesamtbetrag:</strong> <span style='font-size: 18px; color: #ea580c; font-weight: bold;'>$totalAmount</span></p>
-                    <p><strong>Status:</strong> ✅ Bezahlt</p>
-                    <p><strong>Zahlungsart:</strong> Kartenzahlung (Stripe)</p>
-
-                    $itemsInfo
-
-                    <p style='margin-top: 15px;'><strong>Stripe Session ID:</strong> " . htmlspecialchars($session['id']) . "</p>
-                </div>
-
-                <p style='text-align: center;'>
-                    <a href='https://dashboard.stripe.com/payments/" . $session['payment_intent'] . "' class='btn' target='_blank'>
-                        In Stripe ansehen
-                    </a>
-                </p>
-            </div>
-            <div class='footer'>
-                <p>Diese E-Mail wurde automatisch vom LayerStore Zahlungssystem generiert.</p>
-                <p>© " . date('Y') . " LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    ";
-
-    // Send email
-    $headers = [
-        'MIME-Version: 1.0',
-        'Content-Type: text/html; charset=UTF-8',
-        'From: LayerStore <noreply@layerstore.eu>',
-        'Reply-To: info@layerstore.eu',
-        'X-Mailer: PHP/' . phpversion(),
-        'X-Priority: 1', // High priority
-        'X-MSMail-Priority: High'
-    ];
-
-    $result = mail($toEmail, $subject, $message, implode("\r\n", $headers));
-
-    // Log email result
-    $logMessage = date('Y-m-d H:i:s') . ' - Order email ' . ($result ? 'SENT' : 'FAILED') .
-                 " to $toEmail for order " . $session['id'] . " (Amount: $totalAmount)\n";
-    file_put_contents(__DIR__ . '/email.log', $logMessage, FILE_APPEND);
-
-    return $result;
-}
-
-/**
- * Send confirmation email to customer
- */
-function sendCustomerConfirmationEmail($session) {
-    $customerEmail = $session['customer_details']['email'] ?? null;
-    $customerName = $session['customer_details']['name'] ?? 'Kunde';
-
-    if (!$customerEmail) {
-        return false;
+        $savedOrderId = OrderStorage::save($orderData);
+        EmailConfig::log("Order saved to database: {$savedOrderId}", 'INFO');
+    } catch (\Exception $e) {
+        EmailConfig::log("Failed to save order: " . $e->getMessage(), 'ERROR');
     }
 
-    $subject = 'Deine Bestellung bei LayerStore ist erfolgreich! ✅';
-    $totalAmount = number_format($session['amount_total'] / 100, 2, ',', '.') . ' €';
-    $orderId = substr($session['id'], -8);
+    // Format amount
+    $totalAmount = number_format(($session['amount_total'] ?? 0) / 100, 2, ',', '.') . ' €';
+    $createdDate = date('d.m.Y H:i', $session['created']);
 
-    $message = "
-    <html>
-    <head>
-        <style>
-            body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #232E3D 0%, #3a4a5c 100%); color: #F0ECDA; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { padding: 30px; background: #f9f9f9; }
-            .order-details { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; }
-            .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
-        </style>
-    </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <h1>Vielen Dank! 🎉</h1>
-                <p>Deine Bestellung ist erfolgreich bei uns eingegangen.</p>
-            </div>
-            <div class='content'>
-                <p>Hallo " . htmlspecialchars($customerName) . ",</p>
-                <p>vielen Dank für deine Bestellung bei LayerStore!</p>
+    // Build items HTML for email
+    $itemsHtml = '';
+    if (!empty($items)) {
+        $itemsHtml = '<h4 style="margin: 15px 0 10px; color: #232E3D;">Bestellte Artikel:</h4><ul style="margin: 0; padding-left: 20px;">';
+        foreach ($items as $item) {
+            $price = number_format(($item['price'] ?? 0) / 100, 2, ',', '.') . ' €';
+            $itemsHtml .= '<li style="margin: 5px 0;">' . htmlspecialchars($item['name'] ?? 'Produkt') . ' - ' . $price . ' x ' . ($item['quantity'] ?? 1) . '</li>';
+        }
+        $itemsHtml .= '</ul>';
+    }
 
-                <div class='order-details'>
-                    <h3>Bestellübersicht</h3>
-                    <p><strong>Bestellnummer:</strong> $orderId</p>
-                    <p><strong>Betrag:</strong> $totalAmount</p>
-                    <p><strong>Zahlungsstatus:</strong> ✅ Bezahlt</p>
-                </div>
+    // Stripe URL
+    $stripeUrl = !empty($session['payment_intent'])
+        ? 'https://dashboard.stripe.com/payments/' . $session['payment_intent']
+        : '';
 
-                <p>Wir werden deine Bestellung schnellstmöglich bearbeiten und dich per E-Mail über den Versand informieren.</p>
+    // ===== Send email to store owner =====
+    $ownerHtml = getOwnerEmailHtml($orderId, $customerName, $customerEmail, $totalAmount, $createdDate, $itemsHtml, $stripeUrl, $session['id']);
+    $ownerText = getOwnerEmailText($orderId, $customerName, $customerEmail, $totalAmount, $createdDate, $items, $session['id']);
 
-                <p>Falls du Fragen hast, antworte einfach auf diese E-Mail.</p>
+    $ownerEmail = new ResendEmailService(EmailConfig::$defaultRecipient, "✅ Neue Bestellung bei LayerStore - #{$orderId}");
+    $ownerEmail->content($ownerHtml, $ownerText);
+    $ownerResult = $ownerEmail->send();
 
-                <p style='margin-top: 20px;'>Mit freundlichen Grüßen,<br><strong>Das LayerStore Team</strong></p>
-            </div>
-            <div class='footer'>
-                <p>LayerStore - Individuelle 3D-Druck-Kreationen</p>
-                <p>© " . date('Y') . " LayerStore. Alle Rechte vorbehalten.</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    ";
+    EmailConfig::log("Owner notification " . ($ownerResult['success'] ? 'SENT' : 'FAILED') . " for order {$orderId}", $ownerResult['success'] ? 'INFO' : 'ERROR');
 
-    $headers = [
-        'MIME-Version: 1.0',
-        'Content-Type: text/html; charset=UTF-8',
-        'From: LayerStore <noreply@layerstore.eu>',
-        'Reply-To: info@layerstore.eu',
-        'X-Mailer: PHP/' . phpversion()
-    ];
+    // ===== Send confirmation to customer =====
+    if ($customerEmail && filter_var($customerEmail, FILTER_VALIDATE_EMAIL)) {
+        $customerHtml = getCustomerEmailHtml($customerName, $orderId, $totalAmount);
+        $customerText = getCustomerEmailText($customerName, $orderId, $totalAmount);
 
-    $result = mail($customerEmail, $subject, $message, implode("\r\n", $headers));
+        $customerEmailObj = new ResendEmailService($customerEmail, 'Deine Bestellung bei LayerStore ist erfolgreich! ✅');
+        $customerEmailObj->content($customerHtml, $customerText);
+        $customerResult = $customerEmailObj->send();
 
-    $logMessage = date('Y-m-d H:i:s') . ' - Customer email ' . ($result ? 'SENT' : 'FAILED') .
-                 " to $customerEmail for order $orderId\n";
-    file_put_contents(__DIR__ . '/email.log', $logMessage, FILE_APPEND);
-
-    return $result;
+        EmailConfig::log("Customer confirmation " . ($customerResult['success'] ? 'SENT' : 'FAILED') . " to {$customerEmail}", $customerResult['success'] ? 'INFO' : 'ERROR');
+    }
 }
 
 /**
- * Send payment success email (for payment_intent events)
+ * Handle payment_intent.succeeded event
  */
-function sendPaymentSuccessEmail($paymentIntent) {
-    $toEmail = 'info@layerstore.eu';
-    $subject = '💰 Zahlung erhalten - Stripe Payment Intent';
-    $amount = number_format($paymentIntent['amount'] / 100, 2, ',', '.') . ' ' . strtoupper($paymentIntent['currency']);
+function handlePaymentSucceeded(array $paymentIntent): void
+{
+    $amount = number_format(($paymentIntent['amount'] ?? 0) / 100, 2, ',', '.') . ' ' . strtoupper($paymentIntent['currency'] ?? 'eur');
 
-    $message = "
-    <html>
-    <head></head>
-    <body>
-        <h2>Zahlung erfolgreich</h2>
-        <p><strong>Amount:</strong> $amount</p>
-        <p><strong>Payment Intent ID:</strong> " . htmlspecialchars($paymentIntent['id']) . "</p>
-        <p><strong>Status:</strong> " . htmlspecialchars($paymentIntent['status']) . "</p>
-    </body>
-    </html>
-    ";
+    $html = "
+    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+        <h2 style='color: #10b981;'>💰 Zahlung erfolgreich</h2>
+        <p><strong>Betrag:</strong> {$amount}</p>
+        <p><strong>Payment Intent ID:</strong> {$paymentIntent['id']}</p>
+        <p><strong>Status:</strong> {$paymentIntent['status']}</p>
+    </div>";
 
-    $headers = [
-        'MIME-Version: 1.0',
-        'Content-Type: text/html; charset=UTF-8',
-        'From: LayerStore <noreply@layerstore.eu>'
-    ];
+    $text = "Zahlung erfolgreich\n\nBetrag: {$amount}\nPayment Intent ID: {$paymentIntent['id']}\nStatus: {$paymentIntent['status']}";
 
-    mail($toEmail, $subject, $message, implode("\r\n", $headers));
+    $email = new ResendEmailService(EmailConfig::$defaultRecipient, '💰 Zahlung erhalten - Stripe');
+    $email->content($html, $text);
+    $email->send();
 }
 
 /**
- * Send payment failed email
+ * Handle payment_intent.payment_failed event
  */
-function sendPaymentFailedEmail($paymentIntent) {
-    $toEmail = 'info@layerstore.eu';
-    $subject = '❌ Zahlung fehlgeschlagen - Stripe';
-    $amount = number_format($paymentIntent['amount'] / 100, 2, ',', '.') . ' ' . strtoupper($paymentIntent['currency']);
+function handlePaymentFailed(array $paymentIntent): void
+{
+    $amount = number_format(($paymentIntent['amount'] ?? 0) / 100, 2, ',', '.') . ' ' . strtoupper($paymentIntent['currency'] ?? 'eur');
+    $errorMsg = $paymentIntent['last_payment_error']['message'] ?? 'Unknown error';
 
-    $message = "
-    <html>
-    <head></head>
-    <body>
-        <h2>Zahlung fehlgeschlagen</h2>
-        <p><strong>Amount:</strong> $amount</p>
-        <p><strong>Payment Intent ID:</strong> " . htmlspecialchars($paymentIntent['id']) . "</p>
-        <p><strong>Error:</strong> " . htmlspecialchars($paymentIntent['last_payment_error']['message'] ?? 'Unknown') . "</p>
-    </body>
-    </html>
-    ";
+    $html = "
+    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+        <h2 style='color: #ef4444;'>❌ Zahlung fehlgeschlagen</h2>
+        <p><strong>Betrag:</strong> {$amount}</p>
+        <p><strong>Payment Intent ID:</strong> {$paymentIntent['id']}</p>
+        <p><strong>Fehler:</strong> " . htmlspecialchars($errorMsg) . "</p>
+    </div>";
 
-    $headers = [
-        'MIME-Version: 1.0',
-        'Content-Type: text/html; charset=UTF-8',
-        'From: LayerStore <noreply@layerstore.eu>'
-    ];
+    $text = "Zahlung fehlgeschlagen\n\nBetrag: {$amount}\nPayment Intent ID: {$paymentIntent['id']}\nFehler: {$errorMsg}";
 
-    mail($toEmail, $subject, $message, implode("\r\n", $headers));
+    $email = new ResendEmailService(EmailConfig::$defaultRecipient, '❌ Zahlung fehlgeschlagen - Stripe');
+    $email->content($html, $text);
+    $email->send();
+}
+
+/**
+ * Handle invoice.paid event (for subscriptions)
+ */
+function handleInvoicePaid(array $invoice): void
+{
+    $amount = number_format(($invoice['amount_paid'] ?? 0) / 100, 2, ',', '.') . ' €';
+    $customerEmail = $invoice['customer_email'] ?? '';
+
+    EmailConfig::log("Invoice paid: {$amount} from {$customerEmail}", 'INFO');
+}
+
+// ============================================================
+// EMAIL TEMPLATES
+// ============================================================
+
+function getOwnerEmailHtml(string $orderId, string $customerName, string $customerEmail, string $totalAmount, string $createdDate, string $itemsHtml, string $stripeUrl, string $sessionId): string
+{
+    return "
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+</head>
+<body style='margin: 0; padding: 0; font-family: \"Segoe UI\", Arial, sans-serif; background-color: #f5f5f5;'>
+    <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='background-color: #f5f5f5;'>
+        <tr>
+            <td style='padding: 40px 20px;'>
+                <table role='presentation' width='600' cellpadding='0' cellspacing='0' style='margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'>
+                    <!-- Header -->
+                    <tr>
+                        <td style='background: linear-gradient(135deg, #232E3D 0%, #3a4a5c 100%); padding: 40px 30px; text-align: center; color: #F0ECDA;'>
+                            <h1 style='margin: 0; font-size: 28px;'>🎉 Neue Bestellung!</h1>
+                            <p style='margin: 10px 0 0; font-size: 16px; opacity: 0.9;'>Eine neue Bestellung wurde erfolgreich bezahlt.</p>
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style='padding: 30px;'>
+                            <!-- Highlight Box -->
+                            <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='background-color: #fff3cd; border-radius: 8px; margin-bottom: 20px;'>
+                                <tr>
+                                    <td style='padding: 15px 20px;'>
+                                        <p style='margin: 0; color: #856404;'><strong>Bestellnummer:</strong> {$orderId}</p>
+                                        <p style='margin: 5px 0 0; color: #856404;'><strong>Erstellt:</strong> {$createdDate}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- Customer Details -->
+                            <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='border-left: 4px solid #ea580c; background-color: #f9f9f9; border-radius: 8px; margin-bottom: 20px;'>
+                                <tr>
+                                    <td style='padding: 20px;'>
+                                        <h3 style='margin: 0 0 15px; color: #232E3D; font-size: 18px;'>👤 Kunde</h3>
+                                        <p style='margin: 5px 0;'><strong>Name:</strong> " . htmlspecialchars($customerName) . "</p>
+                                        <p style='margin: 5px 0;'><strong>E-Mail:</strong> <a href='mailto:{$customerEmail}' style='color: #ea580c;'>{$customerEmail}</a></p>
+                                        <h3 style='margin: 20px 0 15px; color: #232E3D; font-size: 18px;'>💰 Zahlung</h3>
+                                        <p style='margin: 5px 0;'><strong>Gesamtbetrag:</strong> <span style='font-size: 20px; color: #ea580c; font-weight: bold;'>{$totalAmount}</span></p>
+                                        <p style='margin: 5px 0;'><strong>Status:</strong> ✅ Bezahlt</p>
+                                        <p style='margin: 5px 0;'><strong>Zahlungsart:</strong> Kartenzahlung (Stripe)</p>
+                                        {$itemsHtml}
+                                        <p style='margin: 15px 0 0; font-size: 12px; color: #666;'><strong>Stripe Session ID:</strong> {$sessionId}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- CTA Button -->
+                            <table role='presentation' width='100%' cellpadding='0' cellspacing='0'>
+                                <tr>
+                                    <td style='text-align: center; padding: 10px 0;'>
+                                        <a href='{$stripeUrl}' style='display: inline-block; padding: 14px 28px; background-color: #ea580c; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600;'>In Stripe ansehen</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style='background-color: #232E3D; padding: 20px; text-align: center;'>
+                            <p style='margin: 0; color: rgba(255,255,255,0.7); font-size: 12px;'>Diese E-Mail wurde automatisch vom LayerStore Zahlungssystem generiert.</p>
+                            <p style='margin: 5px 0 0; color: rgba(255,255,255,0.7); font-size: 12px;'>© " . date('Y') . " LayerStore. Alle Rechte vorbehalten.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>";
+}
+
+function getOwnerEmailText(string $orderId, string $customerName, string $customerEmail, string $totalAmount, string $createdDate, array $items, string $sessionId): string
+{
+    $text = "NEUE BESTELLUNG bei LayerStore\n";
+    $text .= "=" . str_repeat("=", 40) . "\n\n";
+    $text .= "Bestellnummer: {$orderId}\n";
+    $text .= "Erstellt: {$createdDate}\n\n";
+    $text .= "KUNDE\n";
+    $text .= "-" . str_repeat("-", 20) . "\n";
+    $text .= "Name: {$customerName}\n";
+    $text .= "E-Mail: {$customerEmail}\n\n";
+    $text .= "ZAHLUNG\n";
+    $text .= "-" . str_repeat("-", 20) . "\n";
+    $text .= "Gesamtbetrag: {$totalAmount}\n";
+    $text .= "Status: Bezahlt\n\n";
+
+    if (!empty($items)) {
+        $text .= "ARTIKEL\n";
+        $text .= "-" . str_repeat("-", 20) . "\n";
+        foreach ($items as $item) {
+            $price = number_format(($item['price'] ?? 0) / 100, 2, ',', '.') . ' €';
+            $text .= "- {$item['name']} - {$price} x " . ($item['quantity'] ?? 1) . "\n";
+        }
+        $text .= "\n";
+    }
+
+    $text .= "Stripe Session ID: {$sessionId}\n";
+    $text .= "\n© " . date('Y') . " LayerStore\n";
+
+    return $text;
+}
+
+function getCustomerEmailHtml(string $customerName, string $orderId, string $totalAmount): string
+{
+    return "
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+</head>
+<body style='margin: 0; padding: 0; font-family: \"Segoe UI\", Arial, sans-serif; background-color: #f5f5f5;'>
+    <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='background-color: #f5f5f5;'>
+        <tr>
+            <td style='padding: 40px 20px;'>
+                <table role='presentation' width='600' cellpadding='0' cellspacing='0' style='margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);'>
+                    <!-- Header -->
+                    <tr>
+                        <td style='background: linear-gradient(135deg, #232E3D 0%, #3a4a5c 100%); padding: 40px 30px; text-align: center; color: #F0ECDA;'>
+                            <h1 style='margin: 0; font-size: 28px;'>Vielen Dank! 🎉</h1>
+                            <p style='margin: 10px 0 0; font-size: 16px; opacity: 0.9;'>Deine Bestellung ist erfolgreich bei uns eingegangen.</p>
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style='padding: 30px;'>
+                            <p style='margin: 0 0 20px; font-size: 16px; color: #333;'>Hallo " . htmlspecialchars($customerName) . ",</p>
+                            <p style='margin: 0 0 20px; color: #333;'>vielen Dank für deine Bestellung bei LayerStore!</p>
+                            <!-- Order Details -->
+                            <table role='presentation' width='100%' cellpadding='0' cellspacing='0' style='background-color: #f9f9f9; border-radius: 8px; margin-bottom: 20px;'>
+                                <tr>
+                                    <td style='padding: 20px;'>
+                                        <h3 style='margin: 0 0 15px; color: #232E3D; font-size: 18px;'>Bestellübersicht</h3>
+                                        <p style='margin: 5px 0;'><strong>Bestellnummer:</strong> {$orderId}</p>
+                                        <p style='margin: 5px 0;'><strong>Betrag:</strong> {$totalAmount}</p>
+                                        <p style='margin: 5px 0;'><strong>Zahlungsstatus:</strong> ✅ Bezahlt</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style='margin: 0 0 10px; color: #333;'>Wir werden deine Bestellung schnellstmöglich bearbeiten und dich per E-Mail über den Versand informieren.</p>
+                            <p style='margin: 0 0 20px; color: #333;'>Falls du Fragen hast, antworte einfach auf diese E-Mail.</p>
+                            <p style='margin: 20px 0 0; color: #333;'>Mit freundlichen Grüßen,<br><strong>Das LayerStore Team</strong></p>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style='background-color: #232E3D; padding: 20px; text-align: center;'>
+                            <p style='margin: 0; color: rgba(255,255,255,0.7); font-size: 12px;'>LayerStore - Individuelle 3D-Druck-Kreationen</p>
+                            <p style='margin: 5px 0 0; color: rgba(255,255,255,0.7); font-size: 12px;'>© " . date('Y') . " LayerStore. Alle Rechte vorbehalten.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>";
+}
+
+function getCustomerEmailText(string $customerName, string $orderId, string $totalAmount): string
+{
+    return "LayerStore - Bestellbestätigung\n\n" .
+           "Hallo {$customerName},\n\n" .
+           "vielen Dank für deine Bestellung bei LayerStore!\n\n" .
+           "Bestellübersicht\n" .
+           "-" . str_repeat("-", 20) . "\n" .
+           "Bestellnummer: {$orderId}\n" .
+           "Betrag: {$totalAmount}\n" .
+           "Zahlungsstatus: Bezahlt\n\n" .
+           "Wir werden deine Bestellung schnellstmöglich bearbeiten und dich per E-Mail über den Versand informieren.\n\n" .
+           "Falls du Fragen hast, antworte einfach auf diese E-Mail.\n\n" .
+           "Mit freundlichen Grüßen,\n" .
+           "Das LayerStore Team\n\n" .
+           "© " . date('Y') . " LayerStore. Alle Rechte vorbehalten.\n" .
+           "https://layerstore.eu\n";
 }

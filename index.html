@@ -12,6 +12,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Analytics & Tracking (GDPR-compliant) -->
+    <script src="/js/analytics.js" defer></script>
+    <script src="/js/meta-pixel.js" defer></script>
+    <script src="/js/cookie-consent.js" defer></script>
     <style>
         :root {
             --bg-primary: #FAF9F0;
@@ -810,6 +815,174 @@
 
     <!-- Performance Optimization -->
     <script src="/perf-optimization.js" defer></script>
+
+    <!-- Cookie Consent Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-title">
+                <strong>Wir verwenden Cookies & ähnliche Technologien</strong>
+            </p>
+            <p class="cookie-text">
+                Um unsere Website nutzbar zu machen, verwenden wir technische Cookies und LocalStorage.
+                Diese sind für den Betrieb des Warenkorbs <strong>erforderlich</strong> und können nicht abgelehnt werden.
+            </p>
+            <p class="cookie-text">
+                Zusätzlich möchten wir optional <strong>Analytics</strong> (Google Analytics 4) und
+                <strong>Marketing</strong> (Meta Pixel) verwenden, um unser Angebot zu verbessern.
+            </p>
+            <p class="cookie-info">
+                <strong>Erforderlich:</strong> LocalStorage (Warenkorb)<br>
+                <strong>Optional:</strong> Analytics, Marketing Cookies<br>
+                <strong>Datenschutz:</strong> IP-Adressen werden anonymisiert
+            </p>
+            <div class="cookie-buttons">
+                <button id="cookieSettings" class="cookie-btn-secondary">Einstellungen</button>
+                <button id="acceptEssential" class="cookie-btn-secondary">Nur erforderliche</button>
+                <button id="acceptAll" class="cookie-btn-primary">Alle akzeptieren</button>
+            </div>
+            <p class="cookie-details">
+                Ihre Daten werden sicher verarbeitet. Weitere Informationen finden Sie in unserer
+                <a href="/datenschutz" target="_blank" style="color: #4A5A6A; text-decoration: underline;">Datenschutzerklärung</a>.
+            </p>
+        </div>
+    </div>
+
+    <style>
+    /* Cookie Banner Styles */
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #232E3D;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 2rem;
+        z-index: 9999;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        display: none;
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .cookie-banner.show {
+        display: block;
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .cookie-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .cookie-title {
+        font-size: 1.1rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+    .cookie-text {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+    }
+    .cookie-info {
+        font-size: 0.85rem;
+        color: #bbb;
+        margin: 1rem 0;
+        padding: 0.75rem 1rem;
+        background: rgba(255,255,255,0.05);
+        border-radius: 6px;
+        border-left: 3px solid #4A5A6A;
+    }
+    .cookie-details {
+        font-size: 0.8rem;
+        color: #bbb;
+        margin-top: 1rem;
+    }
+    .cookie-details a {
+        color: #F0ECDA;
+        text-decoration: underline;
+    }
+    .cookie-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    .cookie-btn-primary,
+    .cookie-btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    .cookie-btn-primary {
+        background: #F0ECDA;
+        color: #232E3D;
+    }
+    .cookie-btn-primary:hover {
+        background: white;
+        transform: translateY(-1px);
+    }
+    .cookie-btn-secondary {
+        background: transparent;
+        color: rgba(255,255,255,0.8);
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    .cookie-btn-secondary:hover {
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+    @media (max-width: 768px) {
+        .cookie-banner {
+            padding: 1.5rem;
+        }
+        .cookie-buttons {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .cookie-btn-primary,
+        .cookie-btn-secondary {
+            width: 100%;
+        }
+    }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const acceptAllBtn = document.getElementById('acceptAll');
+        const acceptEssentialBtn = document.getElementById('acceptEssential');
+        const settingsBtn = document.getElementById('cookieSettings');
+
+        if (acceptAllBtn) {
+            acceptAllBtn.addEventListener('click', () => {
+                if (window.LayerStoreCookieConsent) {
+                    window.LayerStoreCookieConsent.acceptAll();
+                }
+            });
+        }
+
+        if (acceptEssentialBtn) {
+            acceptEssentialBtn.addEventListener('click', () => {
+                if (window.LayerStoreCookieConsent) {
+                    window.LayerStoreCookieConsent.acceptEssential();
+                }
+            });
+        }
+
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => {
+                if (window.LayerStoreCookieConsent) {
+                    window.LayerStoreCookieConsent.changeConsent();
+                }
+            });
+        }
+    });
+    </script>
 
     <!-- Cookie Banner -->
     <div class="cookie-banner" id="cookieBanner">
