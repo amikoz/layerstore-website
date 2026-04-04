@@ -1,0 +1,14 @@
+{
+  "name": "layerstore-stripe-webhook",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker für Stripe Webhooks mit E-Mail-Versand",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail",
+    "login": "wrangler login"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
